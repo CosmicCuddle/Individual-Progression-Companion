@@ -4,6 +4,8 @@ A World of Warcraft 3.3.5a addon designed as an in-game companion for an Individ
 
 The addon provides a detailed progression handbook covering Vanilla, The Burning Crusade and Wrath of the Lich King, while tracking the character's current Individual Progression stage through server support.
 
+> **Compatibility:** This addon was built for my customised AzerothCore 3.3.5a server using the Grimfeather Individual Progression system. Some progression rules, unlock costs, content phasing and server integration are specific to this setup and may require adjustment for other servers.
+
 ## Current Version
 
 **Version 5.0.0**
