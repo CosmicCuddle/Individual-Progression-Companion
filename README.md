@@ -1,292 +1,197 @@
 # Individual Progression Companion
 
-A World of Warcraft 3.3.5a addon designed as an in-game companion for an Individual Progression server.
+A World of Warcraft **3.3.5a** in-game progression handbook built around a customised AzerothCore server using the Grimfeather Individual Progression system.
 
-The addon provides a detailed progression handbook covering Vanilla, The Burning Crusade and Wrath of the Lich King, while tracking the character's current Individual Progression stage through server support.
+The addon tracks the character's current Individual Progression state through server support and gives players practical, expansion-aware guidance for **Vanilla, The Burning Crusade and Wrath of the Lich King**.
 
-> **Compatibility:** This addon was built for my customised AzerothCore 3.3.5a server using the Grimfeather Individual Progression system. Some progression rules, unlock costs, content phasing and server integration are specific to this setup and may require adjustment for other servers.
+> **Compatibility:** This project is configured for the CosmicCuddle server. Progression rules, phasing, unlock costs and some content guidance are server-specific and may require adjustment on other servers.
 
 ## Current Version
 
-**Version 5.0.0**
+**Version 5.2.0**
 
-Supported client:
+Supported client: **World of Warcraft 3.3.5a**
 
-**World of Warcraft 3.3.5a**
+## What the Addon Does
 
-## Features
+The addon is designed to answer four simple questions:
 
-### Progression Roadmaps
+- What should I do now?
+- What is required to advance?
+- What should I complete before moving on?
+- What content has just become available?
 
-The addon provides structured progression guidance for all three expansions:
+Every numbered progression tier now contains a **step-by-step completion route** rather than only a short summary.
 
-**Vanilla**
-- Molten Core
-- Onyxia's Lair
-- Blackwing Lair
-- Pre-AQ progression
-- AQ War
-- Ahn'Qiraj
-- Naxxramas
-- Pre-TBC transition
+## Progression Coverage
 
-**The Burning Crusade**
-- Karazhan, Gruul and Magtheridon
-- Serpentshrine Cavern and Tempest Keep
-- Mount Hyjal and Black Temple
+### Vanilla
+
+- Tier 0 — Molten Core
+- Tier 1 — Onyxia's Lair
+- Tier 2 — Blackwing Lair
+- Tier 3 — Pre-AQ / War Effort
+- Tier 4 — AQ War
+- Tier 5 — Ahn'Qiraj
+- Tier 6 — Naxxramas
+- Tier 7 — Pre-TBC
+
+Vanilla support pages also cover world bosses, reputations, PvP, talent restrictions, profession phasing, flight-path phasing and server rules.
+
+### The Burning Crusade
+
+- Karazhan / Gruul / Magtheridon
+- Serpentshrine Cavern / Tempest Keep
+- Mount Hyjal / Black Temple
 - Sunwell Plateau
 - Zul'Aman side progression
 
-**Wrath of the Lich King**
-- Naxxramas, Eye of Eternity and Obsidian Sanctum
-- Ulduar
-- Trial of the Crusader
-- Icecrown Citadel
-- Ruby Sanctum
+TBC support pages cover Heroic timing, keys, attunements, reputations, professions, PvP and world bosses.
 
-Each progression page is designed to answer:
+### Wrath of the Lich King
 
-- What content is available now?
-- What should I be working on?
-- What is required?
-- What is optional?
-- What attunements or access requirements are needed?
-- What should I prepare for next?
+- Tier 13 — Naxxramas / Eye of Eternity / Obsidian Sanctum
+- Tier 14 — Ulduar
+- Tier 15 — Trial of the Crusader
+- Tier 16 — Icecrown Citadel
+- Tier 17 — Ruby Sanctum
 
-## Attunement & Access Guidance
+Wrath support pages cover dungeons and Heroics, emblems, Dalaran quests, reputations, professions, PvP, Wintergrasp, Vault of Archavon and the Argent Tournament.
 
-The addon includes progression-aware guidance for important raid and dungeon access requirements.
+## Detailed Tier Walkthroughs
 
-Examples include:
+Version 5.2 builds on the detailed-tier redesign.
 
-- Molten Core first-entry requirements through Blackrock Depths
+Each tier page can include:
+
+- Exact access or attunement requirements
+- Required quest chains
+- Dungeon prerequisites
+- Raid boss order
+- Progression-ending objective
+- Recommended reputation work
+- Profession preparation
+- Useful side content
+- What to prepare before the next tier
+
+**Required to Advance** and **Recommended Before Advancing** are kept separate so players can see the difference between the technical server gate and the intended progression route.
+
+## Pre-AQ / War Effort
+
+The Pre-AQ guide explains the server-specific personal War Effort requirements:
+
+- Complete each required War Effort resource turn-in at least once.
+- Earn **1,500 Commendation Signets**.
+- Complete the Scarab Gong progression.
+
+Two Gong routes are documented:
+
+**Full route:** complete the Scepter of the Shifting Sands / Scarab Lord chain.
+
+**Shortcut route:** use the server's custom **Simply Bang a Gong!** progression route.
+
+The shortcut currently requires the **Mallet of Zul'Farrak** and is a progression shortcut rather than a Scarab Lord reward route.
+
+## Attunements & Access
+
+The addon includes detailed guidance for major access requirements, including:
+
+- Molten Core first entry through Blackrock Depths
 - Onyxia attunement
-- Blackwing Lair access through Blackrock Spire
-- Ahn'Qiraj progression
-- Naxxramas entry through Stratholme
-- Karazhan attunement
-- Serpentshrine Cavern attunement
-- Tempest Keep attunement
-- Mount Hyjal progression
-- Black Temple attunement
-- Wrath raid and dungeon progression gates
-
-## Dungeons & Heroics
-
-Dedicated dungeon pages explain not only which dungeons are useful, but when they should be completed.
-
-TBC guidance includes:
-
-- Normal dungeon progression
-- Heroic dungeon timing
-- Heroic access factions and keys
-- Attunement-related Heroics
-- When Heroics stop being a primary gearing route
-
-Wrath guidance includes:
-
-- Level 70-80 dungeon progression
-- Level 80 Heroic preparation
-- Tier-by-tier Heroic usefulness
-- Frozen Halls progression
-- Forge of Souls
-- Pit of Saron
-- Halls of Reflection
+- Blackwing Lair first entry through Upper Blackrock Spire
+- AQ progression
+- Naxxramas first entry through Stratholme
+- Karazhan
+- Serpentshrine Cavern
+- Tempest Keep
+- Mount Hyjal
+- Black Temple
+- Wrath tier gates
 
 ## Reputation Guides
 
 Reputation pages explain:
 
-- When to begin farming a faction
-- How reputation is earned
-- Why the faction matters
-- Important rewards
-- Profession recipes
-- Enchants
-- Mounts
-- Raid progression benefits
-- Whether the reputation is required, recommended or optional
+- When to work on the faction
+- How to earn reputation
+- Why the reputation matters
+- Important gear, enchants, recipes and mounts
+- Which professions benefit most
+- Whether it is required, recommended or optional
 
-Vanilla reputations include:
-
-- Hydraxian Waterlords
-- Thorium Brotherhood
-- Argent Dawn
-- Zandalar Tribe
-- Cenarion Circle
-- Brood of Nozdormu
-- Timbermaw Hold
-
-TBC reputations include dungeon, raid and optional factions such as:
-
-- Thrallmar / Honor Hold
-- Cenarion Expedition
-- Lower City
-- Keepers of Time
-- The Sha'tar
-- The Violet Eye
-- Scale of the Sands
-- Ashtongue Deathsworn
-- Shattered Sun Offensive
-- Netherwing
-- Ogri'la
-- Sha'tari Skyguard
-- The Consortium
-- Sporeggar
-- Mag'har / Kurenai
-
-Wrath reputations include:
-
-- Argent Crusade
-- Kirin Tor
-- Knights of the Ebon Blade
-- Wyrmrest Accord
-- Sons of Hodir
-- Horde Expedition / Alliance Vanguard
-- The Kalu'ak
-- The Oracles
-- Frenzyheart Tribe
-- Ashen Verdict
-- Argent Tournament factions
+Vanilla, TBC and Wrath each have their own detailed reputation roadmap.
 
 ## Profession Guidance
 
-Profession progression is included throughout the guide.
+Profession pages explain more than skill caps.
 
-The addon accounts for expansion-specific profession availability, including:
+They include:
 
-- Jewelcrafting being unavailable during Vanilla
-- Jewelcrafting unlocking with TBC
-- Inscription remaining unavailable during Vanilla and TBC
-- Inscription unlocking with Wrath
-- Expansion profession skill caps
-- Reputation recipes
-- Profession specialisations
-- Raid crafting
-- Profession bonuses in Wrath
+- Expansion-specific profession availability
+- Useful or notable crafts
+- Raid-useful items
+- Profession bonuses
+- Relevant reputation recipes
+- Which reputations matter most to particular professions
+- When profession investment is most useful during progression
+
+Server phasing includes:
+
+- Jewelcrafting locked during Vanilla
+- Jewelcrafting available in TBC
+- Inscription locked until Wrath
 
 ## Talent Rules
 
-The server uses Wrath of the Lich King 3.3.5 talent trees while restricting talents according to the character's current expansion.
+The server uses the 3.3.5 talent trees with expansion-specific restrictions.
 
 ### Vanilla
 
-Rows 1-6 are fully available.
-
-On Row 7, only the middle talent is available.
-
-Rows 8-11 are blocked.
+- Rows 1–6 fully available
+- Row 7: middle talent only
+- Rows 8–11 blocked
 
 ### The Burning Crusade
 
-Rows 1-8 are fully available.
-
-On Row 9, only the middle talent is available.
-
-Rows 10-11 are blocked.
+- Rows 1–8 fully available
+- Row 9: middle talent only
+- Rows 10–11 blocked
 
 ### Wrath of the Lich King
 
-The full 3.3.5 talent trees are available.
+- Full 3.3.5 talent trees available
 
-Talent restrictions apply independently to each class talent tree and are based on the position of the talent in the tree.
+Restrictions apply separately to each talent tree and are based on talent position.
 
-## PvP
+## PvP & World Content
 
-The addon includes separate Vanilla, TBC and Wrath PvP guidance.
+The addon includes dedicated guidance for:
 
-This includes:
-
-- Custom Vanilla PvP rank requirements
+- Custom Vanilla PvP ranks
 - Vanilla battleground reputations
 - TBC Arena progression
+- TBC world bosses
 - Wrath Arena progression
 - Wintergrasp
 - Vault of Archavon
-- Expansion-specific PvP availability
+- Argent Tournament
 
-## World & Content Phasing
-
-The guide documents server-specific phased content so players can tell the difference between content that is intentionally unavailable and content that may actually be missing.
-
-Examples include phased profession NPCs and later-Vanilla flight paths.
-
-The following flight paths are progressively restored during Vanilla and are available by the Naxxramas stage:
-
-- Ratchet
-- Marshal's Refuge
-- Emerald Sanctuary
-- The Bulwark
-- Thondroril River
+Version 5.2 significantly expands these pages so they explain the gameplay loop, timing and rewards rather than only listing content.
 
 ## Chronomancer Vezrath
 
-Chronomancer Vezrath is a male Bronze Draconid located near the faction leader in each capital city.
+**Chronomancer Vezrath** is a male Bronze Draconid located near the faction leader in every capital city.
 
-He provides character and progression-related services.
-
-The addon explains when the player should visit him for:
-
-- Account progression catch-up
-- Expansion unlocks
-- Character services
+He provides progression and character services, including expansion transitions.
 
 Current expansion unlock costs:
 
-**Vanilla to TBC:** 2,500 gold
-
-**TBC to Wrath:** 7,500 gold
-
-Progression catch-up is limited by the server's Character Services configuration and cannot be used to progress beyond eligible account progress.
-
-## Wrath Emblem Progression
-
-The addon documents the restored Wrath emblem ladder rather than assuming final-patch 3.3.5 catch-up availability.
-
-Heroic dungeon rewards progress through the expansion:
-
-- Opening Wrath: Emblem of Heroism
-- Ulduar era: Emblem of Valor
-- Trial era: Emblem of Conquest
-- Icecrown era: Emblem of Triumph
-
-The guide also covers the changing Dalaran daily and weekly quest systems.
-
-## Wintergrasp & Vault of Archavon
-
-Wintergrasp has its own progression guide.
-
-Vault of Archavon bosses become relevant throughout Wrath:
-
-- Archavon
-- Emalon
-- Koralon
-- Toravon
-
-Players are encouraged to revisit the Vault as their progression advances.
-
-## Argent Tournament
-
-The Argent Tournament is treated as Trial of the Crusader-era side progression.
-
-The guide covers:
-
-- Aspirant progression
-- Valiant progression
-- Champion progression
-- Daily quests
-- Champion's Seals
-- Mounts
-- Pets
-- Tabards
-- Titles
-- Faction progression
-- Black Knight questline
-- Trial of the Champion
+- Vanilla → TBC: **2,500 gold**
+- TBC → Wrath: **7,500 gold**
 
 ## Addon Commands
 
-The main slash command is:
+Main command:
 
 `/ip`
 
@@ -296,98 +201,32 @@ Alternative:
 
 Useful commands include:
 
-`/ip current`  
-Open your current progression stage.
+- `/ip current`
+- `/ip general`
+- `/ip talents`
+- `/ip reputations`
+- `/ip pvp`
+- `/ip tbc`
+- `/ip tbcdungeons`
+- `/ip tbcreps`
+- `/ip tbcprofessions`
+- `/ip tbcpvp`
+- `/ip tbcworldbosses`
+- `/ip zulaman`
+- `/ip wrath`
+- `/ip wrathdungeons`
+- `/ip wrathemblems`
+- `/ip wrathreps`
+- `/ip wrathprofessions`
+- `/ip wrathpvp`
+- `/ip wintergrasp`
+- `/ip tournament`
+- `/ip vezrath`
+- `/ip commands`
+- `/ip refresh`
+- `/ip help`
 
-`/ip worldbosses`  
-Open the Vanilla world boss timeline.
-
-`/ip reputations`  
-Open Vanilla reputation guidance.
-
-`/ip pvp`  
-Open Vanilla PvP guidance.
-
-`/ip tbc`  
-Open the TBC overview.
-
-`/ip tbcdungeons`  
-Open TBC dungeon and Heroic guidance.
-
-`/ip tbcreps`  
-Open TBC reputation guidance.
-
-`/ip tbcprofessions`  
-Open TBC profession guidance.
-
-`/ip tbcpvp`  
-Open TBC PvP guidance.
-
-`/ip tbcworldbosses`  
-Open TBC world boss guidance.
-
-`/ip zulaman`  
-Open Zul'Aman guidance.
-
-`/ip wrath`  
-Open the Wrath overview.
-
-`/ip wrathdungeons`  
-Open Wrath dungeon and Heroic guidance.
-
-`/ip wrathemblems`  
-Open Wrath emblem and Dalaran quest guidance.
-
-`/ip wrathreps`  
-Open Wrath reputation guidance.
-
-`/ip wrathprofessions`  
-Open Wrath profession guidance.
-
-`/ip wrathpvp`  
-Open Wrath PvP guidance.
-
-`/ip wintergrasp`  
-Open Wintergrasp and Vault guidance.
-
-`/ip tournament`  
-Open Argent Tournament guidance.
-
-`/ip talents`  
-Open the expansion talent rules.
-
-`/ip general`  
-Open general server information.
-
-`/ip vezrath`  
-Open Chronomancer Vezrath services.
-
-`/ip commands`  
-Open the full addon and Individual Progression server command reference.
-
-`/ip refresh`  
-Refresh your progression information from the server.
-
-`/ip help`  
-Display addon commands in chat.
-
-## Individual Progression Server Commands
-
-The in-game Commands page also documents supported Individual Progression server commands, including:
-
-`.ip get`
-
-`.ip setbot`
-
-`.ip pet`
-
-`.ip pvp`
-
-`.ip attune`
-
-GM commands such as `.ip set` and `.ip tele` are identified separately.
-
-Command availability may depend on server configuration and permissions.
+The in-game Commands page also documents supported `.ip` server commands and identifies GM-only commands separately.
 
 ## Installation
 
@@ -397,59 +236,46 @@ Command availability may depend on server configuration and permissions.
 
    `World of Warcraft/Interface/AddOns/`
 
-4. Restart World of Warcraft or reload the UI.
-5. Enter `/ip` in chat to open the guide.
+4. Restart WoW or use `/reload`.
+5. Type `/ip`.
 
-When updating, replace the previous `IndividualProgressionAddon` folder with the newer version.
+When updating, replace the previous `IndividualProgressionAddon` folder.
 
 ## Server Integration
 
-The addon communicates with a server-side support script to retrieve the character's Individual Progression value.
+The addon communicates with the server-side support service and requests the character's current progression value.
 
-The client requests progression data using the addon support service and uses that value to determine the character's current progression stage.
+It does **not** independently infer progression from raid kills.
 
-The addon itself does not independently determine raid kills or progression state.
+## Server-Specific Features
 
-## Server-Specific Configuration
-
-This project has been developed around a customised AzerothCore 3.3.5a Individual Progression server.
-
-Some guidance is intentionally server-specific, including:
+The guide currently reflects server-specific behaviour including:
 
 - Chronomancer Vezrath
 - Expansion unlock costs
 - Progression catch-up rules
-- War Effort requirements
+- 1,500-signets War Effort
 - Talent restrictions
 - Profession phasing
-- Flight-path phasing
-- Early Dungeon Set 2 availability
-- Early Scourge boss availability
+- Later-Vanilla flight-path phasing
+- Early Dungeon Set 2
+- Early Scourge bosses
 - Manual Molten Core rune handling
 - Restored TBC attunements
-- Wrath tier gates
-- Arena seasons
+- Wrath content gating
+- Configured Arena seasons
 
-Other servers using different configurations may need to adjust the addon data.
+## Development Status
 
-## Current Development Status
+Vanilla, The Burning Crusade and Wrath progression are implemented.
 
-Vanilla, The Burning Crusade and Wrath of the Lich King progression guidance are implemented.
+Version **5.2.0** focuses on turning the addon from a reference sheet into a more complete **step-by-step server progression handbook**.
 
-Version 5.0 completes the first full three-expansion progression handbook.
-
-Future development may include:
-
-- Additional server integration
-- More automatic progression detection
-- More class-specific progression guidance
-- Additional visual improvements
-- Further server-specific content
-- General corrections and refinements
+See [CHANGELOG.md](CHANGELOG.md) for version history.
 
 ## Credits
 
-Built for AzerothCore 3.3.5a and designed to accompany the Grimfeather Individual Progression system.
+Created by **CosmicCuddle** for AzerothCore 3.3.5a and designed to accompany the Grimfeather Individual Progression system.
 
 World of Warcraft and related names, artwork and assets are trademarks or copyrights of Blizzard Entertainment.
 

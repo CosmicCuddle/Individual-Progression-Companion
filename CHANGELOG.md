@@ -4,6 +4,49 @@ All notable changes to Individual Progression Companion are documented here.
 
 ---
 
+## 5.2.0 - Expanded Guides & Refinement
+
+### Added / Expanded
+
+- Expanded TBC profession guidance with noteworthy crafts, items and profession-specific reputation priorities.
+- Expanded Wrath profession guidance with noteworthy crafts, profession bonuses and reputation priorities.
+- Expanded TBC PvP guidance with Honor, Resilience, Battleground and Arena progression.
+- Expanded TBC World Boss guidance with timing, locations, encounter notes and noteworthy rewards.
+- Expanded Wrath PvP guidance and Season 5 progression.
+- Expanded Wintergrasp with battle flow, ranks, vehicles, currencies, vendors and Vault relevance.
+- Expanded Argent Tournament with Aspirant, Valiant, Champion, Champion's Seals and Black Knight progression.
+- Expanded Wrath Emblems and Dalaran quest guidance with practical spending and tier-use advice.
+
+### Changed
+
+- Simplified the main header to **Individual Progression Companion**.
+- Reworded the Pre-AQ War Effort steps to clearly state that every required resource turn-in must be completed at least once.
+- Clarified the full Scepter of the Shifting Sands route versus the custom **Simply Bang a Gong!** shortcut route.
+- Clarified that the shortcut is a progression route and does not replace the Scarab Lord reward path.
+
+### Fixed
+
+- Fixed the missing Wintergrasp icon.
+- Fixed the missing Tier 17 / Ruby Sanctum icon.
+
+---
+
+## 5.1.0 - Detailed Tier Walkthroughs
+
+### Added
+
+- Rebuilt every numbered Vanilla, TBC and Wrath tier around ordered step-by-step completion guidance.
+- Added exact access, attunement, dungeon, raid-boss and stage-completion routes.
+- Added raid boss orders where useful.
+- Added detailed expansion-transition steps through Chronomancer Vezrath.
+
+### Changed
+
+- Separated **Required to Advance** from **Recommended Before Advancing**.
+- Tier pages now function as practical progression walkthroughs rather than short summaries.
+
+---
+
 ## 5.0.0 - Wrath of the Lich King
 
 ### Added
@@ -14,22 +57,11 @@ All notable changes to Individual Progression Companion are documented here.
 - Added Tier 15: Trial of the Crusader.
 - Added Tier 16: Icecrown Citadel.
 - Added Tier 17: Ruby Sanctum.
-- Added correct progression bosses:
-  - Kel'Thuzad
-  - Yogg-Saron
-  - Anub'arak
-  - The Lich King
-  - Halion
-- Added Ulduar hard-mode guidance.
-- Added Algalon guidance.
+- Added Ulduar hard-mode and Algalon guidance.
 - Added Val'anyr guidance.
 - Added Trial of the Grand Crusader guidance.
 - Added Frozen Halls progression.
-- Added Forge of Souls.
-- Added Pit of Saron.
-- Added Halls of Reflection.
-- Added Ashen Verdict guidance.
-- Added Shadowmourne guidance.
+- Added Ashen Verdict and Shadowmourne guidance.
 - Added Wrath Heroic dungeon progression and timing.
 - Added restored Wrath emblem progression.
 - Added Dalaran daily and weekly quest guidance.
@@ -37,20 +69,9 @@ All notable changes to Individual Progression Companion are documented here.
 - Added Wrath profession guidance.
 - Added Inscription progression.
 - Added Wrath PvP guidance.
-- Added Arena Season 5 guidance.
-- Added Wintergrasp guidance.
-- Added Vault of Archavon boss progression.
+- Added Wintergrasp and Vault of Archavon.
 - Added Argent Tournament progression.
 - Added Wrath completion handling after Halion.
-
-### Server Integration
-
-- Added progression-aware Ulduar access guidance.
-- Added Trial of the Champion and Trial of the Crusader progression gating.
-- Added Frozen Halls and Icecrown Citadel progression gating.
-- Added Ruby Sanctum progression gating.
-- Added Vault of Archavon tier guidance.
-- Added Wrath-specific `/ip current` routing.
 
 ---
 
@@ -65,13 +86,7 @@ All notable changes to Individual Progression Companion are documented here.
 ### Expanded
 
 - Rebuilt the Vanilla reputation guide.
-- Expanded Hydraxian Waterlords guidance.
-- Expanded Thorium Brotherhood guidance.
-- Expanded Argent Dawn guidance.
-- Expanded Zandalar Tribe guidance.
-- Expanded Cenarion Circle guidance.
-- Expanded Brood of Nozdormu guidance.
-- Expanded Timbermaw Hold guidance.
+- Expanded Hydraxian Waterlords, Thorium Brotherhood, Argent Dawn, Zandalar Tribe, Cenarion Circle, Brood of Nozdormu and Timbermaw Hold guidance.
 - Added tier-by-tier Vanilla reputation priorities.
 
 ---
@@ -86,11 +101,7 @@ All notable changes to Individual Progression Companion are documented here.
 
 ### Expanded
 
-- Added detailed Netherwing progression.
-- Added Netherwing introductory quest guidance.
-- Added daily quest guidance.
-- Added Netherwing Egg guidance.
-- Added Netherwing Drake reward guidance.
+- Added detailed Netherwing progression and rewards.
 
 ---
 
@@ -99,13 +110,7 @@ All notable changes to Individual Progression Companion are documented here.
 ### Expanded
 
 - Rebuilt the TBC reputation page into a full progression roadmap.
-- Added when each faction should be worked on.
-- Added reputation sources.
-- Added important rewards.
-- Added profession recipe guidance.
-- Added Heroic-key relevance.
-- Added raid reputation guidance.
-- Added optional mount and side-content factions.
+- Added reputation sources, important rewards, profession recipes, Heroic-key relevance, raid reputations and optional mount/content factions.
 
 ---
 
@@ -117,8 +122,6 @@ All notable changes to Individual Progression Companion are documented here.
 - Added Level 70 Heroic preparation guidance.
 - Added Tier 8 Heroic progression.
 - Added Heroics required for later raid attunements.
-- Added guidance explaining that Karazhan should not be delayed until every Heroic is complete.
-- Added late-TBC Heroic usefulness guidance.
 
 ---
 
@@ -127,21 +130,14 @@ All notable changes to Individual Progression Companion are documented here.
 ### Added
 
 - Added the full Burning Crusade progression section.
-- Added TBC overview and roadmap.
 - Added Karazhan, Gruul and Magtheridon progression.
-- Added Serpentshrine Cavern and Tempest Keep progression.
-- Added Mount Hyjal and Black Temple progression.
-- Added Sunwell Plateau progression.
-- Added restored TBC attunement guidance.
-- Added Heroic dungeon and key guidance.
-- Added TBC reputation guidance.
-- Added TBC profession guidance.
-- Added TBC PvP guidance.
-- Added TBC world boss guidance.
-- Added Zul'Aman as optional side progression.
-- Added Isle of Quel'Danas progression guidance.
-- Added Shattered Sun Offensive progression.
-- Added Chronomancer Vezrath TBC-to-Wrath transition guidance.
+- Added Serpentshrine Cavern and Tempest Keep.
+- Added Mount Hyjal and Black Temple.
+- Added Sunwell Plateau.
+- Added restored TBC attunements.
+- Added TBC dungeon, reputation, profession, PvP and world boss guidance.
+- Added Zul'Aman side progression.
+- Added Isle of Quel'Danas and Shattered Sun Offensive progression.
 - Added scrollable sidebar navigation.
 
 ---
@@ -150,13 +146,9 @@ All notable changes to Individual Progression Companion are documented here.
 
 ### Added
 
-- Added dedicated Vanilla Reputations page.
-- Added dedicated Vanilla PvP page.
+- Added dedicated Vanilla Reputations and Vanilla PvP pages.
 - Added custom Rank 1-14 PvP requirements.
-- Added Vanilla battleground reputation guidance.
-- Expanded the Commands page.
-- Added actual Individual Progression server commands.
-- Added command permission information.
+- Expanded the Commands page with Individual Progression server commands.
 
 ---
 
@@ -164,17 +156,12 @@ All notable changes to Individual Progression Companion are documented here.
 
 ### Added
 
-- Added dedicated Talent Rules page.
-- Added Vanilla talent-tree restrictions.
-- Added TBC talent-tree restrictions.
-- Added full Wrath talent availability.
-- Added explanation that talent restrictions are positional and apply independently to every talent tree.
+- Added Vanilla, TBC and Wrath talent restriction guidance.
 - Expanded Argent Dawn guidance.
 
 ### Fixed
 
 - Onyxia no longer appears available during Tier 0.
-- Tier 1 becomes available only after Tier 0 progression is complete.
 
 ---
 
@@ -183,12 +170,7 @@ All notable changes to Individual Progression Companion are documented here.
 ### Changed
 
 - Separated Tier 0 Molten Core and Tier 1 Onyxia.
-- Added organised Vanilla progression navigation.
-- Added General section.
-- Added separate General Information page.
-- Added separate Chronomancer Vezrath page.
-- Added separate Commands page.
-- Moved profession and flight-path phasing information into General Information.
+- Added General Information, Talent Rules, Chronomancer Vezrath and Commands pages.
 
 ---
 
@@ -196,21 +178,14 @@ All notable changes to Individual Progression Companion are documented here.
 
 ### Added
 
-- Added Attunement / Access Requirements to every Vanilla progression stage.
-- Added Molten Core access guidance through Blackrock Depths.
-- Added Onyxia attunement guidance.
-- Added Blackwing Lair access through Blackrock Spire.
-- Added AQ progression requirements.
-- Added Naxxramas attunement guidance.
-- Added Stratholme first-entry requirement for Naxxramas.
-- Added Pre-TBC transition requirements.
+- Added access and attunement requirements to every Vanilla tier.
+- Added Molten Core, Onyxia, Blackwing Lair, AQ and Naxxramas access guidance.
 - Added Commands / Help tab.
 
 ### Changed
 
 - War Effort Commendation Signet requirement set to 1,500.
-- Later-Vanilla flight paths documented as available by the Naxxramas stage.
-- Removed decorative borders from progression-page icons.
+- Later-Vanilla flight paths documented as available by Naxxramas.
 
 ---
 
@@ -218,23 +193,12 @@ All notable changes to Individual Progression Companion are documented here.
 
 ### Added
 
-- Added Jewelcrafting phasing information.
-- Added Inscription phasing information.
-- Added phased flight-path information.
-- Added Ratchet.
-- Added Marshal's Refuge.
-- Added Emerald Sanctuary.
-- Added The Bulwark.
-- Added Thondroril River.
+- Added Jewelcrafting and Inscription phasing.
+- Added phased Vanilla flight-path information.
 
 ### Changed
 
-- Renamed Chronomancer Amberwind to Chronomancer Vezrath.
-- Updated Vezrath to a male Bronze Draconid.
-
-### Fixed
-
-- Removed the incorrect circular border from progression-page icons.
+- Renamed the services NPC to Chronomancer Vezrath and updated him to a male Bronze Draconid.
 
 ---
 
@@ -242,21 +206,14 @@ All notable changes to Individual Progression Companion are documented here.
 
 ### Added
 
-- Added server-specific Individual Progression configuration guidance.
-- Added Chronomancer character services.
+- Added server-specific progression configuration guidance.
+- Added Chronomancer services and expansion unlocks.
 - Added progression catch-up information.
-- Added expansion unlock information.
-- Added WoW-style progression icons.
-- Added manual Molten Core rune-dousing guidance.
-- Added early Dungeon Set 2 information.
-- Added early Scourge boss information.
-- Added Naxxramas Stratholme-entry guidance.
-- Added same-progression grouping information.
-- Added Zul'Gurub progression timing.
+- Added early Dungeon Set 2 and early Scourge boss information.
+- Added server-specific Naxxramas, Molten Core and Zul'Gurub guidance.
 
 ### Changed
 
-- Removed player-facing references to documentation or source material.
 - Reworked the addon into an in-game progression handbook.
 
 ---
@@ -265,14 +222,11 @@ All notable changes to Individual Progression Companion are documented here.
 
 ### Added
 
-- Added two-panel progression handbook layout.
+- Added two-panel guide layout.
 - Added clickable progression stages.
-- Added current, completed and locked progression states.
+- Added progression-state display.
 - Added World Boss Timeline.
-- Added detailed Vanilla progression guidance.
-- Added current-stage navigation.
-- Added minimap-button support.
-- Preserved server progression-data integration.
+- Added minimap support.
 
 ---
 
@@ -282,7 +236,5 @@ All notable changes to Individual Progression Companion are documented here.
 
 - Initial Individual Progression addon.
 - Added `/progression` and `/ip`.
-- Added current progression display.
-- Added server progression-data request.
-- Added minimap button.
-- Added SavedVariables support.
+- Added progression-data requests.
+- Added minimap button and SavedVariables support.
