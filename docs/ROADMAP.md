@@ -54,7 +54,7 @@ This roadmap separates **existing features** from **proposed work**. A roadmap c
 
 ## P1A — Player-requested current-stage experience (12 October 2026)
 
-**Status:** Requested / Proposed — do not mark as implemented. This is the next desired functional work once the protocol and Tier 0 anomaly have been checked.
+**Status:** Implemented on feature branch `feat/ip-companion-stage-navigation-2026-10-12`; **awaiting Lua CI, code review and in-game testing**. The backend Tier 0/Tier 1 discrepancy remains unverified and unresolved.
 
 **Reported problem:** A player understood to be at **Tier 0** is labelled **Tier 1**. The source currently maps incoming value `1` to Tier 1, and the Refresh/reopen paths request data but do not necessarily select the current-stage page afterward. These are different possible causes: verify the actual server response before changing mapping.
 
