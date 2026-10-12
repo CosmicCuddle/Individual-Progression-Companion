@@ -220,7 +220,12 @@ for _, object in ipairs(objects) do
     if object.kind == "Button" and object.value == "Refresh" then refresh = object end
 end
 check(refresh ~= nil, "Refresh button missing")
+check(widgetText("CURRENT STAGE"), "Known Tier 1 should have a current-stage subtitle")
 click(refresh)
+check(not widgetText("CURRENT STAGE"),
+    "Refresh left stale CURRENT STAGE text visible while pending")
+check(widgetText("Waiting for server..."),
+    "Stage subtitle should mark pending server verification")
 serverReply("PD~not_a_number")
 check(widgetText("Server progression value: waiting for reply"),
     "Bad server payload was accepted")
