@@ -2476,24 +2476,40 @@ local data = {
     currentValue = 0,
     loaded = false,
     selectedPage = "overview",
+    focusCurrentOnReply = false,
 }
 
 local function SendCommand(cmd)
     SendChatMessage(".ipsvc " .. cmd, "SAY")
 end
 
-local function RequestData()
-    SendCommand("data")
-end
-
 local UpdateDisplay
 local SelectPage
+local GetCurrentStageId
+
+local function RequestData(focusCurrentOnReply)
+    if focusCurrentOnReply then
+        data.focusCurrentOnReply = true
+    end
+    -- A previous response must not be presented as a fresh result.
+    data.loaded = false
+    if UpdateDisplay then UpdateDisplay() end
+    SendCommand("data")
+end
 
 local function ParseMessage(payload)
     local parts = { strsplit(DELIMITER, payload) }
     if parts[1] == "PD" then
-        data.currentValue = tonumber(parts[2]) or 0
+        local value = tonumber(parts[2])
+        -- Malformed replies must never silently become Tier 0.
+        if not value or value < 0 or value ~= math.floor(value) then return end
+
+        data.currentValue = value
         data.loaded = true
+        if data.focusCurrentOnReply then
+            data.focusCurrentOnReply = false
+            data.selectedPage = GetCurrentStageId(value) or (value >= 18 and "wrathoverview" or "overview")
+        end
         UpdateDisplay()
     end
 end
@@ -2541,6 +2557,11 @@ mainFrame:SetFrameStrata("DIALOG")
 mainFrame:SetClampedToScreen(true)
 mainFrame:Hide()
 
+-- Escape closes this window using the native 3.3.5a special-frame list.
+if UISpecialFrames then
+    table.insert(UISpecialFrames, "IndividualProgressionFrame")
+end
+
 local title = mainFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 title:SetPoint("TOPLEFT", 22, -18)
 title:SetText(C.gold .. "Individual Progression Companion" .. C.reset)
@@ -2556,7 +2577,9 @@ local refreshBtn = CreateFrame("Button", nil, mainFrame, "UIPanelButtonTemplate"
 refreshBtn:SetSize(74, 22)
 refreshBtn:SetPoint("TOPRIGHT", -42, -12)
 refreshBtn:SetText("Refresh")
-refreshBtn:SetScript("OnClick", RequestData)
+refreshBtn:SetScript("OnClick", function()
+    RequestData(true)
+end)
 
 -- Header status box
 local headerBox = CreateFrame("Frame", nil, mainFrame)
@@ -2926,7 +2949,7 @@ legend:SetText(C.green .. "DONE" .. C.reset .. "   " .. C.gold .. "NOW" .. C.res
 -- PAGE / STATUS LOGIC
 -- ============================================================================
 
-local function GetCurrentStageId(cv)
+GetCurrentStageId = function(cv)
     if cv == 0 then return "mc" end
     if cv == 1 then return "onyxia" end
     if cv == 2 then return "bwl" end
@@ -3178,11 +3201,11 @@ eventFrame:SetScript("OnEvent", function(self, event, msg)
 end)
 
 mainFrame:SetScript("OnShow", function()
-    data.loaded = false
     IndividualProgressionDB = IndividualProgressionDB or {}
-    data.selectedPage = IndividualProgressionDB.lastPage or "overview"
-    UpdateDisplay()
-    RequestData()
+    data.loaded = false
+    -- A fresh open starts with an unambiguous overview while the reply is pending.
+    SelectPage("overview")
+    RequestData(true)
 end)
 
 -- ============================================================================
@@ -3226,6 +3249,10 @@ SlashCmdList["INDIVIDUALPROGRESSION"] = function(msg)
         return
     elseif msg == "current" then
         mainFrame:Show()
+        if not data.loaded then
+            data.focusCurrentOnReply = true
+            return
+        end
         local id = GetCurrentStageId(data.currentValue)
         if id then
             SelectPage(id)
@@ -3325,7 +3352,7 @@ SlashCmdList["INDIVIDUALPROGRESSION"] = function(msg)
         return
     elseif msg == "refresh" then
         if not mainFrame:IsShown() then mainFrame:Show() end
-        RequestData()
+        RequestData(true)
         return
     end
 
