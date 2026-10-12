@@ -3296,7 +3296,9 @@ UpdateDisplay = function()
     if not data.loaded then
         currentText:SetText(C.grey .. "Reading progression from server..." .. C.reset)
         objectiveText:SetText("")
-        UpdateNavStates()
+        -- Re-render the selected page as unverified, so a stale CURRENT STAGE
+        -- subtitle cannot remain visible while a new reply is pending.
+        SelectPage(data.selectedPage)
         return
     end
 
