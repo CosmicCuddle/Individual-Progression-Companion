@@ -54,6 +54,29 @@ This is the **working project record**. Keep chronological entries with clear st
 ### Next action
 Complete baseline P1 verification, then deliver P1A in small reviewed PRs with checks in `docs/TESTING.md`. Do not silently change server authority or force-progress characters.
 
+## 12 October 2026 — PR #2 interface hardening and automated regression testing
+
+**Status:** Implemented on PR #2, code review and mocked WoW 3.3.5a testing in progress; live-client verification still required.
+**PR:** https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/2
+
+### Follow-up fixes
+- When Settings is selected, hide the guide's overlapping scroll frame; show it again on normal guide pages so the Settings checkbox is accessible.
+- Label stage pages **Waiting for server...** while a new progression response is pending, instead of incorrectly labelling them **Available**.
+- Add a Settings navigation icon and an explicit `/ip settings` / `/ip options` shortcut.
+- Preserve the authoritative tier response and do not invent a correction for the previously reported Tier 0/Tier 1 mismatch.
+
+### Repeatable tests added
+- Added `tests/test_ui_compatibility.lua`, a Lua 5.1 mock of key 3.3.5a UI APIs; CI now runs it after Lua syntax and TOC checks.
+- Mocked flow covers opening, refresh and reopen, values 0/1/8/13/17/18, malformed replies, hidden/visible expansion sections, manual navigation during reply, persisted Show all content, Settings panel visibility, the raw progression-value diagnostic and Settings shortcut.
+- Earlier CI runs exposed flaws in the *test mock* (an uninitialised event table and optional property lookups). Both were fixed in the mock; addon syntax and TOC checks had passed throughout.
+- Initial full mocked UI test passed on GitHub Actions run [38311599605](https://github.com/CosmicCuddle/Individual-Progression-Companion/actions/runs/38311599605) at commit `7edcfe234f390da23356d9e5d986820b5fb98140`. Further checks for the new Settings icon and shortcut were added afterward; verify the latest PR head checks before considering CI complete.
+
+### Limitations and rollback
+- The mock confirms internal client-side state changes; **it does not prove real WoW click handling, frame layering, textures, client sizing, or server progression semantics**.
+- Test with an actual known Tier 0 character and compare the raw **Server progression value** against the guide title. A reply of 1 would require server-side investigation, not a guessed client remapping.
+- No core rebuild, database migration or progression reset is needed. Restore prior addon folder and SavedVariables backup or revert this PR if live testing finds a regression.
+- Keep PR #1 (documentation) as the prerequisite; PR #2 is stacked on its branch and must not be merged before documentation.
+
 ## 12 October 2026 — Candidate progressive navigation and refresh behaviour
 
 **Status:** Feature branch implemented, unmerged; awaiting automatic Lua 5.1 syntax check and in-game verification. **Not yet released.**
