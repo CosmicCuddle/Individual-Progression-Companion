@@ -32,6 +32,7 @@ An in-game, server-specific handbook that explains what a character can do now, 
 | `docs/ROADMAP.md` | Priorities and acceptance criteria |
 | `docs/DEVELOPMENT-LOG.md` | Decision and implementation history |
 | `docs/TESTING.md` | Regression checklist and result template |
+| `docs/RELEASE-CHECKLIST.md` | Standalone release gates, rollback and collection source-pin synchronization |
 
 At the baseline the addon is implemented in a single approximately 3,410-line Lua file. Any later split into modules must preserve its TOC load order and 3.3.5a Lua compatibility.
 
