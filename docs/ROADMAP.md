@@ -112,6 +112,8 @@ This roadmap separates **existing features** from **proposed work**. A roadmap c
 
 - [ ] Test clean installation and overwrite-upgrade with the correct `Interface/AddOns/IndividualProgressionAddon/` layout
 - [ ] Compare `.toc` version, README version, CHANGELOG and release tag
+- [x] Draft standalone-to-collection release/import checklist in [RELEASE-CHECKLIST.md](RELEASE-CHECKLIST.md) (documented; not released)
+- [ ] After release approval, import the exact standalone source SHA into N-Addon-Collection and update `sources.lock.json` through a separate reviewed PR
 - [ ] Confirm compatibility with the current N-Addon-Collection distribution workflow, if included there
 - [ ] Maintain a repeatable pre-release checklist and manually tested release notes
 - [ ] Retain a known-good backup and rollback instructions
