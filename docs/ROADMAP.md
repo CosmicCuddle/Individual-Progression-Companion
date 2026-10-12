@@ -54,7 +54,7 @@ This roadmap separates **existing features** from **proposed work**. A roadmap c
 
 ## P1A — Player-requested current-stage experience (12 October 2026)
 
-**Status:** Implemented on feature branch `feat/ip-companion-stage-navigation-2026-10-12`; **awaiting Lua CI, code review and in-game testing**. The backend Tier 0/Tier 1 discrepancy remains unverified and unresolved.
+**Status:** Implemented in PR [#2](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/2). **Lua 5.1 syntax and mocked UI tests passed; actual 3.3.5a in-game testing and review are still required.** The backend Tier 0/Tier 1 discrepancy remains unverified and unresolved.
 
 **Reported problem:** A player understood to be at **Tier 0** is labelled **Tier 1**. The source currently maps incoming value `1` to Tier 1, and the Refresh/reopen paths request data but do not necessarily select the current-stage page afterward. These are different possible causes: verify the actual server response before changing mapping.
 
