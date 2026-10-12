@@ -66,7 +66,8 @@ Complete baseline P1 verification, then deliver P1A in small reviewed PRs with c
 - Create default progression-aware navigation, retaining reached tiers and previewing the next tier of the current expansion. Vanilla Tier 0 sees Tier 0 and Tier 1, plus Vanilla Side Content and General. Already reached earlier-expansion tier guides remain browsable; side content defaults to current expansion only.
 - Add always-visible Settings footer with a saved `showAllContent` checkbox, unchecked on clean installation. This displays all legacy pages when enabled.
 - Register the main window with WoW's `UISpecialFrames` for Escape-to-close.
-- Provide a GitHub Actions `luac5.1 -p` syntax check; no live client test has been run.
+- Provide a GitHub Actions `luac5.1 -p` syntax check; it passed on the initial feature commit. After a follow-up change, repeat the check before treating the latest head as syntactically validated. No live client test has been run.
+- Add a read-only **Server progression value** display to Settings, based only on an accepted server reply; this helps distinguish a UI selection issue from a backend tier discrepancy.
 
 ### Compatibility and risk
 - No change to the `ipsvc` request or response format, numeric tier mapping, guide content, or server code.
