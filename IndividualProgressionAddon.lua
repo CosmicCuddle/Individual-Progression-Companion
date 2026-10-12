@@ -2837,6 +2837,8 @@ local function CreateNavButton(id, label, y)
         navIcon:SetTexture(CHARACTER_SERVICES_PAGE.icon)
     elseif id == "commands" then
         navIcon:SetTexture(COMMANDS_PAGE.icon)
+    elseif id == "settings" then
+        navIcon:SetTexture("Interface\\Icons\\INV_Gizmo_02")
     elseif VANILLA_STAGES[id] then
         navIcon:SetTexture(VANILLA_STAGES[id].icon)
     elseif TBC_STAGES[id] then
@@ -3407,6 +3409,7 @@ SlashCmdList["INDIVIDUALPROGRESSION"] = function(msg)
         DEFAULT_CHAT_FRAME:AddMessage("  /ip vezrath      - Open Chronomancer Vezrath services")
         DEFAULT_CHAT_FRAME:AddMessage("  /ip commands     - Open the addon command reference")
         DEFAULT_CHAT_FRAME:AddMessage("  /ip refresh      - Refresh progression from the server")
+        DEFAULT_CHAT_FRAME:AddMessage("  /ip settings     - Guide visibility settings")
         return
     elseif msg == "current" then
         mainFrame:Show()
@@ -3488,6 +3491,9 @@ SlashCmdList["INDIVIDUALPROGRESSION"] = function(msg)
         return
     elseif msg == "commands" or msg == "command" then
         ShowGuidePage("commands")
+        return
+    elseif msg == "settings" or msg == "options" then
+        ShowGuidePage("settings")
         return
     elseif msg == "refresh" then
         if not mainFrame:IsShown() then mainFrame:Show() end
