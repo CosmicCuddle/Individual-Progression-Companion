@@ -54,6 +54,38 @@ This is the **working project record**. Keep chronological entries with clear st
 ### Next action
 Complete baseline P1 verification, then deliver P1A in small reviewed PRs with checks in `docs/TESTING.md`. Do not silently change server authority or force-progress characters.
 
+## 12 October 2026 — Candidate progressive navigation and refresh behaviour
+
+**Status:** Feature branch implemented, unmerged; awaiting automatic Lua 5.1 syntax check and in-game verification. **Not yet released.**
+**Branch:** `feat/ip-companion-stage-navigation-2026-10-12` (based on the documentation branch; feature PR targets that documentation branch until it is merged).
+
+### Candidate implementation
+- On normal open and on top-right Refresh, request `.ipsvc data`, display a pending indicator, and select the current guide page **only after receiving a valid server reply**.
+- Reject missing, negative, fractional or nonnumeric `PD` values rather than interpreting them as Tier 0.
+- Treat manual navigation and direct slash page commands as explicit user choices instead of overriding them when a delayed reply arrives.
+- Create default progression-aware navigation, retaining reached tiers and previewing the next tier of the current expansion. Vanilla Tier 0 sees Tier 0 and Tier 1, plus Vanilla Side Content and General. Already reached earlier-expansion tier guides remain browsable; side content defaults to current expansion only.
+- Add always-visible Settings footer with a saved `showAllContent` checkbox, unchecked on clean installation. This displays all legacy pages when enabled.
+- Register the main window with WoW's `UISpecialFrames` for Escape-to-close.
+- Provide a GitHub Actions `luac5.1 -p` syntax check; no live client test has been run.
+
+### Compatibility and risk
+- No change to the `ipsvc` request or response format, numeric tier mapping, guide content, or server code.
+- New SavedVariables field: `IndividualProgressionDB.showAllContent` (boolean), with nil treated as false; existing fields remain.
+- The original code's last-page preference is still recorded, but reopening now intentionally focuses the current stage after a valid reply.
+- **Potential risks requiring testing:** older WoW 3.3.5a frame hierarchy, dynamically reflowed sidebar scrolling, Escape priority with other game panels, delayed server responses, UI scale, and the previously reported Tier 0/Tier 1 discrepancy.
+- User report does not prove the server's tier value is wrong. Backend provenance must be checked before ever changing stage mapping.
+
+### Verification and rollback
+- Static source inspection: all 40 original navigation entries are listed exactly once in their dynamic groups; Settings is a separate footer.
+- CI and in-game results: **pending; not yet passed**.
+- Rollback: revert the feature PR (or restore known-good addon folder/SavedVariables backup). No DB migration or server recompilation.
+
+### Next actions
+1. Confirm CI `luac5.1` check outcome and resolve any syntax errors.
+2. Have the maintainer test the feature branch using [TESTING.md](TESTING.md).
+3. Record pass/fail evidence and compare the Tier 0 user's server reply against the selected guide display.
+4. Update the code and documentation based on actual results; publish/merge only after approval.
+
 ## Recorded release history (from existing CHANGELOG; not re-tested here)
 
 - **5.2.0:** Expanded TBC/Wrath guides and fixes to missing Wintergrasp and Tier 17 icons.
