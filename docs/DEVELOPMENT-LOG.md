@@ -54,6 +54,29 @@ This is the **working project record**. Keep chronological entries with clear st
 ### Next action
 Complete baseline P1 verification, then deliver P1A in small reviewed PRs with checks in `docs/TESTING.md`. Do not silently change server authority or force-progress characters.
 
+## 12 October 2026 — Final pending-state and release-distribution review
+
+**Status:** Candidate fixes implemented; automated code checks passing. **No real-client test or release approval yet.**
+**Feature PR:** https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/2
+
+### Changes and review findings
+
+- Fixed pending UI display: when Refresh or reopening invalidates previously loaded progression data, the selected guide page is re-rendered. A stale **CURRENT STAGE** subtitle is replaced with **Waiting for server...** until a valid reply arrives.
+- Added a regression assertion for that transition to `tests/test_ui_compatibility.lua`.
+- The new test initially failed because WoW colour escape prefixes preceded the visible text, while the assertion assumed a raw string prefix. Corrected the mock test to search within the colour-formatted FontString, without stripping actual client formatting or weakening the addon behaviour.
+- GitHub Actions [run 38312418823](https://github.com/CosmicCuddle/Individual-Progression-Companion/actions/runs/38312418823), feature code commit `592da0a52786b464ac2241db32fe6a9f9f103045`: **success** for Lua 5.1 syntax, client metadata/load order, and simulated UI test flow.
+- Audited N-Addon-Collection source packaging: its `sources.lock.json` still pins IndividualProgressionAddon to the v5.2.0 source SHA `6872cc726052f7d271a28ba48baa9bb5c7ad36e9`. Do not update it until the standalone addon has been approved, tested and released.
+- Created [RELEASE-CHECKLIST.md](RELEASE-CHECKLIST.md) to distinguish standalone release and suite import, backup/rollback, client test requirements, and explicit versioning. Existing addon remains labelled **v5.2.0**, as the feature PR is not a release.
+
+### Outstanding blockers
+
+1. Documentation PR #1 still needs review and merge to `main`; PR #2 remains stacked on that branch.
+2. An affected known Tier 0 character must be inspected through Settings → **Server progression value**. If the server reply is `1`, investigate server progression mapping rather than modifying the client value arbitrarily.
+3. Test the actual UI in WoW 3.3.5a, including ESC, the bottom Settings footer, visibility, `/reload` preference persistence and non-overlap at different UI scales.
+4. Only after in-game acceptance, choose version, update changelog/TOC/README consistently, prepare a standalone release and later a separately approved N-Addon-Collection import.
+
+**Rollback:** Restore a backed-up v5.2.0 addon folder (and account SavedVariables only if necessary) or revert PR #2. No server or DB changes are included in the current feature work.
+
 ## 12 October 2026 — PR #2 interface hardening and automated regression testing
 
 **Status:** Implemented on PR #2, code review and mocked WoW 3.3.5a testing in progress; live-client verification still required.
