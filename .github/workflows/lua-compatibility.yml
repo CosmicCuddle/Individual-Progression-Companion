@@ -8,7 +8,7 @@ on:
 
 jobs:
   lua-51-syntax:
-    name: Validate addon Lua 5.1 syntax
+    name: Validate addon Lua 5.1 syntax and UI flow
     runs-on: ubuntu-24.04
     steps:
       - name: Check out source
@@ -23,3 +23,5 @@ jobs:
         run: |
           grep -q '^## Interface: 30300$' IndividualProgressionAddon.toc
           grep -q '^IndividualProgressionAddon.lua$' IndividualProgressionAddon.toc
+      - name: Exercise mocked WoW 3.3.5a UI
+        run: lua5.1 tests/test_ui_compatibility.lua
