@@ -1,0 +1,25 @@
+name: WoW 3.3.5a Lua compatibility
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  lua-51-syntax:
+    name: Validate addon Lua 5.1 syntax
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Install Lua 5.1 compiler
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lua5.1
+      - name: Parse addon using Lua 5.1
+        run: luac5.1 -p IndividualProgressionAddon.lua
+      - name: Check client target and load order
+        run: |
+          grep -q '^## Interface: 30300$' IndividualProgressionAddon.toc
+          grep -q '^IndividualProgressionAddon.lua$' IndividualProgressionAddon.toc
