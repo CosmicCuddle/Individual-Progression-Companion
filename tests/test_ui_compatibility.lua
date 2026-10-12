@@ -20,6 +20,7 @@ local function newObject(kind, name, parent)
         name = name,
         parent = parent,
         scripts = {},
+        events = {},
         visible = true,
         scroll = 0,
     }, metatable)
