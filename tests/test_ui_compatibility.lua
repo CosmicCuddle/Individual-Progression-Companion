@@ -275,5 +275,9 @@ check(isSelected(navLike("Wrath Overview")),
 check(widgetText("Server progression value: 18"), "End-stage diagnostic missing")
 check(IndividualProgressionDB.showAllContent == false,
     "Settings preference should be preserved")
+command("settings")
+check(settingsCheckbox.parent:IsShown(), "/ip settings did not open Settings")
+check(widgetWithLabel("Settings").icon.texture[1] == "Interface\\Icons\\INV_Gizmo_02",
+    "Settings navigation icon missing")
 
 print("PASS: 3.3.5a mocked addon flow, refresh/reopen, staged navigation, Settings and diagnostics")
