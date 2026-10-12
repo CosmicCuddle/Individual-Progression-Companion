@@ -2735,7 +2735,7 @@ end
 -- Settings controls are displayed inside the content panel only on the Settings page.
 local settingsPanel = CreateFrame("Frame", nil, contentPanel)
 settingsPanel:SetPoint("TOPLEFT", contentPanel, "TOPLEFT", 22, -107)
-settingsPanel:SetSize(475, 135)
+settingsPanel:SetSize(475, 195)
 settingsPanel:Hide()
 
 local settingsHeading = settingsPanel:CreateFontString(nil, "OVERLAY", "GameFontNormal")
@@ -2755,6 +2755,12 @@ settingsHint:SetPoint("TOPLEFT", 6, -73)
 settingsHint:SetWidth(455)
 settingsHint:SetJustifyH("LEFT")
 settingsHint:SetText("Unchecked: show reached tiers, the next tier and side content for your current expansion. Checked: show the full Vanilla, TBC and Wrath guide. This preference is saved.")
+
+-- Read-only diagnostics; never guesses a stage while a reply is pending.
+local settingsServerValueText = settingsPanel:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+settingsServerValueText:SetPoint("TOPLEFT", 6, -140)
+settingsServerValueText:SetJustifyH("LEFT")
+settingsServerValueText:SetText("Server progression value: waiting for reply")
 
 local footerNote = contentPanel:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
 footerNote:SetPoint("BOTTOMLEFT", 16, 10)
@@ -3266,6 +3272,9 @@ SelectPage = function(id)
 end
 
 UpdateDisplay = function()
+    settingsServerValueText:SetText(data.loaded
+        and ("Server progression value: " .. tostring(data.currentValue))
+        or "Server progression value: waiting for reply")
     local name = UnitName("player") or "Player"
     local className, classToken = UnitClass("player")
     local level = UnitLevel("player") or 0
