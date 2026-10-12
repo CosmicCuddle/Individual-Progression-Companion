@@ -60,7 +60,7 @@ function Methods:SetText(text)
     self.value = tostring(text or "")
 end
 function Methods:GetText()
-    return self.value
+    return rawget(self, "value")
 end
 function Methods:SetTexture(...)
     self.texture = {...}
@@ -72,7 +72,7 @@ function Methods:SetWidth(w)
     self.width = w
 end
 function Methods:GetWidth()
-    return self.width or 560
+    return rawget(self, "width") or 560
 end
 function Methods:SetHeight(h)
     self.height = h
@@ -84,7 +84,7 @@ function Methods:SetChecked(v)
     self.checked = (v and true or false)
 end
 function Methods:GetChecked()
-    return self.checked
+    return rawget(self, "checked")
 end
 function Methods:GetVerticalScroll()
     return self.scroll or 0
