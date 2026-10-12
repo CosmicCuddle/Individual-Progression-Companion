@@ -98,7 +98,19 @@ When starting a new conversation, provide the following official entry points:
 
 > Continue development of Individual Progression Companion from the GitHub repository and official project handover. Read docs/PROJECT-HANDOVER.md, docs/ROADMAP.md, docs/DEVELOPMENT-LOG.md, docs/TESTING.md and the latest open/merged PRs before making changes. Follow the project's backup, compatibility, versioning, test and documentation rules. Resume the highest-priority unfinished milestone. Keep a log of decisions, changes, test results and next actions so the project can be resumed again.
 
-## 7. Immediate starting point
+## 7. Current maintainer requests (12 October 2026)
+
+The maintainer has supplied rough feature notes, recorded precisely in [ROADMAP.md](ROADMAP.md) under **P1A — Player-requested current-stage experience**. Treat these as **requested, not implemented**:
+
+- Investigate a Tier 0 character displayed as Tier 1; verify the backend reply before editing stage mapping.
+- Make Refresh request fresh progression and select the true current-tier page; repeat refresh and focus selection after reopening.
+- By default hide unreached expansion/tier guides, while allowing current-expansion side content and General; for Tier 0, show Tier 0 and Tier 1 only in Vanilla's progression list.
+- Add an accessible, bottom-placed Settings panel with default-OFF **Show all content** option, preserving user choice.
+- Allow Escape to close the window.
+
+**Important client-source distinction:** Existing Refresh and OnShow already send `.ipsvc data`, but receipt does not automatically force current-page navigation. The displayed Tier 1 issue may be a stale selection or a server-value discrepancy; do not assert a root cause without reproducing it. See [TESTING.md](TESTING.md) S04–S07/S12–S15.
+
+## 8. Immediate starting point
 
 The repository was documented as v5.2.0 on 12 October 2026. No current post-5.2.0 in-game regression test is evidenced by these baseline documents. Start with the **read-only functionality audit and regression test plan** in the roadmap, rather than presuming a defect or changing server rules.
 
