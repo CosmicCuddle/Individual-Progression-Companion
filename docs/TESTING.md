@@ -30,6 +30,7 @@
 | S13 | Watch unrelated system chat | `##IPSVC##` protocol remains hidden, other messages visible |
 | S14 | Press Escape while window open | After feature implementation, window closes; default game Escape behaviour unaffected otherwise |
 | S15 | Open Settings and change future-content option | After feature implementation, default OFF, ON shows all pages, change persists |
+| S16 | Open Settings with a known Tier 0 character after reply | Shows raw **Server progression value: 0** if the server actually replies with 0; compare a reported 1 with the character's actual tier to isolate the fault |
 
 **Note:** S05, S06, S14, S15 contain requested future behaviour; **do not report them as current passes** before implementation and real-client testing.
 
