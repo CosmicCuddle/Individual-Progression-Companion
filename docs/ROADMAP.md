@@ -58,7 +58,7 @@ This roadmap separates **existing features** from **proposed work**. A roadmap c
 
 **Reported problem:** A player understood to be at **Tier 0** is labelled **Tier 1**. The source currently maps incoming value `1` to Tier 1, and the Refresh/reopen paths request data but do not necessarily select the current-stage page afterward. These are different possible causes: verify the actual server response before changing mapping.
 
-- [ ] **Tier accuracy first:** compare the server's authoritative progression value, client status label, selected guide page and highlighted navigation item on an affected character.
+- [ ] **Tier accuracy first:** compare the server's authoritative progression value, client status label, selected guide page and highlighted navigation item on an affected character. A read-only **Server progression value** readout has been added to the Settings page in the feature branch for this diagnosis.
 - [ ] **Refresh means sync and navigate:** top-right Refresh requests fresh server data and, once a valid reply is received, navigates to the actual current-tier guide; do not claim success or move based on stale local data.
 - [ ] **Reopening refreshes:** every close/reopen requests fresh state and selects the newly verified current tier. Preserve manual browsing *while open* unless Refresh is invoked.
 - [ ] **Progressive visibility, default:** in Vanilla Tier 0 show only Tier 0 and Tier 1 under the progression stages, plus Vanilla Side Content and General. Hide later Vanilla tiers and the TBC/Wrath groups. As progression advances, reveal appropriate tiers; agree how completed tiers and earlier-expansion guides should remain accessible.
