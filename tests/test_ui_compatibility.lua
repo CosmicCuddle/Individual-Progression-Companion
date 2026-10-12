@@ -162,6 +162,17 @@ local function widgetText(prefix)
     end
     return nil
 end
+-- WoW colour codes precede status labels, so search *within* the visible
+-- FontString content rather than assuming the raw string starts with the label.
+local function widgetContaining(fragment)
+    for _, object in ipairs(objects) do
+        if object.kind == "FontString" and type(object.value) == "string"
+            and string.find(object.value, fragment, 1, true) then
+            return object.value
+        end
+    end
+    return nil
+end
 local function isSelected(button)
     return button.bg and button.bg.texture and button.bg.texture[4] == 0.13
 end
@@ -220,11 +231,11 @@ for _, object in ipairs(objects) do
     if object.kind == "Button" and object.value == "Refresh" then refresh = object end
 end
 check(refresh ~= nil, "Refresh button missing")
-check(widgetText("CURRENT STAGE"), "Known Tier 1 should have a current-stage subtitle")
+check(widgetContaining("CURRENT STAGE"), "Known Tier 1 should have a current-stage subtitle")
 click(refresh)
-check(not widgetText("CURRENT STAGE"),
+check(not widgetContaining("CURRENT STAGE"),
     "Refresh left stale CURRENT STAGE text visible while pending")
-check(widgetText("Waiting for server..."),
+check(widgetContaining("Waiting for server..."),
     "Stage subtitle should mark pending server verification")
 serverReply("PD~not_a_number")
 check(widgetText("Server progression value: waiting for reply"),
