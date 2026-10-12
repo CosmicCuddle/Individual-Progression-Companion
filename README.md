@@ -273,6 +273,17 @@ Version **5.2.0** focuses on turning the addon from a reference sheet into a mor
 
 See [CHANGELOG.md](CHANGELOG.md) for version history.
 
+## Development & Project Continuity
+
+Official project maintenance references:
+
+- [Project Handover](docs/PROJECT-HANDOVER.md) — continuation instructions, architecture and safeguards.
+- [Development Roadmap](docs/ROADMAP.md) — existing features, requested improvements, priorities and acceptance criteria.
+- [Development Log](docs/DEVELOPMENT-LOG.md) — dated implementation decisions, outstanding work and verification results.
+- [Manual Test Plan](docs/TESTING.md) — regression steps and evidence requirements.
+
+The roadmap contains proposed features, including a progression-aware navigation and Settings experience. Proposed work is not included in the v5.2.0 release unless separately implemented, tested and released.
+
 ## Credits
 
 Created by **CosmicCuddle** for AzerothCore 3.3.5a and designed to accompany the Grimfeather Individual Progression system.
