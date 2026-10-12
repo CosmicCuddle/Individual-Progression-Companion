@@ -52,6 +52,23 @@ This roadmap separates **existing features** from **proposed work**. A roadmap c
 
 **Acceptance:** Protocol and status semantics documented from both client and server source, with a basic real-client regression record. Any defects found get separate, focused fixes.
 
+## P1A — Player-requested current-stage experience (12 October 2026)
+
+**Status:** Requested / Proposed — do not mark as implemented. This is the next desired functional work once the protocol and Tier 0 anomaly have been checked.
+
+**Reported problem:** A player understood to be at **Tier 0** is labelled **Tier 1**. The source currently maps incoming value `1` to Tier 1, and the Refresh/reopen paths request data but do not necessarily select the current-stage page afterward. These are different possible causes: verify the actual server response before changing mapping.
+
+- [ ] **Tier accuracy first:** compare the server's authoritative progression value, client status label, selected guide page and highlighted navigation item on an affected character.
+- [ ] **Refresh means sync and navigate:** top-right Refresh requests fresh server data and, once a valid reply is received, navigates to the actual current-tier guide; do not claim success or move based on stale local data.
+- [ ] **Reopening refreshes:** every close/reopen requests fresh state and selects the newly verified current tier. Preserve manual browsing *while open* unless Refresh is invoked.
+- [ ] **Progressive visibility, default:** in Vanilla Tier 0 show only Tier 0 and Tier 1 under the progression stages, plus Vanilla Side Content and General. Hide later Vanilla tiers and the TBC/Wrath groups. As progression advances, reveal appropriate tiers; agree how completed tiers and earlier-expansion guides should remain accessible.
+- [ ] **Always accessible:** General and a new Settings section remain visible; current-expansion side content remains accessible.
+- [ ] **Show all content:** Settings panel near the bottom with a checkbox labelled **Show all content**. Default unchecked on clean installation. When checked, show all expansion/stage sections as they are in v5.2.0; save this preference without breaking existing SavedVariables.
+- [ ] **Escape closes:** pressing Escape closes the main addon window using a WoW 3.3.5a-safe technique without interfering with ordinary game UI behaviour.
+- [ ] **Graceful loading:** when server progression is unknown or a reply fails, show a truthful pending/unavailable state and ensure Settings/support navigation remains reachable.
+
+**Acceptance:** Run S04–S07 and S12–S15 in [TESTING.md](TESTING.md), plus the Tier 0 visibility checks. Demonstrate both Show all modes, current-tier detection, Refresh and reopen behaviour using known test characters. Any changes to server-tier mapping require direct server-side evidence. No server-side modifications are authorised by this roadmap.
+
 ## P2 — UI quality and accessibility
 
 **Status:** Proposed, subject to baseline test findings.
