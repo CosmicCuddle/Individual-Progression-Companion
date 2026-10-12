@@ -54,6 +54,18 @@ This is the **working project record**. Keep chronological entries with clear st
 ### Next action
 Complete baseline P1 verification, then deliver P1A in small reviewed PRs with checks in `docs/TESTING.md`. Do not silently change server authority or force-progress characters.
 
+## 12 October 2026 — Automated downloadable PR test package
+
+**Status:** Available for manual QA; not a stable release and not yet installed/tested in WoW.
+**Feature PR:** [#2](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/2)
+**Workflow:** [Run 38312672487](https://github.com/CosmicCuddle/Individual-Progression-Companion/actions/runs/38312672487)
+
+- Added PR-only packaging to `.github/workflows/lua-compatibility.yml`. Only after Lua 5.1 syntax, TOC and mocked UI tests succeed, Actions assembles `IndividualProgressionAddon/` with the two addon files and a `QA_BUILD_NOTICE.txt`.
+- GitHub Actions upload succeeded: artifact **IP-Companion-PR-TestBuild**, artifact ID `11774694144`, 61,323 bytes compressed, source head `ad26f383e10d27b7bba7146dc69d45d964c99958`. GitHub reports expiration **26 October 2026**.
+- The archive contains a test-only addon folder; it is not a GitHub Release, has not been merged to `main`, and does not update `N-Addon-Collection` or its source lock.
+- Installation and rollback instructions have been added to [RELEASE-CHECKLIST.md](RELEASE-CHECKLIST.md).
+- **No in-game testing evidence has been supplied yet.** Do not infer that the Tier 0/Tier 1 discrepancy is resolved solely because the automated checks and packaging passed.
+
 ## 12 October 2026 — Final pending-state and release-distribution review
 
 **Status:** Candidate fixes implemented; automated code checks passing. **No real-client test or release approval yet.**
