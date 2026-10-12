@@ -3193,9 +3193,12 @@ SelectPage = function(id)
     IndividualProgressionDB.lastPage = data.selectedPage
     if data.selectedPage == "settings" then
         settingsCheckbox:SetChecked(IndividualProgressionDB.showAllContent == true)
+        -- Hide the guide scroll area so it cannot cover Settings controls.
+        scrollFrame:Hide()
         settingsPanel:Show()
     else
         settingsPanel:Hide()
+        scrollFrame:Show()
     end
 
     if data.selectedPage == "settings" then
@@ -3258,6 +3261,8 @@ SelectPage = function(id)
                 stateText = C.gold .. "CURRENT STAGE" .. C.reset
             elseif state == "locked" then
                 stateText = C.dark .. "Locked / Future" .. C.reset
+            elseif state == "unknown" then
+                stateText = C.grey .. "Waiting for server..." .. C.reset
             else
                 stateText = C.yellow .. "Available" .. C.reset
             end
