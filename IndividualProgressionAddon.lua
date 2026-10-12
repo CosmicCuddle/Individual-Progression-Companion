@@ -2623,7 +2623,7 @@ sidebarTitle:SetText(C.gold .. "PROGRESSION GUIDE" .. C.reset)
 
 local navScroll = CreateFrame("ScrollFrame", "IPGuideNavScrollFrame", sidebar, "UIPanelScrollFrameTemplate")
 navScroll:SetPoint("TOPLEFT", 4, -31)
-navScroll:SetPoint("BOTTOMRIGHT", -27, 34)
+navScroll:SetPoint("BOTTOMRIGHT", -27, 73)
 navScroll:EnableMouseWheel(true)
 
 local navScrollChild = CreateFrame("Frame", nil, navScroll)
@@ -2732,6 +2732,30 @@ local function SplitBodyText(text)
     return chunks
 end
 
+-- Settings controls are displayed inside the content panel only on the Settings page.
+local settingsPanel = CreateFrame("Frame", nil, contentPanel)
+settingsPanel:SetPoint("TOPLEFT", contentPanel, "TOPLEFT", 22, -107)
+settingsPanel:SetSize(475, 135)
+settingsPanel:Hide()
+
+local settingsHeading = settingsPanel:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+settingsHeading:SetPoint("TOPLEFT", 5, -2)
+settingsHeading:SetText(C.gold .. "PROGRESSION GUIDE VISIBILITY" .. C.reset)
+
+local settingsCheckbox = CreateFrame("CheckButton", nil, settingsPanel, "UICheckButtonTemplate")
+settingsCheckbox:SetPoint("TOPLEFT", 0, -27)
+settingsCheckbox:SetSize(28, 28)
+
+local settingsCheckboxText = settingsPanel:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+settingsCheckboxText:SetPoint("LEFT", settingsCheckbox, "RIGHT", 5, 0)
+settingsCheckboxText:SetText("Show all content")
+
+local settingsHint = settingsPanel:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+settingsHint:SetPoint("TOPLEFT", 6, -73)
+settingsHint:SetWidth(455)
+settingsHint:SetJustifyH("LEFT")
+settingsHint:SetText("Unchecked: show reached tiers, the next tier and side content for your current expansion. Checked: show the full Vanilla, TBC and Wrath guide. This preference is saved.")
+
 local footerNote = contentPanel:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
 footerNote:SetPoint("BOTTOMLEFT", 16, 10)
 footerNote:SetPoint("BOTTOMRIGHT", -16, 10)
@@ -2839,7 +2863,11 @@ local function CreateNavButton(id, label, y)
             self.bg:SetTexture(1, 1, 1, 0.025)
         end
     end)
-    btn:SetScript("OnClick", function() SelectPage(id) end)
+    btn:SetScript("OnClick", function()
+        -- A manual selection should not be overridden by a pending refresh reply.
+        data.focusCurrentOnReply = false
+        SelectPage(id)
+    end)
 
     navButtons[id] = btn
     return btn
@@ -2941,9 +2969,104 @@ navY = navY - 34
 navScrollChild:SetHeight(math.max(900, -navY + 10))
 
 local legend = sidebar:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-legend:SetPoint("BOTTOMLEFT", 12, 10)
+legend:SetPoint("BOTTOMLEFT", 12, 43)
 legend:SetJustifyH("LEFT")
 legend:SetText(C.green .. "DONE" .. C.reset .. "   " .. C.gold .. "NOW" .. C.reset .. "   " .. C.dark .. "LOCKED" .. C.reset)
+
+-- Settings is a permanent sidebar footer, even when progression is unknown.
+local settingsButton = CreateNavButton("settings", "Settings", 0)
+settingsButton:SetParent(sidebar)
+settingsButton:ClearAllPoints()
+settingsButton:SetPoint("BOTTOMLEFT", 10, 7)
+
+local navGroups = {
+    { heading = vanillaHeader, era = "vanilla", kind = "stages",
+      pages = { "overview", "mc", "onyxia", "bwl", "preaq", "aqwar", "aq", "naxx", "pretbc" } },
+    { heading = worldHeader, era = "vanilla", kind = "side",
+      pages = { "worldbosses", "reputations", "pvp" } },
+    { heading = tbcHeader, era = "tbc", kind = "stages",
+      pages = { "tbcoverview", "tbc8", "tbc9", "tbc10", "tbc12" } },
+    { heading = tbcSideHeader, era = "tbc", kind = "side",
+      pages = { "tbcdungeons", "tbcreputations", "tbcprofessions", "tbcpvp", "tbcworldbosses", "zulaman" } },
+    { heading = wrathHeader, era = "wrath", kind = "stages",
+      pages = { "wrathoverview", "wrath13", "wrath14", "wrath15", "wrath16", "wrath17" } },
+    { heading = wrathSideHeader, era = "wrath", kind = "side",
+      pages = { "wrathdungeons", "wrathemblems", "wrathreputations", "wrathprofessions", "wrathpvp", "wintergrasp", "argenttournament" } },
+    { heading = generalHeader, kind = "general",
+      pages = { "general", "talents", "vezrath", "commands" } },
+}
+
+local function IsNavPageVisible(id, group)
+    if IndividualProgressionDB and IndividualProgressionDB.showAllContent == true then return true end
+    if group.kind == "general" then return true end
+    if not data.loaded then return id == "overview" end
+
+    local cv = data.currentValue
+    local era = cv < 8 and "vanilla" or (cv < 13 and "tbc" or "wrath")
+    if group.kind == "side" then
+        return group.era == era
+    end
+
+    if id == "overview" then return era == "vanilla" end
+    if id == "tbcoverview" then return cv >= 8 end
+    if id == "wrathoverview" then return cv >= 13 end
+
+    local stage = VANILLA_STAGES[id] or TBC_STAGES[id] or WOTLK_STAGES[id]
+    if not stage then return false end
+    if group.era == "vanilla" then
+        return stage.minValue <= math.min(cv + 1, 7)
+    elseif group.era == "tbc" then
+        return cv >= 8 and stage.minValue <= math.min(cv + 1, 12)
+    else
+        return cv >= 13 and stage.minValue <= math.min(cv + 1, 17)
+    end
+end
+
+-- Reflow after hiding entries: hidden controls must not leave empty vertical gaps.
+local function LayoutNavigation()
+    local y = -2
+    for _, group in ipairs(navGroups) do
+        local visible = {}
+        for _, id in ipairs(group.pages) do
+            local btn = navButtons[id]
+            if btn then
+                if IsNavPageVisible(id, group) then
+                    btn:Show()
+                    table.insert(visible, btn)
+                else
+                    btn:Hide()
+                end
+            end
+        end
+
+        if table.getn(visible) > 0 then
+            group.heading:Show()
+            group.heading:ClearAllPoints()
+            group.heading:SetPoint("TOPLEFT", 8, y - 2)
+            y = y - 24
+            for _, btn in ipairs(visible) do
+                btn:ClearAllPoints()
+                btn:SetPoint("TOPLEFT", 10, y)
+                y = y - 29
+            end
+            y = y - 8
+        else
+            group.heading:Hide()
+        end
+    end
+
+    navScrollChild:SetHeight(math.max(100, -y + 8))
+    local maximum = navScroll:GetVerticalScrollRange() or 0
+    if navScroll:GetVerticalScroll() > maximum then
+        navScroll:SetVerticalScroll(maximum)
+    end
+end
+
+settingsCheckbox:SetScript("OnClick", function(self)
+    IndividualProgressionDB = IndividualProgressionDB or {}
+    IndividualProgressionDB.showAllContent = self:GetChecked() and true or false
+    LayoutNavigation()
+end)
 
 -- ============================================================================
 -- PAGE / STATUS LOGIC
@@ -2975,6 +3098,7 @@ local function GetStageTable(id)
 end
 
 local function GetStageState(id, cv)
+    if not data.loaded then return "unknown" end
     local stage = GetStageTable(id)
     if not stage then return "guide" end
     if cv >= stage.completeAt then return "done" end
@@ -2985,6 +3109,7 @@ local function GetStageState(id, cv)
 end
 
 local function UpdateNavStates()
+    LayoutNavigation()
     for id, btn in pairs(navButtons) do
         if data.selectedPage == id then
             btn.bg:SetTexture(1, 0.82, 0, 0.13)
@@ -2992,7 +3117,7 @@ local function UpdateNavStates()
             btn.bg:SetTexture(1, 1, 1, 0.025)
         end
 
-        if id == "overview" or id == "worldbosses" or id == "tbcoverview" or id == "tbcdungeons" or id == "tbcreputations" or id == "tbcprofessions" or id == "tbcpvp" or id == "tbcworldbosses" or id == "zulaman" or id == "wrathoverview" or id == "wrathdungeons" or id == "wrathemblems" or id == "wrathreputations" or id == "wrathprofessions" or id == "wrathpvp" or id == "wintergrasp" or id == "argenttournament" or id == "general" or id == "talents" or id == "reputations" or id == "pvp" or id == "vezrath" or id == "commands" then
+        if id == "overview" or id == "worldbosses" or id == "tbcoverview" or id == "tbcdungeons" or id == "tbcreputations" or id == "tbcprofessions" or id == "tbcpvp" or id == "tbcworldbosses" or id == "zulaman" or id == "wrathoverview" or id == "wrathdungeons" or id == "wrathemblems" or id == "wrathreputations" or id == "wrathprofessions" or id == "wrathpvp" or id == "wintergrasp" or id == "argenttournament" or id == "general" or id == "talents" or id == "reputations" or id == "pvp" or id == "vezrath" or id == "commands" or id == "settings" then
             btn.mark:SetText(C.blue .. "i" .. C.reset)
             btn.text:SetTextColor(0.92, 0.92, 0.92)
         else
@@ -3006,6 +3131,9 @@ local function UpdateNavStates()
             elseif state == "available" then
                 btn.mark:SetText(C.yellow .. "--" .. C.reset)
                 btn.text:SetTextColor(0.9, 0.8, 0.45)
+            elseif state == "unknown" then
+                btn.mark:SetText(C.grey .. "?" .. C.reset)
+                btn.text:SetTextColor(0.68, 0.68, 0.68)
             else
                 btn.mark:SetText(C.dark .. "--" .. C.reset)
                 btn.text:SetTextColor(0.36, 0.36, 0.36)
@@ -3057,8 +3185,16 @@ SelectPage = function(id)
     data.selectedPage = id or "overview"
     IndividualProgressionDB = IndividualProgressionDB or {}
     IndividualProgressionDB.lastPage = data.selectedPage
+    if data.selectedPage == "settings" then
+        settingsCheckbox:SetChecked(IndividualProgressionDB.showAllContent == true)
+        settingsPanel:Show()
+    else
+        settingsPanel:Hide()
+    end
 
-    if data.selectedPage == "overview" then
+    if data.selectedPage == "settings" then
+        SetPageContent("Settings", "Configure guide visibility", "", "Interface\\Icons\\INV_Misc_Book_09")
+    elseif data.selectedPage == "overview" then
         SetPageContent(OVERVIEW_PAGE.title, OVERVIEW_PAGE.short, OVERVIEW_PAGE.body(), OVERVIEW_PAGE.icon)
     elseif data.selectedPage == "tbcoverview" then
         SetPageContent(TBC_OVERVIEW_PAGE.title, TBC_OVERVIEW_PAGE.short, TBC_OVERVIEW_PAGE.body(), TBC_OVERVIEW_PAGE.icon)
@@ -3178,6 +3314,10 @@ UpdateDisplay = function()
 end
 
 jumpBtn:SetScript("OnClick", function()
+    if not data.loaded then
+        data.focusCurrentOnReply = true
+        return
+    end
     local id = GetCurrentStageId(data.currentValue)
     if id then
         SelectPage(id)
@@ -3211,6 +3351,13 @@ end)
 -- ============================================================================
 -- SLASH COMMANDS
 -- ============================================================================
+
+local function ShowGuidePage(id)
+    mainFrame:Show()
+    -- Explicit slash navigation takes priority over the automatic current-stage focus.
+    data.focusCurrentOnReply = false
+    SelectPage(id)
+end
 
 SLASH_INDIVIDUALPROGRESSION1 = "/progression"
 SLASH_INDIVIDUALPROGRESSION2 = "/ip"
@@ -3263,92 +3410,70 @@ SlashCmdList["INDIVIDUALPROGRESSION"] = function(msg)
         end
         return
     elseif msg == "tbc" or msg == "outland" then
-        mainFrame:Show()
-        SelectPage("tbcoverview")
+        ShowGuidePage("tbcoverview")
         return
     elseif msg == "tbcdungeons" or msg == "heroics" or msg == "heroickeys" then
-        mainFrame:Show()
-        SelectPage("tbcdungeons")
+        ShowGuidePage("tbcdungeons")
         return
     elseif msg == "tbcreps" or msg == "tbcreputations" then
-        mainFrame:Show()
-        SelectPage("tbcreputations")
+        ShowGuidePage("tbcreputations")
         return
     elseif msg == "tbcprofessions" or msg == "tbcprof" or msg == "tbcprofs" then
-        mainFrame:Show()
-        SelectPage("tbcprofessions")
+        ShowGuidePage("tbcprofessions")
         return
     elseif msg == "tbcpvp" or msg == "tbcarena" then
-        mainFrame:Show()
-        SelectPage("tbcpvp")
+        ShowGuidePage("tbcpvp")
         return
     elseif msg == "tbcworldbosses" or msg == "tbcbosses" then
-        mainFrame:Show()
-        SelectPage("tbcworldbosses")
+        ShowGuidePage("tbcworldbosses")
         return
     elseif msg == "zulaman" or msg == "za" then
-        mainFrame:Show()
-        SelectPage("zulaman")
+        ShowGuidePage("zulaman")
         return
     elseif msg == "wrath" or msg == "wotlk" or msg == "northrend" then
-        mainFrame:Show()
-        SelectPage("wrathoverview")
+        ShowGuidePage("wrathoverview")
         return
     elseif msg == "wrathdungeons" or msg == "wrathheroics" then
-        mainFrame:Show()
-        SelectPage("wrathdungeons")
+        ShowGuidePage("wrathdungeons")
         return
     elseif msg == "wrathemblems" or msg == "emblems" then
-        mainFrame:Show()
-        SelectPage("wrathemblems")
+        ShowGuidePage("wrathemblems")
         return
     elseif msg == "wrathreps" or msg == "wrathreputations" then
-        mainFrame:Show()
-        SelectPage("wrathreputations")
+        ShowGuidePage("wrathreputations")
         return
     elseif msg == "wrathprofessions" or msg == "wrathprof" or msg == "wrathprofs" then
-        mainFrame:Show()
-        SelectPage("wrathprofessions")
+        ShowGuidePage("wrathprofessions")
         return
     elseif msg == "wrathpvp" or msg == "wratharena" then
-        mainFrame:Show()
-        SelectPage("wrathpvp")
+        ShowGuidePage("wrathpvp")
         return
     elseif msg == "wintergrasp" or msg == "wg" or msg == "vault" then
-        mainFrame:Show()
-        SelectPage("wintergrasp")
+        ShowGuidePage("wintergrasp")
         return
     elseif msg == "tournament" or msg == "argenttournament" then
-        mainFrame:Show()
-        SelectPage("argenttournament")
+        ShowGuidePage("argenttournament")
         return
     elseif msg == "worldbosses" or msg == "bosses" then
-        mainFrame:Show()
-        SelectPage("worldbosses")
+        ShowGuidePage("worldbosses")
         return
     elseif msg == "general" or msg == "info" then
-        mainFrame:Show()
-        SelectPage("general")
+        ShowGuidePage("general")
         return
     elseif msg == "talents" or msg == "talent" then
-        mainFrame:Show()
-        SelectPage("talents")
+        ShowGuidePage("talents")
         return
     elseif msg == "reputations" or msg == "reputation" or msg == "reps" then
-        mainFrame:Show()
-        SelectPage("reputations")
+        ShowGuidePage("reputations")
         return
     elseif msg == "pvp" or msg == "pvpguide" then
-        mainFrame:Show()
-        SelectPage("pvp")
+        ShowGuidePage("pvp")
         return
     elseif msg == "services" or msg == "vezrath" then
-        mainFrame:Show()
-        SelectPage("vezrath")
+        ShowGuidePage("vezrath")
         return
     elseif msg == "commands" or msg == "command" then
-        mainFrame:Show()
-        SelectPage("commands")
+        ShowGuidePage("commands")
         return
     elseif msg == "refresh" then
         if not mainFrame:IsShown() then mainFrame:Show() end
