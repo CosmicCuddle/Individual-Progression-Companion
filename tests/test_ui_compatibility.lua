@@ -67,6 +67,9 @@ end
 function Methods:SetTexture(...)
     self.texture = {...}
 end
+function Methods:SetVertexColor(...)
+    self.vertexColor = {...}
+end
 function Methods:SetSize(w, h)
     self.width, self.height = w, h
 end
@@ -278,15 +281,36 @@ check(named.IPGuideScrollFrame.position[3] == 71,
 local sentBeforeNotes = #outbound
 click(tierChecklistBtn)
 check(tierChecklist:IsShown(), "Tier checklist popup failed to open")
-check(widgetContaining("Personal notes only."),
+check(widgetContaining("These checkmarks are your private planning notes"),
     "Checklist must clearly say it is not server verification")
-check(widgetContaining("Tier 0 - Molten Core - Personal Checklist"),
+check(widgetContaining("Tier 0 - Molten Core"),
     "Tier checklist title should match selected page")
+check(widgetContaining("PERSONAL RAID PREPARATION"),
+    "Checklist needs its new prominent section heading")
+check(widgetContaining("MY NOTES: 0 of 5 marked"),
+    "Checklist must clearly distinguish manually marked items")
+check(tierChecklist.width == 770 and tierChecklist.height == 590,
+    "Checklist popup should have space for detailed task cards")
+local notesScroll = named.IPGuideTierChecklistScrollFrame
+local notesScrollChild = named.IPGuideTierChecklistScrollChild
+check(notesScroll and notesScrollChild and notesScroll.scrollChild == notesScrollChild,
+    "Detailed checklist needs its own scrollable viewport")
+local opaqueBackground
+for _, object in ipairs(objects) do
+    if object.kind == "Texture" and object.parent == tierChecklist
+        and object.texture and object.texture[1] == "Interface\\Buttons\\WHITE8X8" then
+        opaqueBackground = object
+    end
+end
+check(opaqueBackground and opaqueBackground.vertexColor
+    and opaqueBackground.vertexColor[4] == 1,
+    "Checklist must have an opaque background to block guide text underneath")
 
 local notesRows = {}
 local resetNotes
 for _, object in ipairs(objects) do
-    if object.kind == "CheckButton" and object.parent == tierChecklist then
+    if object.kind == "CheckButton" and object.parent
+        and object.parent.parent == notesScrollChild then
         table.insert(notesRows, object)
     elseif object.kind == "Button" and object.parent == tierChecklist and
         object.value == "Reset this tier" then
@@ -294,12 +318,20 @@ for _, object in ipairs(objects) do
     end
 end
 check(#notesRows == 5 and resetNotes, "Expected five notes and a reset action")
-check(type(notesRows[1].position[2]) == "table"
-    and type(notesRows[1].position[2].value) == "string"
-    and notesRows[1].position[2].value:find("Marked manually:", 1, true),
-    "Checklist first row should follow the actual summary height")
-check(notesRows[2].position[2] == notesRows[1],
-    "Checklist rows must reflow relative to prior row")
+check(notesRows[1].card and notesRows[1].card.parent == notesScrollChild
+    and notesRows[1].card.height >= 100,
+    "Detailed task card not sized inside scroll content")
+check(notesRows[2].card.position[2] == notesScrollChild,
+    "Task cards must be positioned in their own scrolling area")
+check(notesRows[1].detail.value:find("Blackrock Depths", 1, true),
+    "Pre-raid task needs concrete dungeon/consumable guidance")
+check(notesRows[2].detail.value:find("Lothos Riftwaker", 1, true)
+    and notesRows[2].detail.value:find("Core Fragment", 1, true),
+    "Core attunement should explain NPC and quest objective")
+check(notesRows[1].stateText.value:find("NOT MARKED", 1, true),
+    "Unmarked task needs its own visible state label")
+check(notesScrollChild.height > 450,
+    "Detailed task cards should be scrollable without overlap")
 check(not notesRows[1]:GetChecked(), "New character checklist should be empty")
 notesRows[1]:SetChecked(true)
 click(notesRows[1])
@@ -310,6 +342,8 @@ check(not notesRows[2]:GetChecked(), "Manual notes leaked into other tasks")
 tierChecklist:Hide()
 click(tierChecklistBtn)
 check(notesRows[1]:GetChecked(), "Manual note did not survive reopening")
+check(notesRows[1].stateText.value:find("MARKED", 1, true),
+    "Marked task should visibly update its status")
 check(resetNotes.value == "Reset this tier", "Reset confirmation unexpectedly armed")
 click(resetNotes)
 check(resetNotes.value == "Confirm reset?" and notesRows[1]:GetChecked(),
@@ -611,8 +645,10 @@ for _, number in ipairs(stageNumbers) do
     for _, row in ipairs(notesRows) do
         if row:IsShown() then
             visibleCount = visibleCount + 1
-            check(row.taskId and row.stageId == nav.pageId and row.title.value,
-                "Tier " .. number .. " showed stale or missing task data")
+            check(row.taskId and row.stageId == nav.pageId and row.title.value
+                and type(row.detail.value) == "string" and
+                #row.detail.value > 50 and row.card.height >= 100,
+                "Tier " .. number .. " showed stale, vague or missing task details")
         end
     end
     check(visibleCount >= 4 and visibleCount <= 5,
