@@ -332,6 +332,14 @@ check(notesRows[1].stateText.value:find("NOT MARKED", 1, true),
     "Unmarked task needs its own visible state label")
 check(notesScrollChild.height > 450,
     "Detailed task cards should be scrollable without overlap")
+check(notesRows[1].kindText.value:find("RECOMMENDED", 1, true),
+    "Checklist cards need an explicit task category")
+notesScroll.scripts.OnMouseWheel(notesScroll, -1)
+check(notesScroll:GetVerticalScroll() > 0,
+    "Checklist scroll wheel must reach content below the viewport")
+notesScroll.scripts.OnMouseWheel(notesScroll, 1)
+check(notesScroll:GetVerticalScroll() == 0,
+    "Checklist scroll wheel must move back to the top")
 check(not notesRows[1]:GetChecked(), "New character checklist should be empty")
 notesRows[1]:SetChecked(true)
 click(notesRows[1])
@@ -344,6 +352,20 @@ click(tierChecklistBtn)
 check(notesRows[1]:GetChecked(), "Manual note did not survive reopening")
 check(notesRows[1].stateText.value:find("MARKED", 1, true),
     "Marked task should visibly update its status")
+check(widgetContaining("MY NOTES: 1 of 5 marked"),
+    "Checklist must update visual progress after checking an item")
+-- A custom font may make a card taller, but should not clip the detail.
+notesRows[1].detail.simulatedStringHeight = 94
+click(notesRows[1]) -- unmark; remeasure the extended detail
+check(notesRows[1].card.height >= 160,
+    "Checklist should grow its card height to match large detail text")
+click(notesRows[1]) -- mark again
+notesRows[1].detail.simulatedStringHeight = nil
+local doneButton = buttonByText("Done")
+click(doneButton)
+check(not tierChecklist:IsShown(), "Done button must close the checklist popup")
+click(tierChecklistBtn)
+check(notesRows[1]:GetChecked(), "Done should not erase saved marks")
 check(resetNotes.value == "Reset this tier", "Reset confirmation unexpectedly armed")
 click(resetNotes)
 check(resetNotes.value == "Confirm reset?" and notesRows[1]:GetChecked(),
@@ -655,6 +677,8 @@ for _, number in ipairs(stageNumbers) do
     end
     check(visibleCount >= 4 and visibleCount <= 5,
         "Tier " .. number .. " should show four or five tasks")
+    check(notesScroll:GetVerticalScroll() == 0,
+        "Opening a different tier must reset the checklist scroll position")
     tierChecklist:Hide()
 end
 check(#outbound == beforeTierClick, "Exploring checklists sent extra server commands")
