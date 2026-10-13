@@ -33,7 +33,7 @@ jobs:
           cp IndividualProgressionAddon.toc IndividualProgressionAddon.lua qa-package/IndividualProgressionAddon/
           {
             echo "Individual Progression Companion - PR test build"
-            echo "Not a stable release. Do not redistribute as v5.2.0."
+            echo "Not a stable release. Do not redistribute as the official tagged version."
             echo "Workflow checkout commit: $(git rev-parse HEAD)"
             echo "Source PR: #${{ github.event.pull_request.number }}"
             echo "Install folder: Interface/AddOns/IndividualProgressionAddon/"
