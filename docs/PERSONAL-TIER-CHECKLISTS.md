@@ -29,6 +29,17 @@ The revised popup preserves the same checklist data but:
 
 The first draft's successful open/tick screenshot does **not** verify this redesigned appearance. Please test contrast, scroll access to the final task, font wrapping, and data persistence in-game before a stable release.
 
+## Compact adaptive task cards (13 October 2026)
+
+After testing the opaque, detailed layout in WoW, the maintainer approved the improved appearance but observed that the five short Molten Core cards should **fit at once**, instead of wasting space and forcing scrolling.
+
+- Existing items, descriptions, completion IDs and personal SavedVariables are all preserved.
+- The task number is displayed in the checkbox gutter; the category and full task title now share the heading line, with the full explanation immediately below.
+- Card height is calculated from the actual text metrics with a smaller minimum height and tighter gaps. Extra whitespace is removed without shortening the explanatory content.
+- The header warning is shorter but still states that marks are personal notes, not server completion; the fixed footer controls are retained.
+- If a longer tier or custom font cannot fit, the scroll frame remains available so text is **never deliberately clipped to avoid scrolling**.
+- Manual **S39** verifies Tier 0 fits without scrolling; **S42** confirms the fallback for larger content. Passing Lua mocks does **not** prove the client font has the same metrics.
+
 ## SavedVariables contract
 
 Existing SavedVariables name: `IndividualProgressionDB` (unchanged).
