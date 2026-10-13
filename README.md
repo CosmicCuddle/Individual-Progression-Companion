@@ -8,7 +8,9 @@ The addon tracks the character's current Individual Progression state through se
 
 ## Current Version
 
-**Version 5.3.0**
+**Source version: 5.3.0** (merged into `main` on 13 October 2026).
+
+**Published GitHub Release:** v5.2.0 until the permanent [v5.3.0 release](docs/RELEASE-NOTES-v5.3.0.md) is tagged and published. A passing Actions package is a temporary standalone candidate, not the official release.
 
 Supported client: **World of Warcraft 3.3.5a**
 
