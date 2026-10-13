@@ -2,6 +2,24 @@
 
 This is the **working project record**. Keep chronological entries with clear status and links to GitHub PRs/commits. Published user-facing changes belong in the root [CHANGELOG.md](../CHANGELOG.md).
 
+## 13 October 2026 — Source review: 81 checklist items
+
+**Status:** Completed a **source-derived content audit of all 81 tasks** against the 17 built-in stage guides and available Naxxramas Resource Hub information. **Deployed server-rule verification is not complete**. Full per-tier review: [TIER-CHECKLIST-CONTENT-AUDIT.md](TIER-CHECKLIST-CONTENT-AUDIT.md).
+
+- Confirmed stable task IDs and saved per-character/realm/tier keys are unchanged. Checked category assignments and how each summary relates to **Required to Advance** versus optional/recommended preparation.
+- Corrected **Pre-AQ Commendation Signets** from `Recommended` to **`Required`**. Current official companion guide and Resource Hub state **1,500 signets**; the public upstream `aq_war_effort.sql` specifies **1,000**, so the checklist explicitly asks players to check the active quest counter. The deployed server's exact target is **not proven** by either codebase alone.
+- Separated Tier 7's **Into the Breach progression quest** from the separately paid **2,500g Chronomancer Vezrath TBC service**.
+- Labelled Nightbane's Blazing Signet **Future Access** for SSC, Hyjal's attunement sequence as **Access** rather than merely recommended, and Ruby Sanctum's outer bosses as the access path to Halion. Avoided implying only Normal Halion kills can satisfy the progression boss requirement.
+- Added concrete instructions from source guides: seven rune douses/Aqual versus Eternal, Pre-AQ gong shortcut/Mallet, Karazhan Master's Key dungeon fragments, Gruul and Nightbane SSC signets, Trials of the Naaru, Magisters' Terrace Hard to Kill, Naxx attunement reputation, Wrath's early emblem gear and Sapphiron/Malygos link.
+- Expanded Lua 5.1 mocked coverage to assert **81** task rows across **17** tiers plus key gate categories and details.
+- **No GM `.ip set`, world/character DB, actual quest progress, existing task IDs, or compact navigation design was modified.** Changes are limited to client wording/category presentation and tests.
+
+### Remaining accuracy and release checks
+- **High:** confirm the live Pre-AQ `Complete the War Effort` quest's required signet total. The site and public upstream disagree.
+- **Medium:** get evidence for any further server-specific custom access/attunement rule if doubts arise; the deployed custom handler was not provided.
+- **Client:** `/reload` SavedVariables persistence and longer-tier scrolling are not yet independently tested in-game.
+- PR #7 remains a draft/unmerged. No stable release/N-Addon-Collection update was performed.
+
 ## 13 October 2026 — PR #7 compact checklist visually accepted
 
 **Status:** **Maintainer-approved in-game visual layout** for the Tier 0 Molten Core checklist. Draft PR #7 remains unmerged; this is not complete release approval.
