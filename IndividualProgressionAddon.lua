@@ -2979,6 +2979,7 @@ local function CreateNavButton(id, label, y)
     txt:SetJustifyH("LEFT")
     txt:SetText(label)
     btn.text = txt
+    btn.fullLabel = label -- Needed for full-name hover and stable UI test lookup.
 
     -- Keep the original compact one-line appearance. The complete title is
     -- always available on hover rather than making every row multiple lines.
