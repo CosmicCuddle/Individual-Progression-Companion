@@ -3207,7 +3207,7 @@ checklistNotice:SetPoint("TOPLEFT", checklistTitle, "BOTTOMLEFT", 0, -8)
 checklistNotice:SetWidth(680)
 checklistNotice:SetJustifyH("LEFT")
 checklistNotice:SetWordWrap(true)
-checklistNotice:SetText(C.grey .. "These checkmarks are your private planning notes, NOT server-verified completion or unlocks. See the full tier guide for complete instructions." .. C.reset)
+checklistNotice:SetText(C.grey .. "Your personal notes only - not server verified. See the tier guide for full requirements." .. C.reset)
 
 local checklistSummary = checklistPopup:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
 checklistSummary:SetPoint("TOPLEFT", checklistNotice, "BOTTOMLEFT", 0, -12)
@@ -3227,8 +3227,10 @@ checklistProgressFill:SetVertexColor(0.32, 0.75, 0.37, 1)
 checklistProgressFill:SetWidth(1)
 
 local checklistScroll = CreateFrame("ScrollFrame", "IPGuideTierChecklistScrollFrame", checklistPopup, "UIPanelScrollFrameTemplate")
-checklistScroll:SetPoint("TOPLEFT", checklistProgressTrack, "BOTTOMLEFT", 0, -15)
-checklistScroll:SetPoint("BOTTOMRIGHT", checklistPopup, "BOTTOMRIGHT", -45, 73)
+-- Reclaim unnecessary padding to fit five short tasks without scrolling.
+-- Longer or custom-font descriptions still use the scroll frame normally.
+checklistScroll:SetPoint("TOPLEFT", checklistProgressTrack, "BOTTOMLEFT", 0, -7)
+checklistScroll:SetPoint("BOTTOMRIGHT", checklistPopup, "BOTTOMRIGHT", -45, 60)
 checklistScroll:EnableMouseWheel(true)
 checklistScroll:SetScript("OnMouseWheel", function(self, delta)
     local nextScroll = (self:GetVerticalScroll() or 0) - delta * 52
@@ -3268,7 +3270,7 @@ local RefreshChecklistRows
 
 for i = 1, 5 do
     local card = CreateFrame("Frame", nil, checklistScrollChild)
-    card:SetSize(662, 100)
+    card:SetSize(662, 66)
     card:SetBackdrop(BACKDROP_INNER)
     card:SetBackdropColor(0.09, 0.09, 0.125, 1)
     card:SetBackdropBorderColor(0.29, 0.27, 0.21, 0.85)
@@ -3279,8 +3281,10 @@ for i = 1, 5 do
     row.card = card
 
     local kind = card:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    kind:SetPoint("TOPLEFT", card, "TOPLEFT", 49, -9)
-    kind:SetWidth(485)
+    -- Put the item number in the checkbox gutter. The category belongs on
+    -- the title line rather than consuming a whole extra line of each card.
+    kind:SetPoint("TOPLEFT", card, "TOPLEFT", 10, -7)
+    kind:SetWidth(46)
     kind:SetJustifyH("LEFT")
     row.kindText = kind
 
@@ -3291,15 +3295,15 @@ for i = 1, 5 do
     row.stateText = state
 
     local heading = card:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    heading:SetPoint("TOPLEFT", kind, "BOTTOMLEFT", 0, -5)
-    heading:SetWidth(588)
+    heading:SetPoint("TOPLEFT", card, "TOPLEFT", 61, -9)
+    heading:SetWidth(465)
     heading:SetWordWrap(true)
     heading:SetJustifyH("LEFT")
     row.title = heading
 
     local detail = card:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    detail:SetPoint("TOPLEFT", heading, "BOTTOMLEFT", 0, -7)
-    detail:SetWidth(588)
+    detail:SetPoint("TOPLEFT", heading, "BOTTOMLEFT", 0, -4)
+    detail:SetWidth(578)
     detail:SetWordWrap(true)
     detail:SetJustifyH("LEFT")
     row.detail = detail
@@ -3320,7 +3324,7 @@ RefreshChecklistRows = function()
     if not items then return end
     local marks = GetPersonalChecklist(activeChecklistStage, false)
     local detailMap = PERSONAL_TIER_DETAILS[activeChecklistStage] or {}
-    local count, offset = 0, 5
+    local count, offset = 0, 3
     for i, row in ipairs(checklistRows) do
         local item = items[i]
         if item then
@@ -3329,22 +3333,27 @@ RefreshChecklistRows = function()
             row.stageId = activeChecklistStage
             row:SetChecked(marked)
             if marked then count = count + 1 end
-            row.kindText:SetText(C.gold .. string.format("%02d / %02d", i, table.getn(items)) ..
-                "   " .. string.upper(item.kind) .. C.reset)
+            row.kindText:SetText(C.gold .. string.format("%02d/%02d", i, table.getn(items)) .. C.reset)
             row.stateText:SetText(marked and (C.green .. "MARKED" .. C.reset)
                 or (C.grey .. "NOT MARKED" .. C.reset))
-            row.title:SetText((marked and C.green or C.white) .. item.label .. C.reset)
+            -- Category and title share one line, preserving all information
+            -- and allowing extra lines only when the player's font needs it.
+            row.title:SetText(C.gold .. "[" .. string.upper(item.kind) .. "] " .. C.reset ..
+                (marked and C.green or C.white) .. item.label .. C.reset)
             row.detail:SetText(C.grey .. (detailMap[item.id] or
                 "See the complete tier guide for the detailed requirements.") .. C.reset)
             local titleHeight = row.title:GetStringHeight() or 20
             local detailHeight = row.detail:GetStringHeight() or 20
-            local cardHeight = math.max(100, titleHeight + detailHeight + 46)
+            -- Only text height earns extra space. No more 100px minimum:
+            -- MC's five short descriptions can fit in the existing popup,
+            -- while longer tiers naturally increase content height and scroll.
+            local cardHeight = math.max(62, titleHeight + detailHeight + 16)
             row.card:SetHeight(cardHeight)
             row.card:ClearAllPoints()
             row.card:SetPoint("TOPLEFT", checklistScrollChild, "TOPLEFT", 3, -offset)
             row.card:Show()
             row:Show()
-            offset = offset + cardHeight + 8
+            offset = offset + cardHeight + 5
         else
             row.taskId = nil
             row.stageId = nil
@@ -3352,7 +3361,13 @@ RefreshChecklistRows = function()
             row:Hide()
         end
     end
-    checklistScrollChild:SetHeight(math.max(200, offset + 5))
+    checklistScrollChild:SetHeight(math.max(1, offset + 2))
+    -- If the current tier fits, don't retain an old scroll offset from a
+    -- longer list; otherwise the first task could look hidden.
+    local available = checklistScroll:GetHeight()
+    if available and available > 0 and offset + 2 <= available then
+        checklistScroll:SetVerticalScroll(0)
+    end
     checklistSummary:SetText(C.cyan .. "MY NOTES: " .. count .. " of " ..
         table.getn(items) .. " marked" .. C.reset)
     checklistProgressFill:SetWidth(math.max(1, 676 * count / math.max(1, table.getn(items))))
