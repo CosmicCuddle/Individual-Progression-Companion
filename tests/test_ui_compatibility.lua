@@ -73,6 +73,15 @@ end
 function Methods:SetWidth(w)
     self.width = w
 end
+function Methods:SetWordWrap(value)
+    self.wordWrap = value
+end
+function Methods:SetNonSpaceWrap(value)
+    self.nonSpaceWrap = value
+end
+function Methods:SetJustifyV(value)
+    self.justifyV = value
+end
 function Methods:SetPoint(...)
     self.position = {...}
 end
@@ -122,6 +131,12 @@ end
 UIParent = newObject("Frame", "UIParent")
 Minimap = newObject("Frame", "Minimap")
 DEFAULT_CHAT_FRAME = newObject("ChatFrame", "DefaultChat")
+GameTooltip = {
+    SetOwner = function(self, owner) self.owner = owner end,
+    SetText = function(self, value) self.value = value end,
+    Show = function(self) self.visible = true end,
+    Hide = function(self) self.visible = false end,
+}
 UISpecialFrames = {}
 SlashCmdList = {}
 
@@ -250,6 +265,31 @@ check(not navLike("Wrath Overview"):IsShown(), "Wrath must be hidden for Tier 0"
 check(widgetWithLabel("General Information"):IsShown(), "General must always be visible")
 check(widgetWithLabel("Settings"):IsShown(), "Settings must always be accessible")
 
+-- Enlarged-font screenshot regression: all labels need space to wrap,
+-- two-line stage names and a tooltip with the complete original wording.
+local tierZero = navLike("Tier 0")
+local worldBossNav = navLike("World Boss Timeline")
+local generalNav = widgetWithLabel("General Information")
+check(tierZero.text.value:find("Tier 0\nMolten Core", 1, true),
+    "Stage title should reserve a separate line for the instance name")
+check(tierZero.height >= 43, "Two-line tier navigation must have enough row height")
+check(tierZero.text.wordWrap and worldBossNav.text.wordWrap and generalNav.text.wordWrap,
+    "Sidebar labels must support wrapping with enlarged fonts")
+check(tierZero.text.position[1] == "TOPRIGHT" and tierZero.text.position[2] == tierZero,
+    "Wrapped navigation text needs top anchoring instead of vertical centering")
+check(tierZero.width >= 210, "Sidebar width is still too narrow for enlarged font labels")
+worldBossNav.scripts.OnEnter(worldBossNav)
+check(GameTooltip.visible and GameTooltip.value == "World Boss Timeline",
+    "Hover should reveal a complete non-truncated navigation label")
+worldBossNav.scripts.OnLeave(worldBossNav)
+check(not GameTooltip.visible, "Navigation tooltip should hide when leaving the row")
+
+-- The long previous footer was clipped in the real user's custom font.
+check(widgetContaining("Guide only - server progression is unchanged."),
+    "Shortened one-line footer is missing")
+check(not widgetContaining("Server progression companion - Vanilla, TBC"),
+    "Old overlong footer must not be present")
+
 -- Reopen should display pending, then focus an authoritative newer tier.
 main:Hide()
 local requests = #outbound
@@ -374,9 +414,9 @@ check(named.IPGuideScrollFrame:IsShown(), "Guide scroll did not return after Set
 check(hubButton:IsShown(), "Hub button should return on General Information")
 -- Increase a sidebar label's simulated font height and verify dynamic row space.
 local longNav = navLike("Tier 13")
-longNav.text.simulatedStringHeight = 37
+longNav.text.simulatedStringHeight = 55
 click(widgetWithLabel("Settings"))
-check(longNav.height >= 47, "Navigation rows overlap with enlarged font labels")
+check(longNav.height >= 66, "Navigation rows overlap with enlarged font labels")
 longNav.text.simulatedStringHeight = nil
 click(widgetWithLabel("General Information"))
 
@@ -425,5 +465,6 @@ check(not navLike("Tier 6"):IsShown(), "Old Tier 6 should be hidden after Tier 2
 check(not navLike("TBC Overview"):IsShown(), "TBC should be hidden after return to Tier 2")
 check(widgetText("Server progression value: 2"),
     "Server diagnostic should reflect new lower progression value")
+check(isSelected(navLike("Tier 2")), "Tier 2 focus lost after sidebar reflow")
 
-print("PASS: 3.3.5a mocked addon flow, refresh/reopen, stage regression, Settings and diagnostics")
+print("PASS: 3.3.5a mocked addon flow, wrapped navigation, footer, Resource Hub and tier regression")
