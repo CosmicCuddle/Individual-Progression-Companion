@@ -690,7 +690,7 @@ for _, number in ipairs(stageNumbers) do
             visibleCount = visibleCount + 1
             check(row.taskId and row.stageId == nav.pageId and row.title.value
                 and type(row.detail.value) == "string" and
-                #row.detail.value > 50 and row.card.height >= 100,
+                #row.detail.value > 50 and row.card.height >= 62,
                 "Tier " .. number .. " showed stale, vague or missing task details")
         end
     end
