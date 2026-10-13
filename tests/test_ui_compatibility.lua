@@ -71,6 +71,9 @@ end
 function Methods:SetWidth(w)
     self.width = w
 end
+function Methods:SetPoint(...)
+    self.position = {...}
+end
 function Methods:GetWidth()
     return rawget(self, "width") or 560
 end
@@ -252,6 +255,10 @@ click(widgetWithLabel("General Information"))
 serverReply("PD~13")
 check(isSelected(widgetWithLabel("General Information")),
     "Server reply stole user's manual page selection")
+check(widgetContaining("FURTHER SERVER INFORMATION"),
+    "General Information is missing its Resource Hub footer")
+check(widgetContaining("https://cosmiccuddle.github.io/Naxxramas-Resource-Hub/"),
+    "General Information has an incorrect or missing Resource Hub URL")
 check(navLike("Wrath Overview"):IsShown(), "Wrath guide missing at 13")
 check(navLike("Wrath Reputations"):IsShown(), "Wrath side content missing")
 
@@ -264,6 +271,23 @@ end
 check(settingsCheckbox ~= nil, "Settings checkbox missing")
 check(settingsCheckbox.parent:IsShown(), "Settings panel is not visible")
 check(not named.IPGuideScrollFrame:IsShown(), "Guide scroll obscures Settings")
+local warning = widgetContaining("This companion is designed to guide you through progression")
+local hint = widgetContaining("Off (recommended): follow the tiers")
+check(warning ~= nil and hint ~= nil, "Settings caveat or guidance text missing")
+local hintObject, warningObject, diagnosticObject
+for _, object in ipairs(objects) do
+    if object.kind == "FontString" then
+        if object.value == hint then hintObject = object end
+        if object.value == warning then warningObject = object end
+        if type(object.value) == "string" and string.find(object.value, "Server progression value:", 1, true) == 1 then
+            diagnosticObject = object
+        end
+    end
+end
+check(warningObject.position[2] == hintObject,
+    "Warning must follow guide description's actual height")
+check(diagnosticObject.position[2] == warningObject,
+    "Server diagnostic must follow warning's actual height")
 check(widgetText("Server progression value: 13"), "Diagnostic server value is wrong")
 check(not settingsCheckbox:GetChecked(), "Show all must default OFF")
 settingsCheckbox:SetChecked(true)
