@@ -2641,11 +2641,17 @@ jumpBtn:SetSize(105, 22)
 jumpBtn:SetPoint("RIGHT", -12, 0)
 jumpBtn:SetText("Current Stage")
 
+-- Give custom and larger WoW fonts enough room without shrinking the guide
+-- excessively. Long labels also wrap into height-measured rows below.
+local NAV_SIDEBAR_WIDTH = 260
+local NAV_BUTTON_WIDTH = NAV_SIDEBAR_WIDTH - 47
+local NAV_CHILD_WIDTH = NAV_SIDEBAR_WIDTH - 37
+
 -- Sidebar
 local sidebar = CreateFrame("Frame", nil, mainFrame)
 sidebar:SetPoint("TOPLEFT", 18, -128)
 sidebar:SetPoint("BOTTOMLEFT", 18, 18)
-sidebar:SetWidth(225)
+sidebar:SetWidth(NAV_SIDEBAR_WIDTH)
 sidebar:SetBackdrop(BACKDROP_INNER)
 sidebar:SetBackdropColor(0.055, 0.055, 0.075, 0.96)
 sidebar:SetBackdropBorderColor(0.33, 0.3, 0.22, 0.8)
@@ -2660,7 +2666,7 @@ navScroll:SetPoint("BOTTOMRIGHT", -27, 73)
 navScroll:EnableMouseWheel(true)
 
 local navScrollChild = CreateFrame("Frame", nil, navScroll)
-navScrollChild:SetSize(188, 900)
+navScrollChild:SetSize(NAV_CHILD_WIDTH, 900)
 navScroll:SetScrollChild(navScrollChild)
 navScroll:SetScript("OnMouseWheel", function(self, delta)
     local current = self:GetVerticalScroll() or 0
@@ -2807,7 +2813,10 @@ local footerNote = contentPanel:CreateFontString(nil, "OVERLAY", "GameFontHighli
 footerNote:SetPoint("BOTTOMLEFT", 16, 10)
 footerNote:SetPoint("BOTTOMRIGHT", -16, 10)
 footerNote:SetJustifyH("LEFT")
-footerNote:SetText(C.dark .. "Server progression companion - Vanilla, TBC and Wrath progression, attunements, side content and server rules in one guide." .. C.reset)
+-- Keep this to one short, readable line; the longer text previously clipped
+-- with enlarged/custom fonts and supplied no unique information.
+footerNote:SetWordWrap(false)
+footerNote:SetText(C.dark .. "Guide only - server progression is unchanged." .. C.reset)
 
 -- General Information has a dedicated action; opening it shows a real
 -- selectable edit box. WoW 3.3.5a has no reliable direct OS clipboard API.
@@ -2895,7 +2904,7 @@ local wrathStageOrder = { "wrath13", "wrath14", "wrath15", "wrath16", "wrath17" 
 
 local function CreateNavButton(id, label, y)
     local btn = CreateFrame("Button", nil, navScrollChild)
-    btn:SetSize(178, 28)
+    btn:SetSize(NAV_BUTTON_WIDTH, 28)
     btn:SetPoint("TOPLEFT", 10, y)
 
     local bg = btn:CreateTexture(nil, "BACKGROUND")
@@ -2971,21 +2980,41 @@ local function CreateNavButton(id, label, y)
     btn.mark = mark
 
     local txt = btn:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    txt:SetPoint("LEFT", 61, 0)
-    txt:SetPoint("RIGHT", -5, 0)
+    -- TOP anchors let the font measure its real wrapped height. Anchoring a
+    -- narrow label at vertical CENTER could truncate it with large fonts.
+    txt:SetPoint("TOPLEFT", btn, "TOPLEFT", 61, -6)
+    txt:SetPoint("TOPRIGHT", btn, "TOPRIGHT", -5, -6)
     txt:SetJustifyH("LEFT")
-    txt:SetText(label)
+    txt:SetJustifyV("TOP")
+    txt:SetWordWrap(true)
+    txt:SetNonSpaceWrap(true)
+    local displayLabel = label
+    if VANILLA_STAGES[id] or TBC_STAGES[id] or WOTLK_STAGES[id] then
+        -- Separate tier number from instance name instead of pushing
+        -- "Molten Core" outside the label with whitespace alignment.
+        displayLabel = label:gsub("^(Tier%s+%d+)%s+", "%1\n")
+    end
+    txt:SetText(displayLabel)
     btn.text = txt
+    btn.pageId = id
 
     btn:SetScript("OnEnter", function(self)
         if data.selectedPage ~= id then
             self.bg:SetTexture(1, 0.82, 0, 0.07)
+        end
+        -- Always show the complete original label even if a particular
+        -- third-party font cannot fit into its wrapped row.
+        if GameTooltip then
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+            GameTooltip:SetText(label)
+            GameTooltip:Show()
         end
     end)
     btn:SetScript("OnLeave", function(self)
         if data.selectedPage ~= id then
             self.bg:SetTexture(1, 1, 1, 0.025)
         end
+        if GameTooltip then GameTooltip:Hide() end
     end)
     btn:SetScript("OnClick", function()
         -- A manual selection should not be overridden by a pending refresh reply.
@@ -3165,15 +3194,21 @@ local function LayoutNavigation()
 
         if table.getn(visible) > 0 then
             group.heading:Show()
-            group.heading:SetWidth(168)
+            group.heading:SetWidth(NAV_CHILD_WIDTH - 20)
+            group.heading:SetJustifyH("LEFT")
             group.heading:SetWordWrap(true)
+            group.heading:SetNonSpaceWrap(true)
             group.heading:ClearAllPoints()
             group.heading:SetPoint("TOPLEFT", 8, y - 2)
-            local headingHeight = math.max(24, (group.heading:GetStringHeight() or 0) + 8)
+            local headingHeight = math.max(27, (group.heading:GetStringHeight() or 0) + 10)
             y = y - headingHeight
             for _, btn in ipairs(visible) do
-                -- Expanded fonts may wrap navigation labels onto two lines.
-                local rowHeight = math.max(29, (btn.text:GetStringHeight() or 0) + 11)
+                local isStage = VANILLA_STAGES[btn.pageId] or TBC_STAGES[btn.pageId]
+                    or WOTLK_STAGES[btn.pageId]
+                -- Measure after setting wrapping and width, reserving a safe
+                -- two-line minimum for stage names on WoW 3.3.5a.
+                local minHeight = isStage and 44 or 34
+                local rowHeight = math.max(minHeight, (btn.text:GetStringHeight() or 0) + 12)
                 btn:SetHeight(rowHeight - 1)
                 btn:ClearAllPoints()
                 btn:SetPoint("TOPLEFT", 10, y)
