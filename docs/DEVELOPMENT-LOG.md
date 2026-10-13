@@ -2,6 +2,25 @@
 
 This is the **working project record**. Keep chronological entries with clear status and links to GitHub PRs/commits. Published user-facing changes belong in the root [CHANGELOG.md](../CHANGELOG.md).
 
+## 13 October 2026 — Optional personal tier checklists (draft PR #7)
+
+**Status:** Draft [PR #7](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/7). Lua 5.1 mocked integration tests passed in the current feature branch; the actual WoW client, persistence over `/reload`, and checklist task wording **have not been accepted or reviewed in game**.
+
+- Based on the 17 tier-specific guides already in the Lua source, prepared **81 concise starter checklist tasks** covering access/attunement, reputation, equipment, optional activities and progression milestones.
+- Added a **Preparation Checklist** action in the fixed space below each stage's scrollable guide body. **No new sidebar rows and no changes to the compact single-line navigation design.**
+- A popup offers 4–5 manual checkboxes, a status count and a prominent reminder that ticking is **not server verified** and cannot unlock a tier.
+- New additive SavedVariables scope: `IndividualProgressionDB.personalChecklists[realm][character][tier][task_id]` stores checked flags only, leaving prior settings intact.
+- Ticking/unticking is reversible. A **two-click** `Reset this tier` action clears only the current character's selected tier; hiding the popup cancels confirmation.
+- In Lua 5.1 mocked tests, checked status persists across closing/reopening, characters and realms are isolated, tier-specific entries do not leak, all 17 stage pages load the right note set, and no new server commands are issued.
+- Popup notice and checkbox positions were anchored relative to preceding text for variable/custom WoW font heights. The compact sidebar was left unchanged.
+- New dedicated specification/test instructions: [PERSONAL-TIER-CHECKLISTS.md](PERSONAL-TIER-CHECKLISTS.md). Manual cases **S31–S37** added to [TESTING.md](TESTING.md).
+- Source and tests are stacked on [PR #6](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/6), itself dependent on #5, #2 and #1. **No merges, release tags, N-Addon-Collection imports, quest changes, server commands or SQL updates.**
+
+### Before marking this feature ready
+- Confirm popup layout, manual marks, `/reload` persistence, unchecking and reset cancellation in WoW 3.3.5a with the maintainer's custom font.
+- Review the starter task wording against server-specific progression guidance; categories are labels for **manual notes** rather than automated quest verification.
+- Keep a backup of the previous addon folder and SavedVariables. Restore those for rollback if needed.
+
 ## 13 October 2026 — Maintainer design decision: restore compact sidebar
 
 **Status:** User rejected the enlarged, multi-line sidebar after testing its appearance in WoW. The compact navigation restoration is implemented in [PR #6](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/6), with Lua 5.1 mock tests passed and client appearance awaiting quick confirmation.
