@@ -34,6 +34,11 @@
 | S17 | Open Settings via `/ip settings` and inspect icon | Settings page opens; visible gear icon; no overlapping guide text/scroll region |
 | S18 | Open Settings with normal and enlarged/custom fonts | The Show all content explanation, intended-progression warning and server value are all readable; none overlaps the others |
 | S19 | Open General Information and scroll to the very bottom | A Further Server Information heading and the exact Naxxramas Resource Hub URL are visible |
+| S20 | On General Information, click **Copy Resource Hub URL** | Text box opens with exact website address selected; Ctrl+C copies it for pasting outside WoW |
+| S21 | Use `/ip hub`, Escape and the dialog X | The copy dialog opens, closes without leaving keyboard focus, and does not reopen unexpectedly |
+| S22 | Move from General Information to Settings/other sections | The copy action hides, the dialog closes, and normal guide scrolling has its usual height |
+| S23 | Test enlarged fonts and narrow guide content | Navigation rows expand appropriately; body text wraps within its panel; warning and controls remain readable |
+| S24 | Recheck GM character progression after installing PR #6 | Maintainer's known Admina Tier 2 still auto-detects through the approved `.ip get` method |
 
 **Note:** S05, S06, S14, S15 contain requested future behaviour; **do not report them as current passes** before implementation and real-client testing.
 
