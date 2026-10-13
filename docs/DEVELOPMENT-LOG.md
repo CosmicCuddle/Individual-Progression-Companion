@@ -54,6 +54,28 @@ This is the **working project record**. Keep chronological entries with clear st
 ### Next action
 Complete baseline P1 verification, then deliver P1A in small reviewed PRs with checks in `docs/TESTING.md`. Do not silently change server authority or force-progress characters.
 
+## 13 October 2026 — PR #6 enlarged-font sidebar and footer correction
+
+**Status:** Implemented and simulated tests passed; maintainer's in-game recheck pending. This is not a published release.
+
+### Evidence
+- The maintainer supplied two WoW 3.3.5a screenshots using an enlarged/custom font on character **Takali**, Level 60, with addon Settings showing authoritative server progression value **0**.
+- The Settings warning, tier headline and long World Boss guide wrapped legibly. However, multiple sidebar labels were visually cut off (for example Overview / Roadmap, Tier 0's Molten Core label, World Boss Timeline, Vanilla Reputations), and the original long grey footer was truncated.
+- The sidebar had a fixed 225px width, 178px navigation button, small single-row label area, and row-height calculations that did not explicitly enable label word wrapping.
+
+### Changes
+- Increased sidebar width to 260px and adjusted its navigation child and button widths consistently, preserving main content space.
+- Moved navigation label anchors to TOPLEFT/TOPRIGHT, enabled ordinary and non-space word wrapping, and split **Tier N** from the location/raid name onto separate lines for stage buttons.
+- Measured label/heading height after wrap and gave rows a minimum 44px for stage titles; preserved scrollable navigation and fixed Settings footer.
+- Added a complete original-label GameTooltip on hover as a fallback for unusual font metrics.
+- Replaced the truncated footer with the short non-authoritative reminder: **Guide only - server progression is unchanged.**
+- Expanded Lua 5.1 mock checks for the new row dimensions, wrap anchors, stage lines, hover tooltip, and footer; the original authoritative `.ip get` lookup code was not modified.
+
+### Verification and rollback
+- [GitHub Actions run 38386220003](https://github.com/CosmicCuddle/Individual-Progression-Companion/actions/runs/38386220003) passed Lua 5.1 syntax, TOC, mocked UI and QA artifact upload after code/test changes.
+- **In-game visual confirmation still needed** with the maintainer's custom font, including General Information's URL copy popup and Admina's accepted Tier 2 detection.
+- Back up the installed addon folder/SavedVariables before testing. Roll back by restoring the previously working addon folder. No live DB/quest/server progression changes.
+
 ## 13 October 2026 — PR #6 Resource Hub copy and readability
 
 **Status:** Implemented in [PR #6](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/6), simulated tests passed; real WoW 3.3.5a test pending. This is not a released build.
