@@ -48,14 +48,14 @@
 | S31 | Open a Tier 0 guide and click **Preparation Checklist** | A tier-specific popup appears with guide-based tasks and prominent disclaimer that these are manual notes, not verified by the server |
 | S32 | Tick checklist items, then `/reload` and reopen | **PASS — 13 Oct 2026:** maintainer confirmed a post-reload Tier 0 screenshot with all four Molten Core marks retained (including Hydraxian Waterlords), progress 4/5 |
 | S33 | Untick one item | Only that manual item clears; others remain checked |
-| S34 | Click **Reset this tier** once, then close; reopen and click twice | Closing cancels confirmation; two deliberate clicks clear only the active tier's marks |
+| S34 | On a different tier with **no important saved marks**, tick a temporary note; click Reset once, close/reopen, then confirm with two clicks | One click must **not** delete; closing cancels confirmation; confirmed reset clears only temporary tier marks, preserving the four saved Molten Core notes |
 | S35 | Switch between Tier 0, Tier 1 and Tier 2; optionally another character | Each tier has its own items and marks; another character/realm must not inherit them |
 | S36 | Open General Information, Settings and `/ip hub` | Checklist button is absent on those pages; Resource Hub, compact sidebar and settings still work |
 | S37 | Check checklist popup with larger/custom UI font and use `.ip get` separately | Text and controls are readable; manually checking boxes never changes the server progression value |
 | S38 | Open the redesigned Tier 0 checklist near a busy in-game scene | Popup background is opaque; underlying guide/world text does not show through task cards; clear tier heading, disclaimer and progress indicator are visible |
 | S39 | Open Tier 0 Molten Core's five-item checklist at usual UI scale | **All five task cards and their descriptions fit in the popup without scrolling**, with enough separation and legible text |
 | S40 | Tick items, then try Reset and Done | X/Y progress display changes, previous marks persist on reopening, first reset click does not clear, Done closes and cancels pending reset |
-| S41 | View an extended stage (e.g. BWL or TBC) with the custom font | Guide-specific explanations are useful, rows do not overlap, and the original compact sidebar is unchanged |
+| S41 | View a longer stage (e.g. BWL or TBC) using the existing custom font | All guide-specific explanations remain readable; the final checklist item is reachable, using scrolling **only where needed**; the original compact sidebar is unchanged |
 | S42 | Open a tier with longer text or enlarge font/UI scale temporarily | Cards grow according to actual text height; scrolling activates if required and reaches the final task without clipping |
 | S43 | Observe the compact Tier 0 checklist in the maintainer's actual WoW client | **PASS — 13 Oct 2026:** screenshot shows all five Molten Core tasks with descriptions simultaneously visible, a 3/5 progress indicator, and Reset/Done controls; maintainer approved the appearance |
 | S44 | Inspect Pre-AQ checklist's signet task and the active `Complete the War Effort` quest on an eligible character (read-only) | Signets correctly shown as a **required gate**; record whether live requirement is **1,500** (current Hub/guide) or **1,000** (public upstream SQL); do not edit quest or DB |
