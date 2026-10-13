@@ -2678,7 +2678,7 @@ local PERSONAL_TIER_TASKS = {
 -- IDs intentionally match PERSONAL_TIER_TASKS; notes already saved keep their meaning.
 local PERSONAL_TIER_DETAILS = {
     mc = {
-        gear = "Before entering Molten Core, fill weak gear slots in BRD, LBRS/UBRS, Scholomance and Stratholme. Bring class consumables, food, bandages and Greater Fire Protection Potions.",
+        gear = "Before Molten Core, improve gear in Blackrock Depths (BRD), Lower/Upper Blackrock Spire, Scholomance and Stratholme. Bring class consumables, food and Greater Fire Protection Potions.",
         core = "Speak with Lothos Riftwaker at Blackrock Mountain. Retrieve the Core Fragment beside the Molten Core portal inside BRD, then turn the quest in.",
         brd_entry = "For your first Molten Core run, reach its original internal portal by travelling through Blackrock Depths. Use the Lothos shortcut only after the server's first-entry requirement.",
         hydraxis = "Begin Duke Hydraxis's quests in Azshara and build Hydraxian Waterlords reputation. Bring Aqual or Eternal Quintessence to douse all seven runes before Majordomo.",
