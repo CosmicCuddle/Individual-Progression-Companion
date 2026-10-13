@@ -466,7 +466,11 @@ check(navLike("Wrath Reputations"):IsShown(), "Wrath side content missing")
 click(widgetWithLabel("Settings"))
 local settingsCheckbox
 for _, object in ipairs(objects) do
-    if object.kind == "CheckButton" then settingsCheckbox = object end
+    if object.kind == "CheckButton" and object.parent ~= tierChecklist
+        and object.parent ~= hubPopup then
+        settingsCheckbox = object
+        break
+    end
 end
 check(settingsCheckbox ~= nil, "Settings checkbox missing")
 check(settingsCheckbox.parent:IsShown(), "Settings panel is not visible")
