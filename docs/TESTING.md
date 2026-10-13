@@ -39,6 +39,9 @@
 | S22 | Move from General Information to Settings/other sections | The copy action hides, the dialog closes, and normal guide scrolling has its usual height |
 | S23 | Test enlarged fonts and narrow guide content | Navigation rows expand appropriately; body text wraps within its panel; warning and controls remain readable |
 | S24 | Recheck GM character progression after installing PR #6 | Maintainer's known Admina Tier 2 still auto-detects through the approved `.ip get` method |
+| S25 | Using the maintainer's enlarged font, inspect Vanilla tiers, General, and Vanilla Side Content labels | Full text wraps across lines; no ellipses or missing raid names; scrolling reaches every entry and Settings remains pinned |
+| S26 | Hover a long sidebar item and move the cursor away | Complete original label appears in a tooltip on hover and disappears on leave |
+| S27 | Inspect the short grey guide footer on Settings and long guide pages | `Guide only - server progression is unchanged.` is visible as one readable line without being clipped |
 
 **Note:** S05, S06, S14, S15 contain requested future behaviour; **do not report them as current passes** before implementation and real-client testing.
 
