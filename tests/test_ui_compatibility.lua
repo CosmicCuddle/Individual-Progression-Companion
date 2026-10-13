@@ -91,6 +91,9 @@ end
 function Methods:GetWidth()
     return rawget(self, "width") or 560
 end
+function Methods:GetHeight()
+    return rawget(self, "height")
+end
 function Methods:SetHeight(h)
     self.height = h
 end
@@ -122,6 +125,9 @@ function Methods:SetVerticalScroll(n)
     self.scroll = n
 end
 function Methods:GetVerticalScrollRange()
+    if self.scrollChild and self.height then
+        return math.max(0, (self.scrollChild.height or 0) - self.height)
+    end
     return 1000
 end
 function Methods:AddMessage(msg)
@@ -281,7 +287,7 @@ check(named.IPGuideScrollFrame.position[3] == 71,
 local sentBeforeNotes = #outbound
 click(tierChecklistBtn)
 check(tierChecklist:IsShown(), "Tier checklist popup failed to open")
-check(widgetContaining("These checkmarks are your private planning notes"),
+check(widgetContaining("Your personal notes only - not server verified"),
     "Checklist must clearly say it is not server verification")
 check(widgetContaining("Tier 0 - Molten Core"),
     "Tier checklist title should match selected page")
@@ -319,8 +325,8 @@ for _, object in ipairs(objects) do
 end
 check(#notesRows == 5 and resetNotes, "Expected five notes and a reset action")
 check(notesRows[1].card and notesRows[1].card.parent == notesScrollChild
-    and notesRows[1].card.height >= 100,
-    "Detailed task card not sized inside scroll content")
+    and notesRows[1].card.height >= 62 and notesRows[1].card.height < 100,
+    "Short descriptions should have compact but readable cards")
 check(notesRows[2].card.position[2] == notesScrollChild,
     "Task cards must be positioned in their own scrolling area")
 check(notesRows[1].detail.value:find("Blackrock Depths", 1, true),
@@ -330,16 +336,19 @@ check(notesRows[2].detail.value:find("Lothos Riftwaker", 1, true)
     "Core attunement should explain NPC and quest objective")
 check(notesRows[1].stateText.value:find("NOT MARKED", 1, true),
     "Unmarked task needs its own visible state label")
-check(notesScrollChild.height > 450,
-    "Detailed task cards should be scrollable without overlap")
-check(notesRows[1].kindText.value:find("RECOMMENDED", 1, true),
-    "Checklist cards need an explicit task category")
+-- Short guides should fit entirely in the popup without scrolling.
+notesScroll.height = 385 -- Simulate the available client viewport at normal UI scale.
+check(notesScrollChild.height <= notesScroll:GetHeight(),
+    "Five short Molten Core tasks should fit without scrolling")
+check(notesScroll:GetVerticalScrollRange() == 0,
+    "No scrolling is needed when all short tasks fit")
+check(notesRows[1].title.value:find("[RECOMMENDED]", 1, true),
+    "Task category must remain visible beside its title")
+check(notesRows[1].kindText.value:find("01/05", 1, true),
+    "Compact task number must remain visible")
 notesScroll.scripts.OnMouseWheel(notesScroll, -1)
-check(notesScroll:GetVerticalScroll() > 0,
-    "Checklist scroll wheel must reach content below the viewport")
-notesScroll.scripts.OnMouseWheel(notesScroll, 1)
 check(notesScroll:GetVerticalScroll() == 0,
-    "Checklist scroll wheel must move back to the top")
+    "Wheel should not scroll away from a fully visible checklist")
 check(not notesRows[1]:GetChecked(), "New character checklist should be empty")
 notesRows[1]:SetChecked(true)
 click(notesRows[1])
@@ -355,10 +364,18 @@ check(notesRows[1].stateText.value:find("MARKED", 1, true),
 check(widgetContaining("MY NOTES: 1 of 5 marked"),
     "Checklist must update visual progress after checking an item")
 -- A custom font may make a card taller, but should not clip the detail.
-notesRows[1].detail.simulatedStringHeight = 94
+notesRows[1].detail.simulatedStringHeight = 130
 click(notesRows[1]) -- unmark; remeasure the extended detail
 check(notesRows[1].card.height >= 160,
     "Checklist should grow its card height to match large detail text")
+check(notesScrollChild.height > notesScroll:GetHeight(),
+    "Long/custom-font tier content should still scroll rather than clip")
+notesScroll.scripts.OnMouseWheel(notesScroll, -1)
+check(notesScroll:GetVerticalScroll() > 0,
+    "Scroll wheel must reach overflowed tasks")
+notesScroll.scripts.OnMouseWheel(notesScroll, 1)
+check(notesScroll:GetVerticalScroll() == 0,
+    "Scroll wheel must return to the beginning")
 click(notesRows[1]) -- mark again
 notesRows[1].detail.simulatedStringHeight = nil
 local doneButton = buttonByText("Done")
