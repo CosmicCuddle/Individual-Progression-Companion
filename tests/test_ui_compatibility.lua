@@ -580,4 +580,44 @@ local beforeTierClick = #outbound
 tierChecklist:Hide()
 check(#outbound == beforeTierClick, "Tier checklist should not send a server command")
 
-print("PASS: 3.3.5a compact navigation, full-label hover, Resource Hub, Settings and tier regression")
+-- Every defined stage must have its own notes without adding sidebar rows.
+-- Show all content is used only to visit future stages; it does not alter
+-- actual player progression or the data returned by .ip get.
+command("settings")
+settingsCheckbox:SetChecked(true)
+click(settingsCheckbox)
+local stageNumbers = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17 }
+for _, number in ipairs(stageNumbers) do
+    local nav
+    for _, object in ipairs(objects) do
+        if object.kind == "Button" and type(object.fullLabel) == "string"
+            and object.fullLabel:match("^Tier " .. number .. "%s") then
+            nav = object
+            break
+        end
+    end
+    check(nav and nav:IsShown(), "Missing testable tier " .. number)
+    click(nav)
+    check(tierChecklistBtn:IsShown(), "Tier " .. number .. " has no checklist")
+    click(tierChecklistBtn)
+    check(tierChecklist:IsShown(), "Tier " .. number .. " checklist failed to open")
+    local visibleCount = 0
+    for _, row in ipairs(notesRows) do
+        if row:IsShown() then
+            visibleCount = visibleCount + 1
+            check(row.taskId and row.stageId == nav.pageId and row.title.value,
+                "Tier " .. number .. " showed stale or missing task data")
+        end
+    end
+    check(visibleCount >= 4 and visibleCount <= 5,
+        "Tier " .. number .. " should show four or five tasks")
+    tierChecklist:Hide()
+end
+check(#outbound == beforeTierClick, "Exploring checklists sent extra server commands")
+command("settings")
+settingsCheckbox:SetChecked(false)
+click(settingsCheckbox)
+check(IndividualProgressionDB.showAllContent == false,
+    "Checklist exploration changed saved Show all preference")
+
+print("PASS: 3.3.5a compact navigation, all tier checklists, character/realm isolation, URL and tier regression")
