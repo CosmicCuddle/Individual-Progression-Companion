@@ -2,6 +2,29 @@
 
 This is the **working project record**. Keep chronological entries with clear status and links to GitHub PRs/commits. Published user-facing changes belong in the root [CHANGELOG.md](../CHANGELOG.md).
 
+## 13 October 2026 — PR #7 checklist presentation redesign after in-game feedback
+
+**Status:** Implemented and automated tests passed; updated visual layout **not yet tested in WoW**.
+
+### Maintainer evidence
+- The first draft checklist popup was installed and shown on **Admina** with Tier 0, showing 3/5 marks. This demonstrates that the initial window displayed and accepted manual marks, but it is **not** proof of persistence through `/reload`.
+- Maintainer described the interface as **lacklustre and vague**. Screenshot shows background guide text/characters visible through the checklist's dark area, little separation between tasks, no explanatory task details and a prominent bare reset button.
+
+### Changes
+- Retained **17 tier lists with the original 81 stable item IDs**, so the saved notes from the first draft remain compatible.
+- Added a separate **guide-derived description for every one of the 81 tasks**. For example, MC attunement now names Lothos Riftwaker, the Blackrock Depths Core Fragment, and returning the quest rather than just saying "complete attunement".
+- Rebuilt the popup as a **770 x 590** scrollable, opaque dark panel with a dedicated title/stage header, explicit personal-notes disclaimer, **X of Y marked** progress indicator and proportionate progress bar.
+- Each task appears in a distinct darker card with category, mark state, clear task name and a wrapping explanation. Rows are height-measured and scrollable so the larger/custom WoW font does not have to fit everything into a small rigid space.
+- Added an explicit **Done** button, and kept the double-click **Reset this tier** confirmation. Existing per-realm, per-character, per-tier persistence logic and read-only safety rules are unchanged.
+- **No change to the maintainer-approved compact single-line sidebar**, progression detection, database, quests, server commands or N-Addon-Collection.
+- GitHub Actions [run 38393048129](https://github.com/CosmicCuddle/Individual-Progression-Companion/actions/runs/38393048129) passed Lua 5.1 syntax, TOC, UI mocks and artifact upload after code/test improvements.
+
+### Pending acceptance
+- Inspect the actual opacity, contrast, task-card wrapping, scroll-wheel and Reset/Done controls in WoW with the maintainer's font.
+- Confirm previously checked tasks are retained and `/reload` keeps the marks; validate that reset still requires confirmation.
+- Review task descriptions against the deployed server. These are **source-guide-derived descriptions, not live quest verification**.
+- Backup the previously installed addon folder and SavedVariables before testing the new PR artifact; restore them if needed.
+
 ## 13 October 2026 — Optional personal tier checklists (draft PR #7)
 
 **Status:** Draft [PR #7](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/7). Lua 5.1 mocked integration tests passed in the current feature branch; the actual WoW client, persistence over `/reload`, and checklist task wording **have not been accepted or reviewed in game**.
