@@ -2065,6 +2065,10 @@ local GENERAL_PAGE = {
             SH("EXPANSION-ERA CHARACTER OPTIONS"),
             Bullet("Blood Elves and Draenei unlock after Vanilla progression is completed and begin at the start of The Burning Crusade progression."),
             Bullet("Death Knights remain tied to completion of The Burning Crusade progression before Wrath-era play."),
+            "",
+            SH("FURTHER SERVER INFORMATION"),
+            "For more information, server guides and helpful resources, visit the Naxxramas Resource Hub:",
+            C.blue .. "https://cosmiccuddle.github.io/Naxxramas-Resource-Hub/" .. C.reset,
         })
     end,
 }
@@ -2735,7 +2739,7 @@ end
 -- Settings controls are displayed inside the content panel only on the Settings page.
 local settingsPanel = CreateFrame("Frame", nil, contentPanel)
 settingsPanel:SetPoint("TOPLEFT", contentPanel, "TOPLEFT", 22, -107)
-settingsPanel:SetSize(475, 195)
+settingsPanel:SetSize(475, 310)
 settingsPanel:Hide()
 
 local settingsHeading = settingsPanel:CreateFontString(nil, "OVERLAY", "GameFontNormal")
@@ -2754,11 +2758,19 @@ local settingsHint = settingsPanel:CreateFontString(nil, "OVERLAY", "GameFontHig
 settingsHint:SetPoint("TOPLEFT", 6, -73)
 settingsHint:SetWidth(455)
 settingsHint:SetJustifyH("LEFT")
-settingsHint:SetText("Unchecked: show reached tiers, the next tier and side content for your current expansion. Checked: show the full Vanilla, TBC and Wrath guide. This preference is saved.")
+settingsHint:SetText("Off (recommended): follow the tiers you've reached and preview the next one. On: browse every Vanilla, TBC and Wrath guide.")
+
+-- Reflow these labels from the previous text's actual height. This avoids
+-- overlap for users with larger or customised WoW 3.3.5a fonts.
+local settingsWarning = settingsPanel:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+settingsWarning:SetPoint("TOPLEFT", settingsHint, "BOTTOMLEFT", 0, -18)
+settingsWarning:SetWidth(455)
+settingsWarning:SetJustifyH("LEFT")
+settingsWarning:SetText(C.orange .. "Please note: This companion is designed to guide you through progression one stage at a time. Showing all content reveals future stages early and goes against that intended experience. It does not unlock anything on the server." .. C.reset)
 
 -- Read-only diagnostics; never guesses a stage while a reply is pending.
 local settingsServerValueText = settingsPanel:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-settingsServerValueText:SetPoint("TOPLEFT", 6, -140)
+settingsServerValueText:SetPoint("TOPLEFT", settingsWarning, "BOTTOMLEFT", 0, -18)
 settingsServerValueText:SetJustifyH("LEFT")
 settingsServerValueText:SetText("Server progression value: waiting for reply")
 
