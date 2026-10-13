@@ -59,6 +59,13 @@ After testing the opaque, detailed layout in WoW, the maintainer approved the im
 - Record **S34 as maintainer-reported PASS**. The report covers the instructed return to Molten Core to check the four existing marks remained intact; it is not an independent screenshot verification.
 - Two-click Reset, close-to-cancel, same-character other-tier preservation, and cross-character preservation also passed Lua 5.1 mocked tests. Longer-tier scrolling in an actual client remains a separate check.
 
+## Tier 9 longer-stage acceptance — 13 October 2026
+
+- The maintainer provided an in-game screenshot of **Tier 9 — Serpentshrine Cavern / Tempest Keep** and confirmed **"Yes i thought it was fine."** All five distinct task cards and their descriptive text are visible without overlap or clipping; the final **Defeat Kael'thas** card and the fixed Reset/Done footer are accessible.
+- The progress indicator correctly reads **0 of 5 marked**. No task was ticked or server state changed as part of this test.
+- **PASS:** readability, layout and access to the final item for this longer tier using the tested client font. Because all five cards fit, **actual overflow scrolling was not exercised** in this screenshot. The scroll fallback is covered by Lua 5.1 simulated tests, and remains an optional further in-game check rather than a reason to redesign the approved compact layout.
+- Earlier accepted: Tier 0 visual design, four checked marks persisting after `/reload`, and maintainer-reported safe two-step Reset on a temporary tier. Do not ask to repeat those tests.
+
 ## SavedVariables contract
 
 Existing SavedVariables name: `IndividualProgressionDB` (unchanged).
