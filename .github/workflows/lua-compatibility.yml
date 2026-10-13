@@ -21,7 +21,12 @@ jobs:
         run: luac5.1 -p IndividualProgressionAddon.lua
       - name: Check client target, load order and release metadata
         run: |
-          grep -q '^## Interface: 30300
+          grep -q '^## Interface: 30300' IndividualProgressionAddon.toc
+          grep -q '^IndividualProgressionAddon.lua' IndividualProgressionAddon.toc
+          version="$(sed -n 's/^## Version: //p' IndividualProgressionAddon.toc)"
+          test -n "$version"
+          grep -Fq "**Version $version**" README.md
+          grep -Fq "## $version -" CHANGELOG.md
       - name: Exercise mocked WoW 3.3.5a UI
         run: lua5.1 tests/test_ui_compatibility.lua
 
