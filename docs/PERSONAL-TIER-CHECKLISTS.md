@@ -16,6 +16,19 @@ Add lightweight, optional **personal checklist notes** to tier guide pages witho
 - The popup explicitly states that checked items are **personal notes only** and are **not validated by the server**.
 - Clicking **Reset this tier** once changes it to **Confirm reset?**. Clicking again clears only the current tier's marks. Closing the window cancels the pending reset.
 
+## Popup visual layout revision (13 October 2026)
+
+**User feedback:** The first working popup appeared too transparent, visually sparse and too vague to guide preparation. Its five one-line items sat directly over the underlying guide with little information.
+
+The revised popup preserves the same checklist data but:
+- Uses an additional **fully opaque background texture** to prevent underlying guide text from bleeding through.
+- Presents a consistent **Personal Raid Preparation** heading, the actual tier name, a warning that these are not server-verified, and a **marked X/Y** progress bar.
+- Renders separate, height-measured task cards in a **scrollable** view. Each has its category, full title, a short guide-derived explanation, and **Marked / Not Marked** status.
+- Adds **Done** to close, and retains the two-click **Reset this tier** safeguard. The compact sidebar remains unchanged.
+- Adds individual explanatory text for **all 81 existing task IDs** rather than changing their meanings or wiping previous ticks.
+
+The first draft's successful open/tick screenshot does **not** verify this redesigned appearance. Please test contrast, scroll access to the final task, font wrapping, and data persistence in-game before a stable release.
+
 ## SavedVariables contract
 
 Existing SavedVariables name: `IndividualProgressionDB` (unchanged).
