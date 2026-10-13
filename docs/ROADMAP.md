@@ -99,6 +99,7 @@ This roadmap separates **existing features** from **proposed work**. A roadmap c
 - [x] Wider sidebar, multi-line wrapped labels, two-line stage headings and measured row heights
 - [x] Hover tooltips show complete navigation titles even when custom fonts cannot fit comfortably
 - [x] Replace the overlong, clipped bottom description with a compact status reminder
+- [x] Follow-up after screenshots: insert explicit, whole-word line breaks for all long sidebar names; count lines when setting row height (previous auto-wrap still showed ellipses)
 - [ ] Recheck full names, navigation scrolling and footer in the maintainer's custom font after installing the refreshed PR #6 test artifact
 - [ ] Recheck `/ip hub`, Ctrl+C and authoritative tier detection; do not release based on mocks alone
 
