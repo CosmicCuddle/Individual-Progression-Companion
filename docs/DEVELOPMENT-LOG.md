@@ -54,6 +54,16 @@ This is the **working project record**. Keep chronological entries with clear st
 ### Next action
 Complete baseline P1 verification, then deliver P1A in small reviewed PRs with checks in `docs/TESTING.md`. Do not silently change server authority or force-progress characters.
 
+## 13 October 2026 — Live QA: Admina regression result
+
+**Status:** Primary Tier 2 detection failure now reported as working in the installed PR #5 QA build; broader validation remains pending.
+
+- The maintainer verified `.ip get Admina` returns **2**, installed the draft feature test build, and subsequently confirmed: **"Yep seems to work as it is supposed to now"** when asked whether the addon displays the correct tier.
+- Record as a **maintainer-reported pass** for the original Admina Tier 6-vs-Tier 2 display mismatch. The user did not provide a post-fix screenshot or explicitly certify the full multi-character regression matrix.
+- Client now queries read-only `.ip get <UnitName("player")>` rather than the old discrepant `.ipsvc data` service; no server progression, hidden quests or GM commands changed.
+- Remaining manual checks: selecting another character/bot, login and reopening/Refresh, normal-player account, missing server response and font/UI-scale variations. Keep the PR draft until reviewed and approved.
+- Rollback: restore prior addon folder and corresponding SavedVariables backup only if necessary; do not modify server data.
+
 ## 13 October 2026 — Admina progress comparison and regression test
 
 **Status:** Live discrepancy confirmed, root cause unverified. See [bug #3](https://github.com/CosmicCuddle/Individual-Progression-Companion/issues/3).
