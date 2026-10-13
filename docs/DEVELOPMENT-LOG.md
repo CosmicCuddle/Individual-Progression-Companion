@@ -54,6 +54,18 @@ This is the **working project record**. Keep chronological entries with clear st
 ### Next action
 Complete baseline P1 verification, then deliver P1A in small reviewed PRs with checks in `docs/TESTING.md`. Do not silently change server authority or force-progress characters.
 
+## 13 October 2026 — Second enlarged-font screenshot: hard-wrap sidebar titles
+
+**Status:** Follow-up client change in [PR #6](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/6); simulated tests passed, revised real-client test pending.
+
+- Maintainer's new in-game screenshots show that **Tier 0 → Molten Core** now displays on two lines and the shortened grey footer fits; however longer sidebar names still show ellipses including **World Boss Timeline**, **General Information**, **Vanilla Reputations**, and longer TBC stage/side-page titles. The old `SetWordWrap(true)` and resized rows were insufficient for the supplied custom font.
+- The companion correctly identified **Takali** as progression 0 in the screenshots. No tier-detection regression observed.
+- An **ElvUI help/tutorial panel** is visible across the top of the screen; it is external overlay content, not a title or tooltip added by IP Companion. Dismiss using its own **HIDE** control for a clean layout test.
+- New `WrapNavWords` explicitly inserts line breaks between words, limiting each line to at most 14 characters when practical while preserving whole words. Stage rows retain a separate `Tier N` line. Each row reserves minimum height for the actual number of lines, independent of unreliable old-client FontString height metrics.
+- The original full names remain in `btn.fullLabel` and its hover tooltip. Normal navigation and automated test lookups use the unabridged label; no progression commands or server rules changed.
+- [GitHub Actions run 38387540965](https://github.com/CosmicCuddle/Individual-Progression-Companion/actions/runs/38387540965) passed syntax, TOC, mocked UI flow, and artifact creation after the code and tests.
+- Real-game validation pending at the maintainer's custom font: check explicit two-line/further-line titles and sidebar scrolling, keeping the original tier detection and Resource Hub features.
+
 ## 13 October 2026 — PR #6 enlarged-font sidebar and footer correction
 
 **Status:** Implemented and simulated tests passed; maintainer's in-game recheck pending. This is not a published release.
