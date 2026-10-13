@@ -2,6 +2,17 @@
 
 This is the **working project record**. Keep chronological entries with clear status and links to GitHub PRs/commits. Published user-facing changes belong in the root [CHANGELOG.md](../CHANGELOG.md).
 
+## 13 October 2026 — Tier 9 longer-stage checklist visual acceptance
+
+**Status:** **Maintainer-approved in-game presentation**, no code change required. Draft PR #7 remains unmerged.
+
+- In WoW, the maintainer opened Tier 9 **Serpentshrine Cavern / Tempest Keep** and supplied a screenshot showing all five checklists, complete readable descriptions, final **Defeat Kael'thas** card and fixed Reset/Done controls.
+- The display read **0 of 5 marked**, with no unexpected marks, clipping or overlapping. All five cards fit in the available panel; thus no manual scrolling was necessary.
+- The maintainer confirmed **"Yes i thought it was fine."** Record **PASS for Tier 9 layout and final-task access**. Do not claim an actual in-game overflow scroll test; long-text scrolling remains covered by Lua mocked tests and is optional additional coverage.
+- Already accepted in-game: Tier 0 compact visual layout, four marks surviving `/reload`, and the temporary-tier Reset confirmation/cancellation workflow.
+- Keep the current compact sidebar, checklist spacing, 81 task IDs and user SavedVariables unchanged. No further redesign or download is required for this acceptance.
+- Next release discussion: review dependencies PR #1 → #2 → #5 → #6 → #7 and request explicit maintainer authorization before merging or publishing; no automatic N-Addon-Collection pin change.
+
 ## 13 October 2026 — Live test accepted: two-step reset on a temporary tier
 
 **Status:** **Maintainer-reported PASS** in WoW for the optional safe Reset workflow, following the six-step procedure in the preceding conversation.
