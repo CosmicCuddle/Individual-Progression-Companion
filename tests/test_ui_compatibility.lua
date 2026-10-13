@@ -609,8 +609,10 @@ check(widgetText("Server progression value: 2"),
 check(isSelected(navLike("Tier 2")), "Tier 2 focus lost after sidebar reflow")
 check(tierChecklistBtn:IsShown(), "Tier 2 checklist button should be visible")
 click(tierChecklistBtn)
-check(widgetContaining("Tier 2 - Blackwing Lair - Personal Checklist"),
-    "Tier 2 checklist should show appropriate guide tasks")
+check(widgetContaining("Tier 2 - Blackwing Lair"),
+    "Tier 2 checklist should show the appropriate stage heading")
+check(notesRows[1].detail.value:find("Scarshield Quartermaster", 1, true),
+    "Tier 2 checklist must explain Blackhand's Command")
 check(not notesRows[1]:GetChecked(), "Tier 0 notes incorrectly copied to Tier 2")
 notesRows[1]:SetChecked(true)
 click(notesRows[1])
