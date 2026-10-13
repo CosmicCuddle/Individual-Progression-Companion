@@ -107,7 +107,7 @@ This roadmap separates **existing features** from **proposed work**. A roadmap c
 
 ## P2B — Tier-specific personal preparation checklists
 
-**Status:** Initial 17-tier implementation in **draft [PR #7](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/7)**; Lua 5.1 mock checks completed, **actual client and checklist-content review pending**. See [PERSONAL-TIER-CHECKLISTS.md](PERSONAL-TIER-CHECKLISTS.md).
+**Status:** Revised detailed checklist popup implemented in **draft [PR #7](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/7)**; Lua 5.1 mocks passed; revised **actual-client appearance, SavedVariables persistence and content review remain pending**. See [PERSONAL-TIER-CHECKLISTS.md](PERSONAL-TIER-CHECKLISTS.md).
 
 - [x] Add 81 guide-derived manual checklist tasks (4–5 per tier) across Vanilla, TBC and Wrath; separate access, progression, recommended and optional labels
 - [x] Store user marks per realm, character, tier and stable task ID in additive SavedVariables, retaining existing settings
@@ -115,6 +115,7 @@ This roadmap separates **existing features** from **proposed work**. A roadmap c
 - [x] Support independent completion per tier and prevent marks being shared by characters or realms in mocked tests
 - [x] Add individual unchecking and **two-click confirmation** to reset only the selected tier; clear confirmation on dialog close
 - [x] Keep the maintainer-approved **compact single-line sidebar** unchanged (button is on tier pages, not new navigation rows)
+- [x] Respond to screenshot feedback: fully opaque scrollable task cards, meaningful descriptions for all 81 tasks, visual mark progress and prominent personal-notes disclaimer
 - [ ] Review each task for accurate wording against live server rules and the Resource Hub before a stable release
 - [ ] Test in WoW 3.3.5a with custom fonts, `/reload` persistence, logout/login, tier changes and cross-character isolation
 
