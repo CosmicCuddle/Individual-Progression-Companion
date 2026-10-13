@@ -55,9 +55,12 @@
 | S38 | Open the redesigned Tier 0 checklist near a busy in-game scene | Popup background is opaque; underlying guide/world text does not show through task cards; clear tier heading, disclaimer and progress indicator are visible |
 | S39 | Open Tier 0 Molten Core's five-item checklist at usual UI scale | **All five task cards and their descriptions fit in the popup without scrolling**, with enough separation and legible text |
 | S42 | Open a tier with longer text or enlarge font/UI scale temporarily | Cards grow according to actual text height; scrolling activates if required and reaches the final task without clipping |
-| S43 | Observe the compact Tier 0 checklist in the maintainer's actual WoW client | **PASS — 13 Oct 2026:** screenshot shows all five Molten Core tasks with descriptions simultaneously visible, a 3/5 progress indicator, and Reset/Done controls; maintainer approved the appearance |
 | S40 | Tick items, then try Reset and Done | X/Y progress display changes, previous marks persist on reopening, first reset click does not clear, Done closes and cancels pending reset |
 | S41 | View an extended stage (e.g. BWL or TBC) with the custom font | Guide-specific explanations are useful, rows do not overlap, and the original compact sidebar is unchanged |
+| S43 | Observe the compact Tier 0 checklist in the maintainer's actual WoW client | **PASS — 13 Oct 2026:** screenshot shows all five Molten Core tasks with descriptions simultaneously visible, a 3/5 progress indicator, and Reset/Done controls; maintainer approved the appearance |
+| S44 | Inspect Pre-AQ checklist's signet task and the active `Complete the War Effort` quest on an eligible character (read-only) | Signets correctly shown as a **required gate**; record whether live requirement is **1,500** (current Hub/guide) or **1,000** (public upstream SQL); do not edit quest or DB |
+| S45 | Inspect Pre-TBC, Tier 8 and Tier 10 checklists without changing progression | `Into the Breach` remains the Tier 7 quest gate while 2,500g Vezrath service is separate; Nightbane is future SSC access; Hyjal is part of restored Black Temple access |
+| S46 | Inspect Tier 17's final checklist | Outer bosses are distinguished from optional raid preparation; Halion boss is the final gate without claiming a Normal-only kill restriction |
 
 **Note:** S05, S06, S14, S15 contain requested future behaviour; **do not report them as current passes** before implementation and real-client testing.
 
