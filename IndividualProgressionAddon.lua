@@ -2580,7 +2580,7 @@ local PERSONAL_TIER_TASKS = {
     },
     preaq = {
         { id = "turnins", kind = "Access", label = "Complete each required War Effort turn-in" },
-        { id = "signets", kind = "Recommended", label = "Work on Commendation Signets" },
+        { id = "signets", kind = "Required", label = "Complete the required War Effort Commendation Signets" },
         { id = "zul_gurub", kind = "Recommended", label = "Use Zul'Gurub for raid preparation" },
         { id = "gong", kind = "Progression", label = "Complete the Scarab Gong objective" },
     },
@@ -2607,12 +2607,12 @@ local PERSONAL_TIER_TASKS = {
         { id = "breach", kind = "Access", label = "Complete Into the Breach at the Dark Portal" },
         { id = "vanilla", kind = "Optional", label = "Finish any remaining Vanilla goals" },
         { id = "gear", kind = "Recommended", label = "Prepare equipment for Outland" },
-        { id = "vezrath", kind = "Progression", label = "Arrange expansion access via Chronomancer Vezrath" },
+        { id = "vezrath", kind = "Service", label = "Purchase separate TBC access from Chronomancer Vezrath" },
     },
     tbc8 = {
         { id = "outland", kind = "Recommended", label = "Level and build Outland dungeon reputations" },
         { id = "masters_key", kind = "Access", label = "Complete the Karazhan Master's Key questline" },
-        { id = "nightbane", kind = "Access", label = "Defeat Nightbane for the SSC attunement item" },
+        { id = "nightbane", kind = "Future Access", label = "Obtain Nightbane's Blazing Signet for SSC attunement" },
         { id = "heroics", kind = "Recommended", label = "Prepare for TBC heroics and early raids" },
         { id = "prince", kind = "Progression", label = "Defeat Prince Malchezaar" },
     },
@@ -2626,7 +2626,7 @@ local PERSONAL_TIER_TASKS = {
     tbc10 = {
         { id = "vials", kind = "Access", label = "Confirm The Vials of Eternity is complete" },
         { id = "karabor", kind = "Access", label = "Complete the Medallion of Karabor attunement" },
-        { id = "hyjal", kind = "Recommended", label = "Prepare for and clear Mount Hyjal" },
+        { id = "hyjal", kind = "Access", label = "Clear Mount Hyjal and progress Black Temple access" },
         { id = "bt", kind = "Recommended", label = "Prepare Black Temple raid equipment" },
         { id = "illidan", kind = "Progression", label = "Defeat Illidan" },
     },
@@ -2667,7 +2667,7 @@ local PERSONAL_TIER_TASKS = {
     },
     wrath17 = {
         { id = "entry", kind = "Recommended", label = "Prepare to enter Ruby Sanctum after ICC" },
-        { id = "outer", kind = "Recommended", label = "Clear the outer sanctum" },
+        { id = "outer", kind = "Access", label = "Clear Ruby Sanctum's outer encounters before Halion" },
         { id = "supplies", kind = "Recommended", label = "Prepare raid supplies for Halion" },
         { id = "halion", kind = "Progression", label = "Defeat Halion on Normal" },
         { id = "finalgear", kind = "Optional", label = "Continue ICC/Ruby Sanctum for final gearing" },
@@ -2681,7 +2681,7 @@ local PERSONAL_TIER_DETAILS = {
         gear = "Before Molten Core, improve gear in Blackrock Depths (BRD), Lower/Upper Blackrock Spire, Scholomance and Stratholme. Bring class consumables, food and Greater Fire Protection Potions.",
         core = "Speak with Lothos Riftwaker at Blackrock Mountain. Retrieve the Core Fragment beside the Molten Core portal inside BRD, then turn the quest in.",
         brd_entry = "For your first Molten Core run, reach its original internal portal by travelling through Blackrock Depths. Use the Lothos shortcut only after the server's first-entry requirement.",
-        hydraxis = "Begin Duke Hydraxis's quests in Azshara and build Hydraxian Waterlords reputation. Bring Aqual or Eternal Quintessence to douse all seven runes before Majordomo.",
+        hydraxis = "Begin Duke Hydraxis's questline in Azshara. Aqual Quintessence is single-use; at Revered, Eternal Quintessence is reusable with a cooldown. Arrange all seven rune douses before Majordomo.",
         ragnaros = "After the seven runes and Majordomo encounter are complete, defeat Ragnaros. This is the server's Tier 0 progression milestone.",
     },
     onyxia = {
@@ -2700,9 +2700,9 @@ local PERSONAL_TIER_DETAILS = {
     },
     preaq = {
         turnins = "Complete every War Effort resource category required by the stage at least once. Review the tier guide for the precise resource and turn-in routes.",
-        signets = "Continue useful War Effort resource turn-ins to earn Commendation Signets while preparing for the gong objective.",
+        signets = "After completing every required resource turn-in at least once, fulfil the War Effort signet gate. Your Resource Hub specifies 1,500 Commendation Signets; confirm the exact number from the in-game quest counter.",
         zul_gurub = "Use Zul'Gurub as supporting raid content for gear, reputation and consumables during the Pre-AQ phase.",
-        gong = "Complete the War Effort prerequisites and the server's Scarab Gong objective. The gong concludes this stage.",
+        gong = "After the War Effort requirements, ring the Scarab Gong. The full Scepter of the Shifting Sands route or Simply Bang a Gong! alternative can be used; the shortcut requires the Mallet of Zul'Farrak.",
     },
     aqwar = {
         chaos = "Follow the Silithus outdoor war objectives and turn in Chaos and Destruction when complete. This is the stage's required completion step.",
@@ -2718,7 +2718,7 @@ local PERSONAL_TIER_DETAILS = {
     },
     naxx = {
         argent = "Reach at least Honored with Argent Dawn for Naxxramas attunement. Higher reputation can reduce its material and gold costs.",
-        attunement = "At Light's Hope Chapel, take The Dread Citadel - Naxxramas from Archmage Angela Dosantos and complete its cost/turn-in requirements.",
+        attunement = "Take The Dread Citadel - Naxxramas from Archmage Angela Dosantos at Light's Hope Chapel. The guide lists Honored, Revered and Exalted costs; higher Argent Dawn reputation reduces the price.",
         first_entry = "Make your first Naxxramas entry using the original entrance behind Stratholme. The Eastern Plaguelands teleport crystal becomes useful afterwards.",
         frost = "Prepare Frost Resistance for Sapphiron and late Naxxramas encounters while balancing normal survivability and performance.",
         kelthuzad = "Clear the Naxxramas wings, defeat Sapphiron and then Kel'Thuzad. The final kill completes Tier 6.",
@@ -2727,18 +2727,18 @@ local PERSONAL_TIER_DETAILS = {
         breach = "Travel to the Dark Portal and complete the Into the Breach invasion objectives as described in the Pre-TBC guide.",
         vanilla = "Finish any desired unfinished Vanilla goals, crafting or raid rewards before moving to the next expansion.",
         gear = "Review gear, professions, consumables and inventory capacity before beginning the Outland journey.",
-        vezrath = "When the stage's requirements are met, speak with Chronomancer Vezrath to arrange the TBC transition.",
+        vezrath = "Complete Into the Breach for the Tier 7 progression gate. Buying TBC access is a separate character service: find Chronomancer Vezrath near a faction leader in a capital city. The current guide lists 2,500 gold.",
     },
     tbc8 = {
         outland = "Level through Outland, build useful dungeon reputations and prepare for Heroic dungeons and entry-level TBC raids.",
-        masters_key = "Complete the restored Master's Key chain for Karazhan; the stage guide details the dungeon portions and final key requirements.",
-        nightbane = "Finish the Nightbane summon route in Karazhan and defeat Nightbane for the Blazing Signet used in SSC attunement.",
+        masters_key = "Follow Archmage Alturus and Khadgar's Karazhan chain: retrieve fragments from Shadow Labyrinth, Steamvault and Arcatraz, protect Medivh in Black Morass, then return to Khadgar for The Master's Key.",
+        nightbane = "Complete the Karazhan Nightbane summon route and defeat Nightbane for his Blazing Signet. It is needed for The Cudgel of Kar'desh in Tier 9, not to trigger Tier 8 completion.",
         heroics = "Plan Heroic dungeon access, tanks/healers, resistances and consumables for Karazhan, Gruul and Magtheridon.",
         prince = "Defeat Prince Malchezaar in Karazhan. The guide identifies this kill as the Tier 8 progression trigger.",
     },
     tbc9 = {
-        ssc = "Complete The Cudgel of Kar'desh, obtained from Skar'this the Heretic in Heroic Slave Pens, for Serpentshrine Cavern access.",
-        tk = "Finish The Cipher of Damnation and the Trial of the Naaru quests required by the restored Tempest Keep attunement.",
+        ssc = "Speak to Skar'this the Heretic in Heroic Slave Pens for The Cudgel of Kar'desh. Return with the Earthen Signet from Gruul and Blazing Signet from Nightbane to complete SSC attunement.",
+        tk = "Complete The Cipher of Damnation and Trials of the Naaru: Mercy (Heroic Shattered Halls), Strength (Heroic Steamvault/Shadow Labyrinth), Tenacity (Heroic Arcatraz) and Magtheridon.",
         vials = "Collect the vial remnants from Lady Vashj and Kael'thas, then complete The Vials of Eternity for the next tier.",
         bt = "Work through the earlier steps of the restored Black Temple attunement route as access becomes available.",
         kael = "Clear The Eye's required encounters and defeat Kael'thas Sunstrider to finish this stage.",
@@ -2746,13 +2746,13 @@ local PERSONAL_TIER_DETAILS = {
     tbc10 = {
         vials = "Check that The Vials of Eternity has been completed before starting the Mount Hyjal and Black Temple tier.",
         karabor = "Finish the Akama/Medallion of Karabor route for restored Black Temple access. Consult the full tier guide for the ordered chain.",
-        hyjal = "Prepare and clear Battle for Mount Hyjal, including the waves and major encounter stages needed for your group.",
+        hyjal = "After The Vials of Eternity, clear Mount Hyjal through Archimonde. A Hyjal objective is part of the restored Black Temple attunement chain, including An Artifact From the Past; follow the full guide's quest order.",
         bt = "Coordinate tanks, healers, resistance preparation and consumables for Black Temple's raid encounters.",
         illidan = "Defeat Illidan Stormrage. The server progresses directly to the Sunwell-era stage, skipping the unused ZA tier.",
     },
     tbc12 = {
         queldanas = "Begin Isle of Quel'Danas daily/quest progression as the Sunwell era opens.",
-        terrace = "Complete Normal Magisters' Terrace to follow the dungeon/story progression and prepare for later content.",
+        terrace = "Complete the Normal Magisters' Terrace quest chain through Hard to Kill before using Heroic Magisters' Terrace as a repeatable preparation option. The full tier guide explains the sequence.",
         za = "If useful for your group, clear Zul'Aman for optional catch-up gear before Sunwell.",
         sunwell = "Organise appropriate consumables, profession supplies, gear and raid assignments for Sunwell Plateau.",
         kiljaeden = "Progress through Sunwell Plateau and defeat Kil'jaeden to complete TBC progression.",
@@ -2760,8 +2760,8 @@ local PERSONAL_TIER_DETAILS = {
     wrath13 = {
         level = "Reach level 80, progress through Northrend and unlock relevant Wrath dungeons, factions and systems.",
         gear = "Build an entry-level Wrath raid set through normal and Heroic dungeons, quests, professions and reputation rewards.",
-        emblems = "Use Heroic dungeons and early emblem sources to replace weaker gear before progressing deep into Naxxramas.",
-        raids = "Prepare Eye of Eternity and Obsidian Sanctum raid plans while they remain current with Naxxramas.",
+        emblems = "At Tier 13, Heroic dungeon bosses award Emblems of Heroism on this server. Use them and early raid/dungeon upgrades to replace weaker slots before later Naxxramas progression.",
+        raids = "Prepare Malygos in Eye of Eternity (a Key to the Focusing Iris comes from Sapphiron) and Sartharion in Obsidian Sanctum. Both are valuable side raids, not the Tier 13 progression trigger.",
         kel = "Defeat Kel'Thuzad in Wrath Naxxramas to unlock the Ulduar stage.",
     },
     wrath14 = {
@@ -2787,7 +2787,7 @@ local PERSONAL_TIER_DETAILS = {
     },
     wrath17 = {
         entry = "After the Lich King stage, assemble a Ruby Sanctum group and prepare for its encounter sequence.",
-        outer = "Clear the outer sanctum encounters and prepare for Halion.",
+        outer = "Clear Baltharus the Warborn and Saviana Ragefire, then General Zarithrian, to open the route to Halion. These are the Ruby Sanctum outer encounters, not optional gearing tasks.",
         supplies = "Stock suitable consumables and coordinate the raid for Halion's mechanics and phase changes.",
         halion = "Defeat Halion on Normal. The stage guide says this completes progression value 18.",
         finalgear = "Continue Icecrown Citadel and Ruby Sanctum for optional final equipment and personal goals.",
