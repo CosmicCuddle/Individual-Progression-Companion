@@ -2,6 +2,23 @@
 
 This is the **working project record**. Keep chronological entries with clear status and links to GitHub PRs/commits. Published user-facing changes belong in the root [CHANGELOG.md](../CHANGELOG.md).
 
+## 13 October 2026 — PR #7 compact adaptive task cards
+
+**Status:** Revision implemented, automated checks under review, latest client layout not yet re-tested.
+
+### Maintainer feedback
+- The redesigned opaque/detailed popup is **visually accepted in principle** ("looks good i think") based on two in-game screenshots showing MC **3/5 marked** and scrolling through the final item.
+- One remaining request: the short five-item Molten Core list unnecessarily required scrolling because every card reserved at least 100 pixels plus broad gaps. The maintainer prefers **all five tasks in view where they fit** while retaining scrolling for tiers with longer descriptions.
+- These screenshots demonstrate existing checkmarks and actual scrolling, but do not independently verify SavedVariables persistence through `/reload`.
+
+### Layout refinement
+- Preserve **the same 770x590 opaque dialog**, task content, progress display, Done/reset controls, 81 stable task IDs and compact original navigation sidebar.
+- Combine the category and task name into the heading line, move the task index into the checkbox gutter, and reduce the empty minimum card height from 100 to **62**.
+- Derive each card height from actual title and description text heights; keep larger cards and scrolling when a custom font or longer tier needs room. Reduce the between-card gap from 8 to 5.
+- Shorten the explanatory disclaimer while preserving the statement that notes are **not server verified**. Reclaim some unnecessary header/footer spacing for the scroll viewport.
+- Add mock regression checks for five short tasks fitting in a simulated checklist viewport **without scrolling**, while simulated enlarged text forces natural overflow and remains reachable by mouse wheel.
+- No changes to `.ip get`, server quests/database, per-character persistence or the existing checkmarks. PR #7 stays a draft until the revised fit is confirmed in the actual game.
+
 ## 13 October 2026 — PR #7 checklist presentation redesign after in-game feedback
 
 **Status:** Implemented and automated tests passed; updated visual layout **not yet tested in WoW**.
