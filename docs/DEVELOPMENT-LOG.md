@@ -2,6 +2,18 @@
 
 This is the **working project record**. Keep chronological entries with clear status and links to GitHub PRs/commits. Published user-facing changes belong in the root [CHANGELOG.md](../CHANGELOG.md).
 
+## 13 October 2026 — Maintainer design decision: restore compact sidebar
+
+**Status:** User rejected the enlarged, multi-line sidebar after testing its appearance in WoW. The compact navigation restoration is implemented in [PR #6](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/6), with Lua 5.1 mock tests passed and client appearance awaiting quick confirmation.
+
+- Maintainer described the new multi-line navigation as **"awful and clunky/chunky"**, explicitly preferring the sidebar **as it looked before**. This takes priority over the previous proposal to force full labels on multiple lines.
+- Reverted the experimental **260px-wide sidebar**, explicit whole-word multiline wrapping, and 44px+ tall navigation rows. Restored the original **225px sidebar, 178x28px buttons, single-line labels, and 29px layout increments** from the tested compact navigation implementation.
+- Retained optional **full-label tooltip on hover**, the concise one-line footer, `/ip hub` URL-copy action, adaptable guide text, Settings, and the authoritative read-only `.ip get <player>` tier detection.
+- Accepted tradeoff: long labels may visually truncate in a compact single-line row, but hovering reveals the complete title. Do not reintroduce expanded multi-line sidebar rows without explicit maintainer approval.
+- Extended mock tests to assert compact dimensions and prevent automatic row growth even when custom font metrics are large, while covering hover, Settings, Resource Hub and tier regression.
+- [GitHub Actions run 38388470790](https://github.com/CosmicCuddle/Individual-Progression-Companion/actions/runs/38388470790) **passed** Lua 5.1 syntax, TOC, simulated UI checks and PR-only artifact upload.
+- **No live server/DB data, saved-variable schema, or actual character progression changed.** Revert the isolated UI commits or restore the last working addon folder and SavedVariables backup if necessary.
+
 ## 12 October 2026 — Development documentation foundation
 
 **Status:** Documentation-only PR prepared; pending review/merge.
