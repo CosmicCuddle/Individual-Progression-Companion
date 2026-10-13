@@ -1,11 +1,13 @@
 -- ============================================================================
 -- IndividualProgressionAddon - WoW 3.3.5a
--- Individual Progression Companion UI - Server Edition v5.2
+-- Individual Progression Companion UI - Server Edition v5.3.0
 -- Slash commands: /ip, /progression
 --
--- Keeps the original server communication contract:
---   Client -> server: .ipsvc data
---   Server -> client: ##IPSVC##PD~<progression value>
+-- Current read-only lookup on this server:
+--   Client -> server: .ip get <own character name>
+--   Server -> client: Progression Level for <name> = <value>
+-- The old ##IPSVC## service messages are filtered for compatibility;
+-- they are no longer used to determine the player's current tier.
 -- ============================================================================
 
 local ADDON_NAME = "IndividualProgressionAddon"

@@ -4,6 +4,29 @@ All notable changes to Individual Progression Companion are documented here.
 
 ---
 
+## 5.3.0 - Progression Detection, Navigation & Personal Checklists
+
+### Added
+- 17 optional **per-character preparation checklists** (81 guide-derived tasks), with explanations for attunements, recommended preparation and progression objectives across Vanilla, TBC and Wrath.
+- Per-realm, per-character, per-tier manual checkmark storage in the existing `IndividualProgressionDB` SavedVariables; two-click tier-only Reset and live marked-task count.
+- **Settings → Show All Content** (off by default) for browsing later-stage guides without changing any server unlocks.
+- **Copy Resource Hub URL** action in General Information and `/ip hub` shortcut.
+- Automated Lua 5.1 compatibility, mocked UI and PR-only QA packaging tests.
+
+### Changed
+- Read-only tier detection uses the server's `.ip get <own character name>` response instead of the previously discrepant `.ipsvc data` value.
+- Refresh/reopen focuses the current tier, with reached stages and the next-stage preview shown by default.
+- Retained the **original compact sidebar design**, added hover full-name tooltips, improved body text wrapping and shortened footer guidance.
+- Clarified Pre-AQ's **1,500 Commendation Signets** requirement as an intentional CosmicCuddle server customisation distinct from the upstream 1,000 default.
+
+### Safety and compatibility
+- WoW **3.3.5a (Interface 30300)**, Lua 5.1.
+- No server commands that set progression, no SQL/quest changes, and no automatic boss-completion flags; checklist marks are private local notes.
+- Existing SavedVariables are retained and extended additively. Back up both addon folder and SavedVariables before updating.
+- **Standalone release only:** updating the separate `N-Addon-Collection` source pin requires its own reviewed import.
+
+---
+
 ## 5.2.0 - Expanded Guides & Refinement
 
 ### Added / Expanded

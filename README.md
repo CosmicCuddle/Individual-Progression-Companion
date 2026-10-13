@@ -8,9 +8,22 @@ The addon tracks the character's current Individual Progression state through se
 
 ## Current Version
 
-**Version 5.2.0**
+**Version 5.3.0**
 
 Supported client: **World of Warcraft 3.3.5a**
+
+## What's New in 5.3.0
+
+This release adds progression-aware navigation and optional personal preparation tools while maintaining **World of Warcraft 3.3.5a / Lua 5.1** compatibility.
+
+- **Authoritative personal tier detection:** Uses the normal-player, read-only `.ip get <own character name>` command on the configured CosmicCuddle server. Refresh and reopening the guide focus the player's actual stage.
+- **Progression-first navigation:** Displays reached tiers and a next-tier preview by default, alongside relevant current-expansion side content and General pages. **Settings → Show All Content** reveals future guides for reference; doing so does **not** unlock progression.
+- **Personal preparation checklists:** Each of the **17 numbered tier guides** offers an optional **Preparation Checklist** with **81** detailed tasks overall. Marks are stored per **realm, character and tier** in the existing `IndividualProgressionDB` SavedVariables, not sent to the server.
+- **Safe controls:** Individual marks can be toggled freely; **Reset this tier** requires two clicks and affects only the selected character/tier. The compact sidebar remains unchanged.
+- **Resource Hub link:** General Information provides a selectable URL and `/ip hub` shortcut. Use Ctrl+C to copy the address.
+- **Readability:** Compact single-line navigation, full titles available on hover, improved long-page wrapping and the concise guide-only footer.
+
+> Checklist entries are **personal planning notes**, not automatic quest/boss checks. A tick does not alter a character's server progression.
 
 ## What the Addon Does
 
@@ -230,7 +243,7 @@ The in-game Commands page also documents supported `.ip` server commands and ide
 
 ## Installation
 
-1. Download the latest release.
+1. Download the latest **standalone** release.
 2. Extract the archive.
 3. Copy the `IndividualProgressionAddon` folder into:
 
@@ -239,11 +252,11 @@ The in-game Commands page also documents supported `.ip` server commands and ide
 4. Restart WoW or use `/reload`.
 5. Type `/ip`.
 
-When updating, replace the previous `IndividualProgressionAddon` folder.
+When updating, **close WoW first** and back up the existing `IndividualProgressionAddon` folder and `WTF/Account/<account>/SavedVariables/IndividualProgressionAddon.lua`. Then replace the previous addon folder with exactly **one** copy. Do not install it twice alongside a copy already supplied by `N-Addon-Collection`. SavedVariables should be kept to preserve checklist marks and preferences.
 
 ## Server Integration
 
-The addon communicates with the server-side support service and requests the character's current progression value.
+The addon queries its own character's progression using the read-only server command `.ip get <own character name>` on the customised CosmicCuddle server. It reads the named system-message reply to select the current tier; it does not use `.ip set` or grant progression. The older `.ipsvc data` service is no longer authoritative for tier detection in this version.
 
 It does **not** independently infer progression from raid kills.
 
@@ -269,7 +282,7 @@ The guide currently reflects server-specific behaviour including:
 
 Vanilla, The Burning Crusade and Wrath progression are implemented.
 
-Version **5.2.0** focuses on turning the addon from a reference sheet into a more complete **step-by-step server progression handbook**.
+Version **5.3.0** adds accurate read-only tier focus, configurable guide visibility, a copyable Resource Hub link and optional personal tier preparation checklists to the existing **5.2.0** progression handbook.
 
 See [CHANGELOG.md](CHANGELOG.md) for version history.
 
@@ -283,7 +296,7 @@ Official project maintenance references:
 - [Manual Test Plan](docs/TESTING.md) — regression steps and evidence requirements.
 - [Release & Collection Handover](docs/RELEASE-CHECKLIST.md) — versioning, validation, rollback and approved N-Addon-Collection import.
 
-The roadmap contains proposed features, including a progression-aware navigation and Settings experience. Proposed work is not included in the v5.2.0 release unless separately implemented, tested and released.
+The roadmap records future ideas and outstanding optional QA; the features listed above are implemented for the 5.3.0 standalone release candidate. The `N-Addon-Collection` distribution is **separate** and must be updated from the approved standalone release commit, not automatically from this repository.
 
 ## Credits
 
