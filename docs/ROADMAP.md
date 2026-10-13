@@ -81,6 +81,31 @@ This roadmap separates **existing features** from **proposed work**. A roadmap c
 
 **Acceptance:** No UI collisions in test cases, all pages readable, keyboard/slash and mouse routes remain available, persistent preferences survive `/reload`.
 
+## P2A — Resource Hub copying and responsive guide layout
+
+**Status:** Implemented in [PR #6](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/6), simulated Lua 5.1 checks passed; in-game UI/clipboard verification pending.
+
+- [x] Build a selectable/focusable edit field for the official Resource Hub URL instead of claiming direct clipboard access
+- [x] Add a General Information copy button and `/ip hub` slash shortcut
+- [x] Reflow navigation rows for enlarged fonts and keep guide text within the available width
+- [ ] Verify Ctrl+C, popup keyboard handling, UI scale, non-overlap and tier-detection regression in the actual WoW 3.3.5a client
+
+**Acceptance:** Player can copy/paste the exact URL, close the popup by Escape, and read both ordinary and long guides without clipping at normal and enlarged font settings.
+
+## P2B — Tier-specific personal preparation checklists
+
+**Status:** Approved direction, not yet implemented; tracked by [issue #4](https://github.com/CosmicCuddle/Individual-Progression-Companion/issues/4). Implement in a **separate** incremental PR after review of sample tasks.
+
+- [ ] Define tier-specific manual checklist entries for relevant attunements, gear and reputations, clearly distinguishing required from recommended
+- [ ] Keep checkbox state per character (and realm) in the existing addon SavedVariables namespace without corrupting existing settings
+- [ ] Make notes explicitly non-authoritative: ticking a box never modifies quests, boss kills, gold, reputations, server tiers or database values
+- [ ] Support independent completion per tier; prevent accidentally showing another character's preparation
+- [ ] Provide an explicit reset for personal checklist items, with confirmation, and migration-safe defaults
+- [ ] Check content accuracy against the deployed server and Resource Hub before asserting an item is required
+- [ ] Test Lua 5.1 UI and in-game persistence through `/reload`, logout/login and tier transitions
+
+**Acceptance:** Manual per-character preparation state survives reload, can be reversed safely, and never alters server-side progression.
+
 ## P3 — Content accuracy and expansion-rule alignment
 
 **Status:** Proposed.
