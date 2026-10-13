@@ -2902,6 +2902,30 @@ local vanillaStageOrder = { "mc", "onyxia", "bwl", "preaq", "aqwar", "aq", "naxx
 local tbcStageOrder = { "tbc8", "tbc9", "tbc10", "tbc12" }
 local wrathStageOrder = { "wrath13", "wrath14", "wrath15", "wrath16", "wrath17" }
 
+-- WoW 3.3.5a truncates FontStrings even with SetWordWrap(true) on some
+-- third-party fonts. Insert intentional line breaks before measuring rows,
+-- so labels never depend solely on the font's automatic wrapping behaviour.
+-- 14 characters is deliberately conservative for the large ElvUI-style font
+-- supplied in the maintainer's screenshots; preserve whole words and use
+-- the complete original label in GameTooltip on hover.
+local function WrapNavWords(label, maxCharacters)
+    local lines = {}
+    local line = ""
+    for word in string.gmatch(label, "%S+") do
+        if line ~= "" and string.len(line) + 1 + string.len(word) > maxCharacters then
+            table.insert(lines, line)
+            line = word
+        elseif line == "" then
+            line = word
+        else
+            line = line .. " " .. word
+        end
+    end
+    if line ~= "" then table.insert(lines, line) end
+    if table.getn(lines) == 0 then return "", 1 end
+    return table.concat(lines, "\n"), table.getn(lines)
+end
+
 local function CreateNavButton(id, label, y)
     local btn = CreateFrame("Button", nil, navScrollChild)
     btn:SetSize(NAV_BUTTON_WIDTH, 28)
@@ -2988,15 +3012,22 @@ local function CreateNavButton(id, label, y)
     txt:SetJustifyV("TOP")
     txt:SetWordWrap(true)
     txt:SetNonSpaceWrap(true)
-    local displayLabel = label
-    if VANILLA_STAGES[id] or TBC_STAGES[id] or WOTLK_STAGES[id] then
-        -- Separate tier number from instance name instead of pushing
-        -- "Molten Core" outside the label with whitespace alignment.
-        displayLabel = label:gsub("^(Tier%s+%d+)%s+", "%1\n")
+    local stageTier, stageName = label:match("^(Tier%s+%d+)%s+(.+)$")
+    local displayLabel, labelLines
+    if stageTier and (VANILLA_STAGES[id] or TBC_STAGES[id] or WOTLK_STAGES[id]) then
+        -- The tier and the full raid name receive their own lines. Longer
+        -- raid names may use further lines without being abbreviated.
+        local wrappedStage, count = WrapNavWords(stageName, 14)
+        displayLabel = stageTier .. "\n" .. wrappedStage
+        labelLines = count + 1
+    else
+        displayLabel, labelLines = WrapNavWords(label, 14)
     end
     txt:SetText(displayLabel)
     btn.text = txt
     btn.pageId = id
+    btn.fullLabel = label
+    btn.labelLineCount = labelLines
 
     btn:SetScript("OnEnter", function(self)
         if data.selectedPage ~= id then
@@ -3205,10 +3236,12 @@ local function LayoutNavigation()
             for _, btn in ipairs(visible) do
                 local isStage = VANILLA_STAGES[btn.pageId] or TBC_STAGES[btn.pageId]
                     or WOTLK_STAGES[btn.pageId]
-                -- Measure after setting wrapping and width, reserving a safe
-                -- two-line minimum for stage names on WoW 3.3.5a.
+                -- Use both measured font height and explicit line count:
+                -- custom fonts may return a single-line height even when a
+                -- newline appears in a FontString on this older client.
                 local minHeight = isStage and 44 or 34
-                local rowHeight = math.max(minHeight, (btn.text:GetStringHeight() or 0) + 12)
+                local newlineHeight = (btn.labelLineCount or 1) * 23 + 12
+                local rowHeight = math.max(minHeight, newlineHeight, (btn.text:GetStringHeight() or 0) + 12)
                 btn:SetHeight(rowHeight - 1)
                 btn:ClearAllPoints()
                 btn:SetPoint("TOPLEFT", 10, y)
