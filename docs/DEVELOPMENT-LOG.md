@@ -54,6 +54,21 @@ This is the **working project record**. Keep chronological entries with clear st
 ### Next action
 Complete baseline P1 verification, then deliver P1A in small reviewed PRs with checks in `docs/TESTING.md`. Do not silently change server authority or force-progress characters.
 
+## 13 October 2026 — Maintainer Settings feedback and Resource Hub footer
+
+**Status:** Changes implemented in [PR #2](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/2); awaiting refreshed client test.
+**Evidence received:** Maintainer screenshot shows Settings rendered in WoW, **Show all content unchecked**, and **Server progression value: 0** for the pictured character. This is useful evidence of a successful server reply for that character; it does **not** establish whether a separate friend's reported Tier 0/Tier 1 mismatch is resolved.
+
+### Changes
+- Settings now has shorter Off/On guidance, and a separate orange warning explaining that `Show all content` reveals future stages outside the companion's intended stage-by-stage experience. It does not unlock server progression.
+- Settings hint, warning and diagnostic text are anchored sequentially using each preceding FontString's bottom edge, rather than using a fixed Y offset. This is to prevent overlap with large/custom fonts.
+- **General Information**, at the end of its normal guide content, now includes a **Further Server Information** heading and the user-supplied Naxxramas Resource Hub URL: https://cosmiccuddle.github.io/Naxxramas-Resource-Hub/
+- Added Lua 5.1 mocked regression assertions for both text changes and relative text anchors. Manual cases **S18–S19** must still be tested in the actual client.
+
+### Scope and rollback
+- No progression logic, server commands, database, saved variable format or existing URL changed.
+- Revert these feature-branch commits or restore the previous addon folder if issues occur. Do not update N-Addon-Collection's locked v5.2.0 source before an approved release.
+
 ## 12 October 2026 — Automated downloadable PR test package
 
 **Status:** Available for manual QA; not a stable release and not yet installed/tested in WoW.
