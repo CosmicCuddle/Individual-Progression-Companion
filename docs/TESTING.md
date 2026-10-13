@@ -42,6 +42,9 @@
 | S25 | Using the maintainer's enlarged font, inspect Vanilla tiers, General, and Vanilla Side Content labels | Full text wraps across lines; no ellipses or missing raid names; scrolling reaches every entry and Settings remains pinned |
 | S26 | Hover a long sidebar item and move the cursor away | Complete original label appears in a tooltip on hover and disappears on leave |
 | S27 | Inspect the short grey guide footer on Settings and long guide pages | `Guide only - server progression is unchanged.` is visible as one readable line without being clipped |
+| S28 | With enlarged/custom font, review Overview / Roadmap, World Boss Timeline, Vanilla Reputations, General Information, Chronomancer Vezrath and TBC Overview | Hard line breaks expose their **full names**, never trailing ellipses. Sidebar remains scrollable and Settings fixed in footer |
+| S29 | In Show all content mode, review long TBC raid/tier names and later expansion entries | Tier number and raid names may occupy several lines with sufficient height and no overlap |
+| S30 | Dismiss any ElvUI help/tutorial overlay and recheck the header | Companion is unobstructed, independent of ElvUI's own help overlay |
 
 **Note:** S05, S06, S14, S15 contain requested future behaviour; **do not report them as current passes** before implementation and real-client testing.
 
