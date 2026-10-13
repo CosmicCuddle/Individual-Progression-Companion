@@ -183,12 +183,19 @@ local function click(button)
     check(button.scripts.OnClick, "Missing OnClick")
     button.scripts.OnClick(button)
 end
-local function serverReply(payload)
+local function systemMessage(message)
     for _, frame in ipairs(eventFrames) do
         if frame.events and frame.events.CHAT_MSG_SYSTEM and frame.scripts.OnEvent then
-            frame.scripts.OnEvent(frame, "CHAT_MSG_SYSTEM", "##IPSVC##" .. payload)
+            frame.scripts.OnEvent(frame, "CHAT_MSG_SYSTEM", message)
         end
     end
+end
+local function serverReply(payload)
+    -- Preserve existing staged-test inputs while simulating the new .ip get
+    -- response format, including the WoW colours used in the live command.
+    local numeric = payload:match("^PD~(.+)$")
+    check(numeric ~= nil, "Bad test fixture: expected PD~value")
+    systemMessage("Progression Level for |cff00ffffTester|r = |cff00ffff" .. numeric .. "|r")
 end
 
 function Methods:RegisterEvent(name)
@@ -206,7 +213,13 @@ check(UISpecialFrames[1] == "IndividualProgressionFrame", "Escape registration m
 
 command("")
 check(main:IsShown(), "Slash command did not open the frame")
-check(outbound[#outbound] == ".ipsvc data", "Open did not request fresh progression")
+check(outbound[#outbound] == ".ip get Tester",
+    "Open did not request the logged-in player's named read-only progression")
+-- Wrong-character and legacy service replies must never select a tier.
+systemMessage("Progression Level for |cff00ffffOtherPlayer|r = |cff00ffff6|r")
+systemMessage("##IPSVC##PD~6")
+check(widgetText("Server progression value: waiting for reply"),
+    "Foreign or obsolete service reply changed current tier")
 serverReply("PD~0")
 check(isSelected(navLike("Tier 0")), "Server value 0 should select Tier 0")
 check(navLike("Tier 1"):IsShown(), "Tier 1 preview should be visible")
@@ -328,6 +341,12 @@ serverReply("PD~6")
 check(isSelected(navLike("Tier 6")), "Simulated progression 6 should select Tier 6")
 check(navLike("Tier 7"):IsShown(), "Tier 7 preview should be shown at stage 6")
 click(refresh)
+check(outbound[#outbound] == ".ip get Tester",
+    "Refresh must address the self character, not the selected target")
+systemMessage("Progression Level for |cff00ffffOtherPlayer|r = |cff00ffff6|r")
+systemMessage("##IPSVC##PD~6")
+check(widgetText("Server progression value: waiting for reply"),
+    "Foreign or legacy reply changed progression during refresh")
 serverReply("PD~2")
 check(isSelected(navLike("Tier 2")), "Refresh should move from Tier 6 back to Tier 2")
 check(navLike("Tier 3"):IsShown(), "Tier 3 preview should be visible at Tier 2")
