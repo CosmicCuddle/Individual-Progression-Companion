@@ -2,7 +2,7 @@
 
 **Repository:** https://github.com/CosmicCuddle/Individual-Progression-Companion  
 **Implementation:** [PR #7](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/7)  
-**Status:** Draft feature; Lua 5.1 mocks only until the maintainer tests the client.
+**Status:** Draft feature; the maintainer has visually approved the compact Tier 0 checklist in the WoW client. Other tiers, SavedVariables persistence and task accuracy still need separate validation before a release.
 
 ## Goal
 
