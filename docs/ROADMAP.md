@@ -92,6 +92,16 @@ This roadmap separates **existing features** from **proposed work**. A roadmap c
 
 **Acceptance:** Player can copy/paste the exact URL, close the popup by Escape, and read both ordinary and long guides without clipping at normal and enlarged font settings.
 
+### Enlarged-font screenshot follow-up (13 October 2026)
+
+**Status:** Follow-up correction in [PR #6](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/6); automated checks passed; in-game verification pending.
+
+- [x] Wider sidebar, multi-line wrapped labels, two-line stage headings and measured row heights
+- [x] Hover tooltips show complete navigation titles even when custom fonts cannot fit comfortably
+- [x] Replace the overlong, clipped bottom description with a compact status reminder
+- [ ] Recheck full names, navigation scrolling and footer in the maintainer's custom font after installing the refreshed PR #6 test artifact
+- [ ] Recheck `/ip hub`, Ctrl+C and authoritative tier detection; do not release based on mocks alone
+
 ## P2B — Tier-specific personal preparation checklists
 
 **Status:** Approved direction, not yet implemented; tracked by [issue #4](https://github.com/CosmicCuddle/Individual-Progression-Companion/issues/4). Implement in a **separate** incremental PR after review of sample tasks.
