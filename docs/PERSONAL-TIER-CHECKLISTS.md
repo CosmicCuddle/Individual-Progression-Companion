@@ -40,6 +40,13 @@ After testing the opaque, detailed layout in WoW, the maintainer approved the im
 - If a longer tier or custom font cannot fit, the scroll frame remains available so text is **never deliberately clipped to avoid scrolling**.
 - Manual **S39** verifies Tier 0 fits without scrolling; **S42** confirms the fallback for larger content. Passing Lua mocks does **not** prove the client font has the same metrics.
 
+## Maintainer visual acceptance — 13 October 2026
+
+- The maintainer's in-game screenshot of the **compact-card PR #7 test build** confirms all **five Molten Core tasks** and their descriptions are visible without scrolling, with three items marked and the progress indicator displaying **3 of 5**.
+- The maintainer explicitly approved this appearance: **"Yes i like it works really well."** Record Tier 0 compact layout as **PASS**.
+- This is not proof that marks persist across `/reload`, that all other tier content fits, or that the manual Reset confirmation has been tested. The content wording still needs comparison with the deployed progression rules.
+- Keep the original compact sidebar, task IDs, per-character SavedVariables model and optional scrolling for longer tiers. **Do not enlarge the Tier 0 cards again without new feedback.**
+
 ## SavedVariables contract
 
 Existing SavedVariables name: `IndividualProgressionDB` (unchanged).
