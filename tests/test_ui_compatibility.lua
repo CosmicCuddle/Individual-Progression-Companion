@@ -81,7 +81,19 @@ function Methods:SetHeight(h)
     self.height = h
 end
 function Methods:GetStringHeight()
-    return 20
+    return rawget(self, "simulatedStringHeight") or 20
+end
+function Methods:SetScrollChild(child)
+    self.scrollChild = child
+end
+function Methods:SetFocus()
+    self.focused = true
+end
+function Methods:ClearFocus()
+    self.focused = false
+end
+function Methods:HighlightText()
+    self.allSelected = true
 end
 function Methods:SetChecked(v)
     self.checked = (v and true or false)
@@ -183,6 +195,12 @@ local function click(button)
     check(button.scripts.OnClick, "Missing OnClick")
     button.scripts.OnClick(button)
 end
+local function buttonByText(label)
+    for _, object in ipairs(objects) do
+        if object.kind == "Button" and object.value == label then return object end
+    end
+    error("Button missing: " .. label)
+end
 local function systemMessage(message)
     for _, frame in ipairs(eventFrames) do
         if frame.events and frame.events.CHAT_MSG_SYSTEM and frame.scripts.OnEvent then
@@ -272,6 +290,37 @@ check(widgetContaining("FURTHER SERVER INFORMATION"),
     "General Information is missing its Resource Hub footer")
 check(widgetContaining("https://cosmiccuddle.github.io/Naxxramas-Resource-Hub/"),
     "General Information has an incorrect or missing Resource Hub URL")
+local hubButton = buttonByText("Copy Resource Hub URL")
+local hubPopup = named.IPGuideResourceHubCopyFrame
+local hubEdit = named.IPGuideResourceHubEditBox
+check(hubButton:IsShown(), "Copy button should appear only on General Information")
+check(named.IPGuideScrollFrame.position[3] == 71,
+    "General guide content must leave room for its copy button")
+click(hubButton)
+check(hubPopup:IsShown(), "Copy popup did not open")
+check(hubEdit:GetText() == "https://cosmiccuddle.github.io/Naxxramas-Resource-Hub/",
+    "Copy field URL does not match Resource Hub")
+check(hubEdit.focused and hubEdit.allSelected,
+    "URL must be focused and selected for Ctrl+C")
+hubEdit.scripts.OnEscapePressed(hubEdit)
+check(not hubPopup:IsShown() and not hubEdit.focused,
+    "Esc should close the copy field without leaving keyboard focus")
+
+-- Relative widths should never force a 560-wide FontString into a narrow scroll.
+named.IPGuideScrollFrame.width = 330
+click(widgetWithLabel("General Information"))
+local guideBodyFound
+for _, object in ipairs(objects) do
+    if object.parent == named.IPGuideScrollFrame.scrollChild and object.kind == "FontString"
+        and object:IsShown() then
+        guideBodyFound = object
+        break
+    end
+end
+check(guideBodyFound and guideBodyFound.width == 322,
+    "Guide text ignores narrower content widths")
+named.IPGuideScrollFrame.width = 560
+click(widgetWithLabel("General Information"))
 check(navLike("Wrath Overview"):IsShown(), "Wrath guide missing at 13")
 check(navLike("Wrath Reputations"):IsShown(), "Wrath side content missing")
 
@@ -284,6 +333,8 @@ end
 check(settingsCheckbox ~= nil, "Settings checkbox missing")
 check(settingsCheckbox.parent:IsShown(), "Settings panel is not visible")
 check(not named.IPGuideScrollFrame:IsShown(), "Guide scroll obscures Settings")
+check(not hubButton:IsShown(), "Hub copy button should hide outside General Information")
+check(not hubPopup:IsShown(), "Copy popup should not stay open on Settings")
 local warning = widgetContaining("This companion is designed to guide you through progression")
 local hint = widgetContaining("Off (recommended): follow the tiers")
 check(warning ~= nil and hint ~= nil, "Settings caveat or guidance text missing")
@@ -301,6 +352,8 @@ check(warningObject.position[2] == hintObject,
     "Warning must follow guide description's actual height")
 check(diagnosticObject.position[2] == warningObject,
     "Server diagnostic must follow warning's actual height")
+check(hintObject.width >= 450 and warningObject.width == hintObject.width,
+    "Settings guidance should adapt to the available panel width")
 check(widgetText("Server progression value: 13"), "Diagnostic server value is wrong")
 check(not settingsCheckbox:GetChecked(), "Show all must default OFF")
 settingsCheckbox:SetChecked(true)
@@ -316,6 +369,14 @@ check(not navLike("World Boss Timeline"):IsShown(),
     "Turning Show all off must hide old expansion side content")
 click(widgetWithLabel("General Information"))
 check(named.IPGuideScrollFrame:IsShown(), "Guide scroll did not return after Settings")
+check(hubButton:IsShown(), "Hub button should return on General Information")
+-- Increase a sidebar label's simulated font height and verify dynamic row space.
+local longNav = navLike("Tier 13")
+longNav.text.simulatedStringHeight = 37
+click(widgetWithLabel("Settings"))
+check(longNav.height >= 47, "Navigation rows overlap with enlarged font labels")
+longNav.text.simulatedStringHeight = nil
+click(widgetWithLabel("General Information"))
 
 -- Refresh must focus the actual stage after a later in-game progression change.
 click(refresh)
@@ -332,6 +393,14 @@ command("settings")
 check(settingsCheckbox.parent:IsShown(), "/ip settings did not open Settings")
 check(widgetWithLabel("Settings").icon.texture[1] == "Interface\\Icons\\INV_Gizmo_02",
     "Settings navigation icon missing")
+command("hub")
+check(hubPopup:IsShown() and hubEdit.focused,
+    "/ip hub should show the selectable URL")
+main:Hide()
+check(not hubPopup:IsShown(), "Closing addon must also close Resource Hub popup")
+main:Show()
+serverReply("PD~18")
+check(not hubPopup:IsShown(), "Resource popup reopened unexpectedly")
 
 -- Regression: a genuine server-side progression decrease must move the
 -- guide backwards rather than leaving the previously displayed high tier.
