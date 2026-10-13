@@ -117,6 +117,8 @@ This roadmap separates **existing features** from **proposed work**. A roadmap c
 - [x] Keep the maintainer-approved **compact single-line sidebar** unchanged (button is on tier pages, not new navigation rows)
 - [x] Respond to screenshot feedback: fully opaque scrollable task cards, meaningful descriptions for all 81 tasks, visual mark progress and prominent personal-notes disclaimer
 - [x] After in-game review, optimise adaptive card height so short five-item tiers can fit without scrolling; longer/custom-font task text retains scroll fallback (latest client recheck pending)
+- [x] Maintainer installed the revised test build and visually approved the compact Tier 0 five-card layout with all tasks visible at once (13 October 2026)
+- [ ] Independently confirm notes persist across `/reload`, safe reset and longer-tier scrolling when required
 - [ ] Review each task for accurate wording against live server rules and the Resource Hub before a stable release
 - [ ] Test in WoW 3.3.5a with custom fonts, `/reload` persistence, logout/login, tier changes and cross-character isolation
 
