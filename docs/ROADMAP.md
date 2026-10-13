@@ -92,16 +92,18 @@ This roadmap separates **existing features** from **proposed work**. A roadmap c
 
 **Acceptance:** Player can copy/paste the exact URL, close the popup by Escape, and read both ordinary and long guides without clipping at normal and enlarged font settings.
 
-### Enlarged-font screenshot follow-up (13 October 2026)
+### Compact sidebar — final maintainer preference (13 October 2026)
 
-**Status:** Follow-up correction in [PR #6](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/6); automated checks passed; in-game verification pending.
+**Status:** Restored in [PR #6](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/6); automated regression passed; in-game confirmation of restored compact appearance pending.
 
-- [x] Wider sidebar, multi-line wrapped labels, two-line stage headings and measured row heights
-- [x] Hover tooltips show complete navigation titles even when custom fonts cannot fit comfortably
-- [x] Replace the overlong, clipped bottom description with a compact status reminder
-- [x] Follow-up after screenshots: insert explicit, whole-word line breaks for all long sidebar names; count lines when setting row height (previous auto-wrap still showed ellipses)
-- [ ] Recheck full names, navigation scrolling and footer in the maintainer's custom font after installing the refreshed PR #6 test artifact
-- [ ] Recheck `/ip hub`, Ctrl+C and authoritative tier detection; do not release based on mocks alone
+- [x] Maintainer **rejected** the expanded / multi-line / "chunky" sidebar after inspecting it in WoW. This explicitly supersedes earlier full-label hard-wrap plans.
+- [x] Restore the original **225px sidebar**, compact **28px single-line navigation rows**, and normal scroll behaviour. Do not automatically grow rows for larger fonts.
+- [x] Keep optional full-name tooltip when hovering a truncated sidebar label, without increasing row height.
+- [x] Retain concise unclipped footer text, copyable Resource Hub link and read-only progression detection.
+- [ ] Confirm the restored compact appearance is preferred in the maintainer's actual custom-font client.
+- [ ] Verify the URL popup and Ctrl+C in the game before release.
+
+**Important:** Some long labels necessarily abbreviate visually in the compact bar. This is an accepted compromise; hovering provides the complete label. Future sidebar redesigns require renewed approval.
 
 ## P2B — Tier-specific personal preparation checklists
 
