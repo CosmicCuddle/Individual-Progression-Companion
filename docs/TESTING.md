@@ -45,6 +45,13 @@
 | S28 | With enlarged font, review Overview / Roadmap, World Boss Timeline, Vanilla Reputations, General Information and TBC Overview | Sidebar remains compact rather than adding hard line breaks or oversized rows; full original label is accessible via hover |
 | S29 | Turn Show all content ON and inspect long TBC/Wrath tier names | Rows stay compact and scrolling reaches all entries; hovering over any shortened title shows the complete name |
 | S30 | Dismiss any ElvUI help/tutorial overlay and recheck the header | Companion is unobstructed, independent of ElvUI's own help overlay |
+| S31 | Open a Tier 0 guide and click **Preparation Checklist** | A tier-specific popup appears with guide-based tasks and prominent disclaimer that these are manual notes, not verified by the server |
+| S32 | Tick two items, close/reopen, then `/reload` | Both items remain checked for the same character, realm and tier |
+| S33 | Untick one item | Only that manual item clears; others remain checked |
+| S34 | Click **Reset this tier** once, then close; reopen and click twice | Closing cancels confirmation; two deliberate clicks clear only the active tier's marks |
+| S35 | Switch between Tier 0, Tier 1 and Tier 2; optionally another character | Each tier has its own items and marks; another character/realm must not inherit them |
+| S36 | Open General Information, Settings and `/ip hub` | Checklist button is absent on those pages; Resource Hub, compact sidebar and settings still work |
+| S37 | Check checklist popup with larger/custom UI font and use `.ip get` separately | Text and controls are readable; manually checking boxes never changes the server progression value |
 
 **Note:** S05, S06, S14, S15 contain requested future behaviour; **do not report them as current passes** before implementation and real-client testing.
 
