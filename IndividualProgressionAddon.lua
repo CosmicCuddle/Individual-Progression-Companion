@@ -2641,17 +2641,11 @@ jumpBtn:SetSize(105, 22)
 jumpBtn:SetPoint("RIGHT", -12, 0)
 jumpBtn:SetText("Current Stage")
 
--- Give custom and larger WoW fonts enough room without shrinking the guide
--- excessively. Long labels also wrap into height-measured rows below.
-local NAV_SIDEBAR_WIDTH = 260
-local NAV_BUTTON_WIDTH = NAV_SIDEBAR_WIDTH - 47
-local NAV_CHILD_WIDTH = NAV_SIDEBAR_WIDTH - 37
-
 -- Sidebar
 local sidebar = CreateFrame("Frame", nil, mainFrame)
 sidebar:SetPoint("TOPLEFT", 18, -128)
 sidebar:SetPoint("BOTTOMLEFT", 18, 18)
-sidebar:SetWidth(NAV_SIDEBAR_WIDTH)
+sidebar:SetWidth(225)
 sidebar:SetBackdrop(BACKDROP_INNER)
 sidebar:SetBackdropColor(0.055, 0.055, 0.075, 0.96)
 sidebar:SetBackdropBorderColor(0.33, 0.3, 0.22, 0.8)
@@ -2666,7 +2660,7 @@ navScroll:SetPoint("BOTTOMRIGHT", -27, 73)
 navScroll:EnableMouseWheel(true)
 
 local navScrollChild = CreateFrame("Frame", nil, navScroll)
-navScrollChild:SetSize(NAV_CHILD_WIDTH, 900)
+navScrollChild:SetSize(188, 900)
 navScroll:SetScrollChild(navScrollChild)
 navScroll:SetScript("OnMouseWheel", function(self, delta)
     local current = self:GetVerticalScroll() or 0
@@ -2902,33 +2896,9 @@ local vanillaStageOrder = { "mc", "onyxia", "bwl", "preaq", "aqwar", "aq", "naxx
 local tbcStageOrder = { "tbc8", "tbc9", "tbc10", "tbc12" }
 local wrathStageOrder = { "wrath13", "wrath14", "wrath15", "wrath16", "wrath17" }
 
--- WoW 3.3.5a truncates FontStrings even with SetWordWrap(true) on some
--- third-party fonts. Insert intentional line breaks before measuring rows,
--- so labels never depend solely on the font's automatic wrapping behaviour.
--- 14 characters is deliberately conservative for the large ElvUI-style font
--- supplied in the maintainer's screenshots; preserve whole words and use
--- the complete original label in GameTooltip on hover.
-local function WrapNavWords(label, maxCharacters)
-    local lines = {}
-    local line = ""
-    for word in string.gmatch(label, "%S+") do
-        if line ~= "" and string.len(line) + 1 + string.len(word) > maxCharacters then
-            table.insert(lines, line)
-            line = word
-        elseif line == "" then
-            line = word
-        else
-            line = line .. " " .. word
-        end
-    end
-    if line ~= "" then table.insert(lines, line) end
-    if table.getn(lines) == 0 then return "", 1 end
-    return table.concat(lines, "\n"), table.getn(lines)
-end
-
 local function CreateNavButton(id, label, y)
     local btn = CreateFrame("Button", nil, navScrollChild)
-    btn:SetSize(NAV_BUTTON_WIDTH, 28)
+    btn:SetSize(178, 28)
     btn:SetPoint("TOPLEFT", 10, y)
 
     local bg = btn:CreateTexture(nil, "BACKGROUND")
@@ -3004,37 +2974,18 @@ local function CreateNavButton(id, label, y)
     btn.mark = mark
 
     local txt = btn:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    -- TOP anchors let the font measure its real wrapped height. Anchoring a
-    -- narrow label at vertical CENTER could truncate it with large fonts.
-    txt:SetPoint("TOPLEFT", btn, "TOPLEFT", 61, -6)
-    txt:SetPoint("TOPRIGHT", btn, "TOPRIGHT", -5, -6)
+    txt:SetPoint("LEFT", 61, 0)
+    txt:SetPoint("RIGHT", -5, 0)
     txt:SetJustifyH("LEFT")
-    txt:SetJustifyV("TOP")
-    txt:SetWordWrap(true)
-    txt:SetNonSpaceWrap(true)
-    local stageTier, stageName = label:match("^(Tier%s+%d+)%s+(.+)$")
-    local displayLabel, labelLines
-    if stageTier and (VANILLA_STAGES[id] or TBC_STAGES[id] or WOTLK_STAGES[id]) then
-        -- The tier and the full raid name receive their own lines. Longer
-        -- raid names may use further lines without being abbreviated.
-        local wrappedStage, count = WrapNavWords(stageName, 14)
-        displayLabel = stageTier .. "\n" .. wrappedStage
-        labelLines = count + 1
-    else
-        displayLabel, labelLines = WrapNavWords(label, 14)
-    end
-    txt:SetText(displayLabel)
+    txt:SetText(label)
     btn.text = txt
-    btn.pageId = id
-    btn.fullLabel = label
-    btn.labelLineCount = labelLines
 
+    -- Keep the original compact one-line appearance. The complete title is
+    -- always available on hover rather than making every row multiple lines.
     btn:SetScript("OnEnter", function(self)
         if data.selectedPage ~= id then
             self.bg:SetTexture(1, 0.82, 0, 0.07)
         end
-        -- Always show the complete original label even if a particular
-        -- third-party font cannot fit into its wrapped row.
         if GameTooltip then
             GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
             GameTooltip:SetText(label)
@@ -3225,27 +3176,13 @@ local function LayoutNavigation()
 
         if table.getn(visible) > 0 then
             group.heading:Show()
-            group.heading:SetWidth(NAV_CHILD_WIDTH - 20)
-            group.heading:SetJustifyH("LEFT")
-            group.heading:SetWordWrap(true)
-            group.heading:SetNonSpaceWrap(true)
             group.heading:ClearAllPoints()
             group.heading:SetPoint("TOPLEFT", 8, y - 2)
-            local headingHeight = math.max(27, (group.heading:GetStringHeight() or 0) + 10)
-            y = y - headingHeight
+            y = y - 24
             for _, btn in ipairs(visible) do
-                local isStage = VANILLA_STAGES[btn.pageId] or TBC_STAGES[btn.pageId]
-                    or WOTLK_STAGES[btn.pageId]
-                -- Use both measured font height and explicit line count:
-                -- custom fonts may return a single-line height even when a
-                -- newline appears in a FontString on this older client.
-                local minHeight = isStage and 44 or 34
-                local newlineHeight = (btn.labelLineCount or 1) * 23 + 12
-                local rowHeight = math.max(minHeight, newlineHeight, (btn.text:GetStringHeight() or 0) + 12)
-                btn:SetHeight(rowHeight - 1)
                 btn:ClearAllPoints()
                 btn:SetPoint("TOPLEFT", 10, y)
-                y = y - rowHeight
+                y = y - 29
             end
             y = y - 8
         else
