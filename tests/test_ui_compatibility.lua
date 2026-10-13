@@ -265,49 +265,37 @@ check(not navLike("Wrath Overview"):IsShown(), "Wrath must be hidden for Tier 0"
 check(widgetWithLabel("General Information"):IsShown(), "General must always be visible")
 check(widgetWithLabel("Settings"):IsShown(), "Settings must always be accessible")
 
--- Enlarged-font screenshot regression: all labels need space to wrap,
--- two-line stage names and a tooltip with the complete original wording.
+-- Maintainer rejected the tall, wrapped sidebar after in-game review.
+-- Lock in the original compact 225px sidebar and single-line 28px rows.
 local tierZero = navLike("Tier 0")
 local worldBossNav = navLike("World Boss Timeline")
 local generalNav = widgetWithLabel("General Information")
-check(tierZero.text.value:find("Tier 0\nMolten Core", 1, true),
-    "Stage title should reserve a separate line for the instance name")
-check(tierZero.height >= 43, "Two-line tier navigation must have enough row height")
-check(tierZero.text.wordWrap and worldBossNav.text.wordWrap and generalNav.text.wordWrap,
-    "Sidebar labels must support wrapping with enlarged fonts")
-check(tierZero.text.position[1] == "TOPRIGHT" and tierZero.text.position[2] == tierZero,
-    "Wrapped navigation text needs top anchoring instead of vertical centering")
-check(tierZero.width >= 210, "Sidebar width is still too narrow for enlarged font labels")
--- The previous row-height-only change left several entries visibly clipped.
--- Explicit newlines, not WoW's unreliable auto-wrap, now drive layout.
-check(worldBossNav.text.value == "World Boss\nTimeline",
-    "World Boss Timeline needs a hard line break with enlarged font")
-check(worldBossNav.labelLineCount == 2 and worldBossNav.height >= 57,
-    "World Boss row must reserve enough height for its two lines")
-check(generalNav.text.value == "General\nInformation",
-    "General Information should not be truncated to ellipses")
-check(generalNav.height >= 57, "General Information row too short")
-check(widgetWithLabel("Overview / Roadmap").text.value == "Overview /\nRoadmap",
-    "Overview and Roadmap should fit in separate lines")
-check(widgetWithLabel("Vanilla Reputations").text.value == "Vanilla\nReputations",
-    "Vanilla Reputations must fit without truncation")
-check(widgetWithLabel("Chronomancer Vezrath").text.value == "Chronomancer\nVezrath",
-    "Chronomancer name must fit without truncation")
-check(navLike("Tier 8").labelLineCount >= 3,
-    "Long multi-raid stage must reserve room for at least three lines")
-check(widgetWithLabel("TBC Overview / Roadmap").text.value == "TBC Overview /\nRoadmap",
-    "TBC overview should not be truncated")
+check(tierZero.width == 178 and tierZero.height == 28,
+    "Compact sidebar stage row dimensions changed")
+check(worldBossNav.width == 178 and generalNav.height == 28,
+    "Compact sidebar information row dimensions changed")
+check(tierZero.parent.width == 188,
+    "Navigation scroll child should fit original 225px sidebar")
+check(tierZero.text.value == "Tier 0     Molten Core",
+    "Stage title should remain in the original one-line layout")
+check(worldBossNav.text.value == "World Boss Timeline" and
+    generalNav.text.value == "General Information",
+    "Information labels should retain original one-line wording")
+check(not tierZero.text.value:find("\n", 1, true),
+    "The rejected multiple-line tier labels have returned")
+check(tierZero.text.position[1] == "RIGHT",
+    "Sidebar label should use original vertically centred anchors")
 worldBossNav.scripts.OnEnter(worldBossNav)
 check(GameTooltip.visible and GameTooltip.value == "World Boss Timeline",
-    "Hover should reveal a complete non-truncated navigation label")
+    "Full sidebar title must remain accessible on hover")
 worldBossNav.scripts.OnLeave(worldBossNav)
-check(not GameTooltip.visible, "Navigation tooltip should hide when leaving the row")
+check(not GameTooltip.visible, "Sidebar tooltip should close on exit")
 
--- The long previous footer was clipped in the real user's custom font.
+-- Preserve the approved concise footer and other independent PR #6 features.
 check(widgetContaining("Guide only - server progression is unchanged."),
-    "Shortened one-line footer is missing")
+    "Concise footer is missing")
 check(not widgetContaining("Server progression companion - Vanilla, TBC"),
-    "Old overlong footer must not be present")
+    "Old overlong footer returned")
 
 -- Reopen should display pending, then focus an authoritative newer tier.
 main:Hide()
@@ -431,11 +419,11 @@ check(not navLike("World Boss Timeline"):IsShown(),
 click(widgetWithLabel("General Information"))
 check(named.IPGuideScrollFrame:IsShown(), "Guide scroll did not return after Settings")
 check(hubButton:IsShown(), "Hub button should return on General Information")
--- Increase a sidebar label's simulated font height and verify dynamic row space.
+-- Custom fonts must not silently re-enable the rejected bulky row layout.
 local longNav = navLike("Tier 13")
 longNav.text.simulatedStringHeight = 55
 click(widgetWithLabel("Settings"))
-check(longNav.height >= 66, "Navigation rows overlap with enlarged font labels")
+check(longNav.height == 28, "Custom fonts must not expand compact sidebar rows")
 longNav.text.simulatedStringHeight = nil
 click(widgetWithLabel("General Information"))
 
@@ -486,4 +474,4 @@ check(widgetText("Server progression value: 2"),
     "Server diagnostic should reflect new lower progression value")
 check(isSelected(navLike("Tier 2")), "Tier 2 focus lost after sidebar reflow")
 
-print("PASS: 3.3.5a mocked addon flow, wrapped navigation, footer, Resource Hub and tier regression")
+print("PASS: 3.3.5a compact navigation, full-label hover, Resource Hub, Settings and tier regression")
