@@ -54,6 +54,26 @@ This is the **working project record**. Keep chronological entries with clear st
 ### Next action
 Complete baseline P1 verification, then deliver P1A in small reviewed PRs with checks in `docs/TESTING.md`. Do not silently change server authority or force-progress characters.
 
+## 13 October 2026 — PR #6 Resource Hub copy and readability
+
+**Status:** Implemented in [PR #6](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/6), simulated tests passed; real WoW 3.3.5a test pending. This is not a released build.
+
+- Added **Copy Resource Hub URL** on General Information and a `/ip hub` shortcut. A native 3.3.5a `InputBoxTemplate` popup shows the exact Resource Hub URL, sets keyboard focus, selects the URL, and explains Ctrl+C. Escape/close/parent close dismiss the popup.
+- A fixed copy button only appears on General Information, and its guide scroll region is shortened to keep the button unobstructed. Switching pages closes/hides the popup.
+- Increased the content header spacing, removed a forced 560px text width that could cause clipping at narrower widths, sized Settings text to the usable panel width, and reflowed sidebar rows based on wrapped label height.
+- Expanded simulated Lua 5.1 tests for popup URL/focus/selection/close, slash alias, General-only button placement, Settings, narrow text widths, custom-font navigation and regression-safe tier lookup.
+- GitHub Actions [run 38384842721](https://github.com/CosmicCuddle/Individual-Progression-Companion/actions/runs/38384842721) passed Lua 5.1 syntax, TOC validation, and mocked UI behaviour after these changes.
+- The character's actual progression and server modules are untouched. No new SavedVariables fields are introduced. Backup the last working addon folder and relevant SavedVariables before testing the PR artifact.
+
+### Pending checks
+1. In WoW 3.3.5a, use General Information → Copy Resource Hub URL and verify Ctrl+A/Ctrl+C paste into a browser.
+2. Confirm the popup closes with Escape, X and closing the main addon; `/ip hub` also opens it.
+3. Check large/custom fonts, smaller UI scales, footer readability, nav scrolling, narrow text wrapping and Settings warning.
+4. Confirm the existing `.ip get`-based tier auto-detection still reports Admina's Tier 2.
+
+### Following approved feature
+Issue [#4](https://github.com/CosmicCuddle/Individual-Progression-Companion/issues/4): tier-specific personal preparation checklists. Keep them local and character-specific, not server progression.
+
 ## 13 October 2026 — Maintainer QA acceptance: GM tier detection
 
 **Status:** Approved in-game acceptance for the reported bug using the GM character Admina. Implementation remains in PR #5 and **not merged or released**.
