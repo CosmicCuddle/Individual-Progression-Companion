@@ -2481,45 +2481,72 @@ local data = {
     loaded = false,
     selectedPage = "overview",
     focusCurrentOnReply = false,
+    awaitingSelfLookup = false,
+    requestedName = nil,
 }
-
-local function SendCommand(cmd)
-    SendChatMessage(".ipsvc " .. cmd, "SAY")
-end
 
 local UpdateDisplay
 local SelectPage
 local GetCurrentStageId
 
+-- IP Companion's old .ipsvc data service reported 6 for a character for whom
+-- the server's normal .ip get command reported 2. This candidate uses the same
+-- read-only command available to players on this server instead of trusting
+-- the discrepant .ipsvc value. Never use .ip set or edit progression quests.
 local function RequestData(focusCurrentOnReply)
     if focusCurrentOnReply then
         data.focusCurrentOnReply = true
     end
-    -- A previous response must not be presented as a fresh result.
     data.loaded = false
+    data.awaitingSelfLookup = false
+    data.requestedName = UnitName("player")
     if UpdateDisplay then UpdateDisplay() end
-    SendCommand("data")
-end
 
-local function ParseMessage(payload)
-    local parts = { strsplit(DELIMITER, payload) }
-    if parts[1] == "PD" then
-        local value = tonumber(parts[2])
-        -- Malformed replies must never silently become Tier 0.
-        if not value or value < 0 or value ~= math.floor(value) then return end
-
-        data.currentValue = value
-        data.loaded = true
-        if data.focusCurrentOnReply then
-            data.focusCurrentOnReply = false
-            data.selectedPage = GetCurrentStageId(value) or (value >= 18 and "wrathoverview" or "overview")
-        end
-        UpdateDisplay()
+    if data.requestedName and data.requestedName ~= "" then
+        data.awaitingSelfLookup = true
+        -- Supplying our own name avoids .ip get's target-or-self ambiguity.
+        -- This syntax must be checked against the deployed server before release.
+        SendChatMessage(".ip get " .. data.requestedName, "SAY")
     end
 end
 
+-- The deployed reply is styled with WoW colour codes, e.g.
+-- "Progression Level for |cff00ffffAdmina|r = |cff00ffff2|r".
+-- Parse a *complete*, self-named reply, not an unrelated system message.
+local function GetSelfProgressionFromMessage(msg)
+    if type(msg) ~= "string" then return nil end
+    local plain = msg:gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", "")
+    local name, valueText = plain:match("^Progression Level for (.-) = (%d+)$")
+    if not name or not data.requestedName then return nil end
+    if name:lower() ~= data.requestedName:lower() then return nil end
+    local value = tonumber(valueText)
+    if not value or value < 0 or value ~= math.floor(value) then return nil end
+    return value
+end
+
+local function HandleSelfProgressionReply(msg)
+    if not data.awaitingSelfLookup then return end
+    local value = GetSelfProgressionFromMessage(msg)
+    if value == nil then return end
+
+    data.awaitingSelfLookup = false
+    data.currentValue = value
+    data.loaded = true
+    if data.focusCurrentOnReply then
+        data.focusCurrentOnReply = false
+        data.selectedPage = GetCurrentStageId(value) or (value >= 18 and "wrathoverview" or "overview")
+    end
+    UpdateDisplay()
+end
+
 ChatFrame_AddMessageEventFilter("CHAT_MSG_SYSTEM", function(self, event, msg, ...)
-    if msg and msg:find("^##IPSVC##") then
+    -- Hide only the reply for our own pending lookup, never other .ip get
+    -- results or ordinary system messages.
+    if data.awaitingSelfLookup and GetSelfProgressionFromMessage(msg) ~= nil then
+        return true
+    end
+    -- Keep the legacy addon service messages hidden if another module emits one.
+    if type(msg) == "string" and msg:find("^##IPSVC##") then
         return true
     end
 end)
@@ -3365,8 +3392,8 @@ end)
 local eventFrame = CreateFrame("Frame")
 eventFrame:RegisterEvent("CHAT_MSG_SYSTEM")
 eventFrame:SetScript("OnEvent", function(self, event, msg)
-    if event == "CHAT_MSG_SYSTEM" and msg and msg:find("^" .. MSG_PREFIX) then
-        ParseMessage(msg:sub(#MSG_PREFIX + 1))
+    if event == "CHAT_MSG_SYSTEM" then
+        HandleSelfProgressionReply(msg)
     end
 end)
 
