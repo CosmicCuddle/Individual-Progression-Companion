@@ -52,6 +52,10 @@
 | S35 | Switch between Tier 0, Tier 1 and Tier 2; optionally another character | Each tier has its own items and marks; another character/realm must not inherit them |
 | S36 | Open General Information, Settings and `/ip hub` | Checklist button is absent on those pages; Resource Hub, compact sidebar and settings still work |
 | S37 | Check checklist popup with larger/custom UI font and use `.ip get` separately | Text and controls are readable; manually checking boxes never changes the server progression value |
+| S38 | Open the redesigned Tier 0 checklist near a busy in-game scene | Popup background is opaque; underlying guide/world text does not show through task cards; clear tier heading, disclaimer and progress indicator are visible |
+| S39 | Read all Tier 0 tasks and scroll to the last task | Each of five cards includes its category, meaningful details and mark state; text wraps without overlap and wheel scrolling reaches every card |
+| S40 | Tick items, then try Reset and Done | X/Y progress display changes, previous marks persist on reopening, first reset click does not clear, Done closes and cancels pending reset |
+| S41 | View an extended stage (e.g. BWL or TBC) with the custom font | Guide-specific explanations are useful, rows do not overlap, and the original compact sidebar is unchanged |
 
 **Note:** S05, S06, S14, S15 contain requested future behaviour; **do not report them as current passes** before implementation and real-client testing.
 
