@@ -54,6 +54,17 @@ This is the **working project record**. Keep chronological entries with clear st
 ### Next action
 Complete baseline P1 verification, then deliver P1A in small reviewed PRs with checks in `docs/TESTING.md`. Do not silently change server authority or force-progress characters.
 
+## 13 October 2026 — Live tier mismatch and command permissions clarification
+
+**Status:** Open bug [#3](https://github.com/CosmicCuddle/Individual-Progression-Companion/issues/3); diagnosis pending. No character state, server command, or addon logic changed in response to this report.
+
+- Screenshot shows GM character **Admina** displayed as **Tier 6 — Naxxramas**, while the maintainer expects **Tier 2**. Need to compare authoritative progression for *that character* with the addon Settings → **Server progression value** after Refresh.
+- Maintainer explicitly confirms that **ordinary players can use `.ip get`** on the deployed server; **`.ip set` is GM-only**. The public upstream command definition reviewed separately marks `.ip get` GM-only, so it is not a faithful description of the deployed server's permissions. Do not copy that upstream assumption into client restrictions.
+- Upstream progression getter reads the highest rewarded hidden quest `66000 + tier`. The deployed `.ipsvc data` handler still needs inspection: it may not resolve the same character or get exactly the same numeric result.
+- Read-only next test: on Admina, use `/cleartarget`, then `.ip get`, and compare name/value with Settings → Refresh → **Server progression value**. Do **not** call `.ip set` to test or "correct" tier.
+- UI must track confirmed progression **both downward and upward**, without rewriting quest flags or trusting stale results.
+- Approved future enhancements recorded in [issue #4](https://github.com/CosmicCuddle/Individual-Progression-Companion/issues/4): copyable Resource Hub URL, font/UI-scale resilience, and local per-character tier preparation checklists. These are separate from this bug and are not implemented yet.
+
 ## 13 October 2026 — Maintainer Settings feedback and Resource Hub footer
 
 **Status:** Changes implemented in [PR #2](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/2); awaiting refreshed client test.
