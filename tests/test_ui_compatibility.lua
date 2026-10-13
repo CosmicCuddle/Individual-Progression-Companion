@@ -169,7 +169,7 @@ end
 local function widgetWithLabel(label)
     for _, object in ipairs(objects) do
         if object.kind == "Button" and type(object.text) == "table"
-            and object.text.value == label then
+            and (object.fullLabel or object.text.value) == label then
             return object
         end
     end
@@ -178,8 +178,8 @@ end
 local function navLike(fragment)
     for _, object in ipairs(objects) do
         if object.kind == "Button" and type(object.text) == "table"
-            and type(object.text.value) == "string"
-            and string.find(object.text.value, fragment, 1, true) then
+            and type(object.fullLabel or object.text.value) == "string"
+            and string.find(object.fullLabel or object.text.value, fragment, 1, true) then
             return object
         end
     end
@@ -278,6 +278,25 @@ check(tierZero.text.wordWrap and worldBossNav.text.wordWrap and generalNav.text.
 check(tierZero.text.position[1] == "TOPRIGHT" and tierZero.text.position[2] == tierZero,
     "Wrapped navigation text needs top anchoring instead of vertical centering")
 check(tierZero.width >= 210, "Sidebar width is still too narrow for enlarged font labels")
+-- The previous row-height-only change left several entries visibly clipped.
+-- Explicit newlines, not WoW's unreliable auto-wrap, now drive layout.
+check(worldBossNav.text.value == "World Boss\nTimeline",
+    "World Boss Timeline needs a hard line break with enlarged font")
+check(worldBossNav.labelLineCount == 2 and worldBossNav.height >= 57,
+    "World Boss row must reserve enough height for its two lines")
+check(generalNav.text.value == "General\nInformation",
+    "General Information should not be truncated to ellipses")
+check(generalNav.height >= 57, "General Information row too short")
+check(widgetWithLabel("Overview / Roadmap").text.value == "Overview /\nRoadmap",
+    "Overview and Roadmap should fit in separate lines")
+check(widgetWithLabel("Vanilla Reputations").text.value == "Vanilla\nReputations",
+    "Vanilla Reputations must fit without truncation")
+check(widgetWithLabel("Chronomancer Vezrath").text.value == "Chronomancer\nVezrath",
+    "Chronomancer name must fit without truncation")
+check(navLike("Tier 8").labelLineCount >= 3,
+    "Long multi-raid stage must reserve room for at least three lines")
+check(widgetWithLabel("TBC Overview / Roadmap").text.value == "TBC Overview /\nRoadmap",
+    "TBC overview should not be truncated")
 worldBossNav.scripts.OnEnter(worldBossNav)
 check(GameTooltip.visible and GameTooltip.value == "World Boss Timeline",
     "Hover should reveal a complete non-truncated navigation label")
