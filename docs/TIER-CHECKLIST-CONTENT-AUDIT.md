@@ -94,7 +94,7 @@
 - [x] Misleading gate/service/future-access classifications corrected.
 - [x] High-risk numerical discrepancy explicitly recorded, not silently reconciled.
 - [x] Saved task IDs unchanged; additive per-character/per-realm preferences unchanged.
-- [ ] Pass latest Lua 5.1 mocks and PR-only packaging.
+- [x] Lua 5.1 mock and PR-only packaging checks passed ([Actions run 38399275794](https://github.com/CosmicCuddle/Individual-Progression-Companion/actions/runs/38399275794), head `febaad593ed4271a5a12e3a5591ced67241d44df`).
 - [ ] Content sign-off for server-specific quest details or direct evidence for any disputed rule.
 - [ ] Check SavedVariables survive `/reload` when convenient; tier and realm isolation already mocked.
 - [ ] Keep PR #7 draft/unmerged and N-Addon-Collection pinned stable until approved.
