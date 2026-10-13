@@ -2674,6 +2674,126 @@ local PERSONAL_TIER_TASKS = {
     },
 }
 
+-- Detailed descriptions are sourced from the existing tier guide steps.
+-- IDs intentionally match PERSONAL_TIER_TASKS; notes already saved keep their meaning.
+local PERSONAL_TIER_DETAILS = {
+    mc = {
+        gear = "Before entering Molten Core, fill weak gear slots in BRD, LBRS/UBRS, Scholomance and Stratholme. Bring class consumables, food, bandages and Greater Fire Protection Potions.",
+        core = "Speak with Lothos Riftwaker at Blackrock Mountain. Retrieve the Core Fragment beside the Molten Core portal inside BRD, then turn the quest in.",
+        brd_entry = "For your first Molten Core run, reach its original internal portal by travelling through Blackrock Depths. Use the Lothos shortcut only after the server's first-entry requirement.",
+        hydraxis = "Begin Duke Hydraxis's quests in Azshara and build Hydraxian Waterlords reputation. Bring Aqual or Eternal Quintessence to douse all seven runes before Majordomo.",
+        ragnaros = "After the seven runes and Majordomo encounter are complete, defeat Ragnaros. This is the server's Tier 0 progression milestone.",
+    },
+    onyxia = {
+        chain = "Follow the full Horde or Alliance chain in the Onyxia guide. Horde begins with Warlord's Command; Alliance begins with Dragonkin Menace.",
+        amulet = "Finish the upper Blackrock Spire steps and obtain the Drakefire Amulet. Keep it in your inventory when entering Onyxia's Lair.",
+        supplies = "Prepare tank threat, healing, positioning and ordinary consumables for Onyxia's multi-phase encounter. Continue Molten Core gearing as needed.",
+        cloaks = "Save Onyxia Scales from Tier 1 kills and arrange Onyxia Scale Cloaks for the raid before the Shadowflame encounters in Blackwing Lair.",
+        onyxia = "Defeat Onyxia after attunement. Her defeat advances the character into Tier 2, Blackwing Lair.",
+    },
+    bwl = {
+        blackhand = "Loot Blackhand's Command from the Scarshield Quartermaster, defeat General Drakkisath in UBRS and use the Orb of Ascension behind him.",
+        first_entry = "For your first Blackwing Lair entry, use the entrance inside Upper Blackrock Spire. The outside Orb of Command is for later access.",
+        cloaks = "Arrange enough Onyxia Scale Cloaks for raid members facing Shadowflame. Use scales gathered during Onyxia farming.",
+        diremaul = "Visit Dire Maul East, West and North to review gear, class rewards, librams, enchants and North Tribute benefits before serious BWL progression.",
+        nefarian = "Progress through Blackwing Lair and defeat Nefarian to finish Tier 2 and open Pre-AQ.",
+    },
+    preaq = {
+        turnins = "Complete every War Effort resource category required by the stage at least once. Review the tier guide for the precise resource and turn-in routes.",
+        signets = "Continue useful War Effort resource turn-ins to earn Commendation Signets while preparing for the gong objective.",
+        zul_gurub = "Use Zul'Gurub as supporting raid content for gear, reputation and consumables during the Pre-AQ phase.",
+        gong = "Complete the War Effort prerequisites and the server's Scarab Gong objective. The gong concludes this stage.",
+    },
+    aqwar = {
+        chaos = "Follow the Silithus outdoor war objectives and turn in Chaos and Destruction when complete. This is the stage's required completion step.",
+        aq20 = "Use Ruins of Ahn'Qiraj (AQ20) for gear and reputation while the outdoor war is underway, if suitable for your raid.",
+        aq40 = "Prepare consumables and a raid group for Temple of Ahn'Qiraj (AQ40) once your roster is ready.",
+        reputation = "Build Cenarion Circle and Brood of Nozdormu reputation through available Silithus and AQ activities.",
+    },
+    aq = {
+        resists = "Bring AQ-specific consumables and appropriate resistance gear for encounters where your raid needs them. Do not abandon core stats unnecessarily.",
+        brood = "Progress Brood of Nozdormu reputation for AQ40 rewards, alongside Cenarion Circle where relevant.",
+        argent = "Begin farming Argent Dawn reputation before Tier 6, so Naxxramas attunement is not left until the last minute.",
+        cthun = "Clear the required AQ40 encounter path and defeat C'Thun. This unlocks the Naxxramas progression stage.",
+    },
+    naxx = {
+        argent = "Reach at least Honored with Argent Dawn for Naxxramas attunement. Higher reputation can reduce its material and gold costs.",
+        attunement = "At Light's Hope Chapel, take The Dread Citadel - Naxxramas from Archmage Angela Dosantos and complete its cost/turn-in requirements.",
+        first_entry = "Make your first Naxxramas entry using the original entrance behind Stratholme. The Eastern Plaguelands teleport crystal becomes useful afterwards.",
+        frost = "Prepare Frost Resistance for Sapphiron and late Naxxramas encounters while balancing normal survivability and performance.",
+        kelthuzad = "Clear the Naxxramas wings, defeat Sapphiron and then Kel'Thuzad. The final kill completes Tier 6.",
+    },
+    pretbc = {
+        breach = "Travel to the Dark Portal and complete the Into the Breach invasion objectives as described in the Pre-TBC guide.",
+        vanilla = "Finish any desired unfinished Vanilla goals, crafting or raid rewards before moving to the next expansion.",
+        gear = "Review gear, professions, consumables and inventory capacity before beginning the Outland journey.",
+        vezrath = "When the stage's requirements are met, speak with Chronomancer Vezrath to arrange the TBC transition.",
+    },
+    tbc8 = {
+        outland = "Level through Outland, build useful dungeon reputations and prepare for Heroic dungeons and entry-level TBC raids.",
+        masters_key = "Complete the restored Master's Key chain for Karazhan; the stage guide details the dungeon portions and final key requirements.",
+        nightbane = "Finish the Nightbane summon route in Karazhan and defeat Nightbane for the Blazing Signet used in SSC attunement.",
+        heroics = "Plan Heroic dungeon access, tanks/healers, resistances and consumables for Karazhan, Gruul and Magtheridon.",
+        prince = "Defeat Prince Malchezaar in Karazhan. The guide identifies this kill as the Tier 8 progression trigger.",
+    },
+    tbc9 = {
+        ssc = "Complete The Cudgel of Kar'desh, obtained from Skar'this the Heretic in Heroic Slave Pens, for Serpentshrine Cavern access.",
+        tk = "Finish The Cipher of Damnation and the Trial of the Naaru quests required by the restored Tempest Keep attunement.",
+        vials = "Collect the vial remnants from Lady Vashj and Kael'thas, then complete The Vials of Eternity for the next tier.",
+        bt = "Work through the earlier steps of the restored Black Temple attunement route as access becomes available.",
+        kael = "Clear The Eye's required encounters and defeat Kael'thas Sunstrider to finish this stage.",
+    },
+    tbc10 = {
+        vials = "Check that The Vials of Eternity has been completed before starting the Mount Hyjal and Black Temple tier.",
+        karabor = "Finish the Akama/Medallion of Karabor route for restored Black Temple access. Consult the full tier guide for the ordered chain.",
+        hyjal = "Prepare and clear Battle for Mount Hyjal, including the waves and major encounter stages needed for your group.",
+        bt = "Coordinate tanks, healers, resistance preparation and consumables for Black Temple's raid encounters.",
+        illidan = "Defeat Illidan Stormrage. The server progresses directly to the Sunwell-era stage, skipping the unused ZA tier.",
+    },
+    tbc12 = {
+        queldanas = "Begin Isle of Quel'Danas daily/quest progression as the Sunwell era opens.",
+        terrace = "Complete Normal Magisters' Terrace to follow the dungeon/story progression and prepare for later content.",
+        za = "If useful for your group, clear Zul'Aman for optional catch-up gear before Sunwell.",
+        sunwell = "Organise appropriate consumables, profession supplies, gear and raid assignments for Sunwell Plateau.",
+        kiljaeden = "Progress through Sunwell Plateau and defeat Kil'jaeden to complete TBC progression.",
+    },
+    wrath13 = {
+        level = "Reach level 80, progress through Northrend and unlock relevant Wrath dungeons, factions and systems.",
+        gear = "Build an entry-level Wrath raid set through normal and Heroic dungeons, quests, professions and reputation rewards.",
+        emblems = "Use Heroic dungeons and early emblem sources to replace weaker gear before progressing deep into Naxxramas.",
+        raids = "Prepare Eye of Eternity and Obsidian Sanctum raid plans while they remain current with Naxxramas.",
+        kel = "Defeat Kel'Thuzad in Wrath Naxxramas to unlock the Ulduar stage.",
+    },
+    wrath14 = {
+        emblems = "Review newly available emblem gear and Heroic upgrades for weak slots before Ulduar.",
+        siege = "Prepare for the Siege of Ulduar encounters, including early vehicle and raid coordination needs.",
+        keepers = "Organise your raid for the four Keepers and the later General Vezax/Yogg-Saron sequence.",
+        hardmodes = "Consider optional Ulduar hard modes only after normal progression is stable.",
+        yogg = "Defeat Yogg-Saron to complete Ulduar progression and unlock the Trial era.",
+    },
+    wrath15 = {
+        tournament = "Continue Argent Tournament activities for optional rewards and reputation if useful to your character.",
+        champion = "Run Trial of the Champion for gear upgrades and preparation for the Trial of the Crusader.",
+        consumables = "Restock raid consumables and coordinate assignments for the Trial of the Crusader encounters.",
+        heroic = "Once Normal is secure, consider optional Trial of the Grand Crusader mastery and loot.",
+        anubarak = "Clear Trial of the Crusader and defeat Anub'arak to unlock the Icecrown stage.",
+    },
+    wrath16 = {
+        halls = "Complete the Frozen Halls dungeon progression leading into Icecrown Citadel.",
+        verdict = "Earn Ashen Verdict reputation through Icecrown activities for the associated reputation ring improvements.",
+        supplies = "Prepare consumables, class gear sets and raid assignments for Icecrown's different wings.",
+        shadowmourne = "If the raid has designated a recipient, plan the optional Shadowmourne chain and its group requirements.",
+        lichking = "Clear Icecrown's required encounters and defeat the Lich King to advance to Ruby Sanctum.",
+    },
+    wrath17 = {
+        entry = "After the Lich King stage, assemble a Ruby Sanctum group and prepare for its encounter sequence.",
+        outer = "Clear the outer sanctum encounters and prepare for Halion.",
+        supplies = "Stock suitable consumables and coordinate the raid for Halion's mechanics and phase changes.",
+        halion = "Defeat Halion on Normal. The stage guide says this completes progression value 18.",
+        finalgear = "Continue Icecrown Citadel and Ruby Sanctum for optional final equipment and personal goals.",
+    },
+}
+
 -- ============================================================================
 -- UI BACKDROPS
 -- ============================================================================
