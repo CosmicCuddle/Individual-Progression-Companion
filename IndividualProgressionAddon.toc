@@ -2,7 +2,7 @@
 ## Title: |cffFFD100Individual|r Progression
 ## Notes: Server-specific Vanilla, TBC and Wrath progression companion with tiers, attunements, dungeons, reputations, professions, PvP, side content, Chronomancer Vezrath services and next steps.
 ## Author: CosmicCuddle
-## Version: 5.2.0
+## Version: 5.3.0
 ## SavedVariables: IndividualProgressionDB
 
 IndividualProgressionAddon.lua
