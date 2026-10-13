@@ -3283,6 +3283,7 @@ local function CreateNavButton(id, label, y)
     txt:SetJustifyH("LEFT")
     txt:SetText(label)
     btn.text = txt
+    btn.pageId = id -- Navigation ID is stable, unlike the text and font.
     btn.fullLabel = label -- Needed for full-name hover and stable UI test lookup.
 
     -- Keep the original compact one-line appearance. The complete title is
