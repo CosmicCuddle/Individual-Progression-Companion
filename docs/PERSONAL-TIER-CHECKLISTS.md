@@ -2,12 +2,12 @@
 
 **Repository:** https://github.com/CosmicCuddle/Individual-Progression-Companion  
 **Implementation:** [PR #7](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/7)  
-**Status:** Draft feature; the maintainer has visually approved the compact Tier 0 checklist in the WoW client. Other tiers, SavedVariables persistence and task accuracy still need separate validation before a release.
+**Status:** Draft feature; the maintainer approved the compact Tier 0 checklist and **confirmed its checkmarks survived `/reload`** in the WoW client. Other tiers and server-specific task accuracy remain separate release checks.
 
 ## Tier 0 four-of-five follow-up screenshot — 13 October 2026
 
 - The screenshot supplied in response to the `/reload` test request displays **4/5 manually checked**, with **Hydraxian Waterlords rune dousing** now checked and **Defeat Ragnaros** unchecked.
-- Visual rendering, card fit and progress-indicator consistency remain good. **Confirm whether the screenshot was taken after the reload** before changing SavedVariables persistence status from pending to passed.
+- **PASS — `/reload` persistence confirmed by the maintainer.** The screenshot showing **4/5 manually marked** was explicitly taken after reloading, demonstrating that these Tier 0 SavedVariables flags persisted on this character. It does not establish persistence for every realm/character combination.
 - No UI redesign or additional download is necessary for this follow-up.
 
 ## Goal
