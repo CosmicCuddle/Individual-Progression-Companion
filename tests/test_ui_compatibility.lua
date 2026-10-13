@@ -145,7 +145,10 @@ function SendChatMessage(message, channel)
     assert(channel == "SAY", "Expected SAY for ipsvc requests")
     table.insert(outbound, message)
 end
-function UnitName() return "Tester" end
+local mockPlayerName = "Tester"
+local mockRealmName = "Mock Realm"
+function UnitName() return mockPlayerName end
+function GetRealmName() return mockRealmName end
 function UnitClass() return "Priest", "PRIEST" end
 function UnitLevel() return 60 end
 function strtrim(s) return (s:gsub("^%s+", ""):gsub("%s+$", "")) end
@@ -245,6 +248,8 @@ local command = SlashCmdList.INDIVIDUALPROGRESSION
 check(type(command) == "function", "Missing /ip handler")
 check(main and not main:IsShown(), "Main addon frame should start hidden")
 check(UISpecialFrames[1] == "IndividualProgressionFrame", "Escape registration missing")
+check(UISpecialFrames[3] == "IPGuideTierChecklistFrame",
+    "Tier checklist popup missing Escape registration")
 
 command("")
 check(main:IsShown(), "Slash command did not open the frame")
@@ -262,6 +267,88 @@ check(not navLike("Tier 2"):IsShown(), "Tier 2 must be hidden for Tier 0")
 check(navLike("World Boss Timeline"):IsShown(), "Vanilla side content missing")
 check(not navLike("TBC Overview"):IsShown(), "TBC must be hidden for Tier 0")
 check(not navLike("Wrath Overview"):IsShown(), "Wrath must be hidden for Tier 0")
+
+-- The popup must be per character, per realm and per tier. It must never
+-- alter server progression or saved visibility settings.
+local tierChecklistBtn = buttonByText("Preparation Checklist")
+local tierChecklist = named.IPGuideTierChecklistFrame
+check(tierChecklistBtn:IsShown(), "Checklist button missing on a tier")
+check(named.IPGuideScrollFrame.position[3] == 71,
+    "Tier guide text must reserve space for checklist button")
+local sentBeforeNotes = #outbound
+click(tierChecklistBtn)
+check(tierChecklist:IsShown(), "Tier checklist popup failed to open")
+check(widgetContaining("Personal notes only."),
+    "Checklist must clearly say it is not server verification")
+check(widgetContaining("Tier 0 - Molten Core - Personal Checklist"),
+    "Tier checklist title should match selected page")
+
+local notesRows, resetNotes
+for _, object in ipairs(objects) do
+    if object.kind == "CheckButton" and object.parent == tierChecklist then
+        table.insert(notesRows, object)
+    elseif object.kind == "Button" and object.parent == tierChecklist and
+        object.value == "Reset this tier" then
+        resetNotes = object
+    end
+end
+check(#notesRows == 5 and resetNotes, "Expected five notes and a reset action")
+check(not notesRows[1]:GetChecked(), "New character checklist should be empty")
+notesRows[1]:SetChecked(true)
+click(notesRows[1])
+check(IndividualProgressionDB.personalChecklists["Mock Realm"]["Tester"].mc.gear == true,
+    "Manual completion was not saved to character and realm")
+check(#outbound == sentBeforeNotes, "Checklist sent an unexpected server command")
+check(not notesRows[2]:GetChecked(), "Manual notes leaked into other tasks")
+tierChecklist:Hide()
+click(tierChecklistBtn)
+check(notesRows[1]:GetChecked(), "Manual note did not survive reopening")
+check(resetNotes.value == "Reset this tier", "Reset confirmation unexpectedly armed")
+click(resetNotes)
+check(resetNotes.value == "Confirm reset?" and notesRows[1]:GetChecked(),
+    "Reset must require two deliberate clicks")
+tierChecklist:Hide()
+click(tierChecklistBtn)
+check(resetNotes.value == "Reset this tier" and notesRows[1]:GetChecked(),
+    "Closing popup must cancel reset confirmation")
+mockPlayerName = "SomeoneElse"
+tierChecklist:Hide()
+click(tierChecklistBtn)
+check(not notesRows[1]:GetChecked(), "Manual notes leaked to another character")
+notesRows[2]:SetChecked(true)
+click(notesRows[2])
+check(IndividualProgressionDB.personalChecklists["Mock Realm"]["SomeoneElse"].mc.core == true,
+    "Second character's manual task did not save independently")
+tierChecklist:Hide()
+mockPlayerName = "Tester"
+mockRealmName = "Another Realm"
+click(tierChecklistBtn)
+check(not notesRows[1]:GetChecked() and not notesRows[2]:GetChecked(),
+    "Manual notes leaked to another realm")
+tierChecklist:Hide()
+mockRealmName = "Mock Realm"
+click(tierChecklistBtn)
+check(notesRows[1]:GetChecked() and not notesRows[2]:GetChecked(),
+    "Original character's notes were overwritten by another scope")
+notesRows[2]:SetChecked(true)
+click(notesRows[2])
+check(IndividualProgressionDB.personalChecklists["Mock Realm"]["Tester"].mc.core == true,
+    "Second independent task should be saved")
+notesRows[1]:SetChecked(false)
+click(notesRows[1])
+check(not notesRows[1]:GetChecked() and notesRows[2]:GetChecked(),
+    "Unchecking a single note should preserve other notes")
+check(not IndividualProgressionDB.personalChecklists["Mock Realm"]["Tester"].mc.gear,
+    "Unchecking did not remove only the selected mark")
+click(resetNotes)
+check(notesRows[2]:GetChecked(), "First reset click unexpectedly deleted progress")
+click(resetNotes)
+check(not notesRows[1]:GetChecked() and not notesRows[2]:GetChecked(),
+    "Confirmed reset did not clear this tier")
+check(IndividualProgressionDB.personalChecklists["Mock Realm"]["SomeoneElse"].mc.core == true,
+    "Reset damaged another character's notes")
+check(#outbound == sentBeforeNotes, "Local checklist must never send server commands")
+tierChecklist:Hide()
 check(widgetWithLabel("General Information"):IsShown(), "General must always be visible")
 check(widgetWithLabel("Settings"):IsShown(), "Settings must always be accessible")
 
@@ -343,6 +430,7 @@ local hubButton = buttonByText("Copy Resource Hub URL")
 local hubPopup = named.IPGuideResourceHubCopyFrame
 local hubEdit = named.IPGuideResourceHubEditBox
 check(hubButton:IsShown(), "Copy button should appear only on General Information")
+check(not tierChecklistBtn:IsShown(), "Tier checklist button must hide on general pages")
 check(named.IPGuideScrollFrame.position[3] == 71,
     "General guide content must leave room for its copy button")
 click(hubButton)
@@ -384,6 +472,7 @@ check(settingsCheckbox.parent:IsShown(), "Settings panel is not visible")
 check(not named.IPGuideScrollFrame:IsShown(), "Guide scroll obscures Settings")
 check(not hubButton:IsShown(), "Hub copy button should hide outside General Information")
 check(not hubPopup:IsShown(), "Copy popup should not stay open on Settings")
+check(not tierChecklistBtn:IsShown(), "Tier notes button must hide on Settings")
 local warning = widgetContaining("This companion is designed to guide you through progression")
 local hint = widgetContaining("Off (recommended): follow the tiers")
 check(warning ~= nil and hint ~= nil, "Settings caveat or guidance text missing")
@@ -473,5 +562,17 @@ check(not navLike("TBC Overview"):IsShown(), "TBC should be hidden after return 
 check(widgetText("Server progression value: 2"),
     "Server diagnostic should reflect new lower progression value")
 check(isSelected(navLike("Tier 2")), "Tier 2 focus lost after sidebar reflow")
+check(tierChecklistBtn:IsShown(), "Tier 2 checklist button should be visible")
+click(tierChecklistBtn)
+check(widgetContaining("Tier 2 - Blackwing Lair - Personal Checklist"),
+    "Tier 2 checklist should show appropriate guide tasks")
+check(not notesRows[1]:GetChecked(), "Tier 0 notes incorrectly copied to Tier 2")
+notesRows[1]:SetChecked(true)
+click(notesRows[1])
+check(IndividualProgressionDB.personalChecklists["Mock Realm"]["Tester"].bwl.blackhand == true,
+    "Tier 2 note did not persist independently of other tiers")
+local beforeTierClick = #outbound
+tierChecklist:Hide()
+check(#outbound == beforeTierClick, "Tier checklist should not send a server command")
 
 print("PASS: 3.3.5a compact navigation, full-label hover, Resource Hub, Settings and tier regression")
