@@ -7,9 +7,9 @@ This is the **working project record**. Keep chronological entries with clear st
 **Evidence:** Following the request to tick Hydraxian Waterlords rune dousing and test persistence with `/reload`, the maintainer supplied an in-game Molten Core screenshot showing **4 of 5 marked**, including the newly marked Hydraxian task. The previous visual acceptance screenshot showed **3 of 5 marked**.
 
 - All five compact task cards remain visible without scrolling; the mark count and progress bar agree; Ragnaros remains unchecked.
-- This is encouraging evidence of correctly updated personal notes. **A screenshot alone does not establish that `/reload` was executed between marking and capture.** Treat post-reload persistence as *pending explicit confirmation* rather than a independently verified pass.
+- **PASS — confirmed by the maintainer:** The screenshot was captured **after `/reload`**. The four manual Molten Core marks, including Hydraxian Waterlords rune dousing, survived the reload, and the 4/5 progress bar remained correct. This verifies this character's Tier 0 SavedVariables persistence in game; other characters/tiers have not been independently tested.
 - No change to task IDs, saved state, UI layout, server progression or database. PR #7 is still a draft/unmerged.
-- Next step: ask only whether this screenshot was taken **after** `/reload`. If confirmed, record SavedVariables reload persistence as a maintainer-reported pass without asking them to repeat the test.
+- No need to repeat the Tier 0 reload test. Remaining distinct release checks include longer-tier overflow, reset confirmation if desired, and selected server-specific task wording.
 
 ## 13 October 2026 — Maintainer confirms custom Pre-AQ signet requirement
 
