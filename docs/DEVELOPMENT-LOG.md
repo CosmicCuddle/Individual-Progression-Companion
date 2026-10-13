@@ -2,6 +2,18 @@
 
 This is the **working project record**. Keep chronological entries with clear status and links to GitHub PRs/commits. Published user-facing changes belong in the root [CHANGELOG.md](../CHANGELOG.md).
 
+## 13 October 2026 — Reset isolation and longer-tier scroll review
+
+**Status:** Automated test expansion passed; in-game confirmation of temporary-tier reset and longer guide readability remains optional/pending. Draft PR #7 remains unmerged.
+
+- Maintainer explicitly confirmed the Tier 0 screenshot showing **4 of 5** marks was captured **after `/reload`**. The prior Tier 0 SavedVariables test therefore stays passed and need not be repeated.
+- Reviewed the Reset code: one click arms `Confirm reset?` without deleting any flags; closing/Done cancels the pending reset, and a second deliberate click clears **only the selected tier** for the current realm/character.
+- Extended Lua 5.1 mocked tests to create temporary Molten Core notes while retaining a Blackwing Lair mark on the **same character**. Verified cancel and confirmed Reset both preserve the Blackwing Lair data, as well as another character's Molten Core marks.
+- Extended mocked longer-tier overflow test: unusually tall task descriptions enable wheel scrolling; reopening resets to the top.
+- [GitHub Actions run 38406545987](https://github.com/CosmicCuddle/Individual-Progression-Companion/actions/runs/38406545987) **passed** Lua 5.1 parsing, 3.3.5a client load/TOC checks, mocked UI and PR-only packaging.
+- To avoid risking the maintainer's **four existing Tier 0 marks**, any optional in-game Reset test should use a **different, initially empty tier** with a temporary single mark. The full reset must never be tested on meaningful saved Tier 0 progress.
+- No production addon logic, task IDs, SavedVariables schema, live server, SQL or character progression was changed during this review. The current installed test build remains sufficient for manual QA.
+
 ## 13 October 2026 — Tier 0 follow-up: four marks shown
 
 **Evidence:** Following the request to tick Hydraxian Waterlords rune dousing and test persistence with `/reload`, the maintainer supplied an in-game Molten Core screenshot showing **4 of 5 marked**, including the newly marked Hydraxian task. The previous visual acceptance screenshot showed **3 of 5 marked**.
