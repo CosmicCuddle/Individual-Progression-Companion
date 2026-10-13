@@ -125,8 +125,10 @@ function Methods:SetVerticalScroll(n)
     self.scroll = n
 end
 function Methods:GetVerticalScrollRange()
-    if self.scrollChild and self.height then
-        return math.max(0, (self.scrollChild.height or 0) - self.height)
+    local child = rawget(self, "scrollChild")
+    local height = rawget(self, "height")
+    if child and type(height) == "number" then
+        return math.max(0, (rawget(child, "height") or 0) - height)
     end
     return 1000
 end
