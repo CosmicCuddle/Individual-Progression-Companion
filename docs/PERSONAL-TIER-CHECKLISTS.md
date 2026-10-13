@@ -50,7 +50,7 @@ After testing the opaque, detailed layout in WoW, the maintainer approved the im
 
 - The maintainer's in-game screenshot of the **compact-card PR #7 test build** confirms all **five Molten Core tasks** and their descriptions are visible without scrolling, with three items marked and the progress indicator displaying **3 of 5**.
 - The maintainer explicitly approved this appearance: **"Yes i like it works really well."** Record Tier 0 compact layout as **PASS**.
-- This is not proof that marks persist across `/reload`, that all other tier content fits, or that the manual Reset confirmation has been tested. The content wording still needs comparison with the deployed progression rules.
+- **Later confirmed:** The maintainer took a second screenshot after `/reload`, with all **four** Molten Core marks preserved and progress **4/5**. This establishes Tier 0 reload persistence on the tested character. Longer-tier scrolling and the in-game Reset confirmation remain separately unverified.
 - Keep the original compact sidebar, task IDs, per-character SavedVariables model and optional scrolling for longer tiers. **Do not enlarge the Tier 0 cards again without new feedback.**
 
 ## SavedVariables contract
@@ -88,8 +88,8 @@ IndividualProgressionDB.personalChecklists = {
 1. **Back up** the installed `Interface/AddOns/IndividualProgressionAddon/` folder and the relevant `WTF/Account/<account>/SavedVariables/IndividualProgressionAddon.lua` file before installing a PR test package.
 2. On an existing character at Tier 0, open `/ip` and open Molten Core. Click **Preparation Checklist**. Expect its name, the manual-notes explanation and five checklist tasks.
 3. Tick **Complete Attunement to the Core**. Close and reopen the popup: expect that task still checked. Untick it: expect that task alone to clear.
-4. Tick two different tasks, then type `/reload` and reopen the popup. Both marks should still be checked.
-5. Click **Reset this tier** once. Expect **Confirm reset?**, with existing marks unchanged. Close/reopen to cancel. Click twice to confirm: only this tier's marks should clear.
+4. **PASS for the tested character's Tier 0:** the maintainer confirmed four Molten Core marks remained after `/reload` (including Hydraxian Waterlords). No repeat is required. Testing another character or tier would be a separate check.
+5. **Protect the four existing Molten Core marks.** For Reset testing, first open a **different tier with no saved notes** (Tier 1 is available as the next-tier preview, if it is still empty). Tick one temporary task. Click **Reset this tier** once; verify **Confirm reset?** appears but the mark remains. Close/reopen to cancel; the mark must remain. Then click Reset twice to confirm; only that temporary tier mark should clear. Revisit Molten Core and verify its four marks are unchanged. **Do not reset a tier containing important saved notes.**
 6. Navigate to another tier, such as Onyxia's Lair or Blackwing Lair. Expect that tier's own checklist, initially independent of the Molten Core marks.
 7. Optionally log into another character or realm. Its saved marks should be independent. This is **not necessary to re-approve the already accepted GM tier detection**.
 8. Open General Information, Settings and `/ip hub`. The checklist button must hide on those pages; the Resource Hub copy popup and Show all option should still work.
