@@ -121,7 +121,7 @@ This roadmap separates **existing features** from **proposed work**. A roadmap c
 - [x] Confirm Tier 0 notes persist across `/reload` on the tested character (maintainer-confirmed 4/5 screenshot)
 - [x] Automated regression: Reset cancellation, two-click confirmation, per-character safety and **same-character cross-tier isolation** (GitHub Actions run 38406545987)
 - [x] Automated regression: longer tier descriptions enable scrolling when necessary and reopen at the top
-- [ ] Confirm safe Reset on a temporary note in-game without deleting the four approved Molten Core marks
+- [x] **Maintainer-reported PASS:** safe Reset tested in game on a temporary note in another tier, without losing the four saved Molten Core marks
 - [ ] Check a longer-tier checklist in-game for readable descriptions and access to the final item
 - [x] Audit all 81 task summaries against the existing companion guides, relevant Resource Hub content and upstream reference; correct misleading requirement categories and vague descriptions ([audit](TIER-CHECKLIST-CONTENT-AUDIT.md))
 - [ ] Resolve the **live-server War Effort signet-count discrepancy** before certifying the exact numeric gate: official guide/Resource Hub **1,500**, public upstream SQL **1,000**
