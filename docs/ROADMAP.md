@@ -107,15 +107,16 @@ This roadmap separates **existing features** from **proposed work**. A roadmap c
 
 ## P2B — Tier-specific personal preparation checklists
 
-**Status:** Approved direction, not yet implemented; tracked by [issue #4](https://github.com/CosmicCuddle/Individual-Progression-Companion/issues/4). Implement in a **separate** incremental PR after review of sample tasks.
+**Status:** Initial 17-tier implementation in **draft [PR #7](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/7)**; Lua 5.1 mock checks completed, **actual client and checklist-content review pending**. See [PERSONAL-TIER-CHECKLISTS.md](PERSONAL-TIER-CHECKLISTS.md).
 
-- [ ] Define tier-specific manual checklist entries for relevant attunements, gear and reputations, clearly distinguishing required from recommended
-- [ ] Keep checkbox state per character (and realm) in the existing addon SavedVariables namespace without corrupting existing settings
-- [ ] Make notes explicitly non-authoritative: ticking a box never modifies quests, boss kills, gold, reputations, server tiers or database values
-- [ ] Support independent completion per tier; prevent accidentally showing another character's preparation
-- [ ] Provide an explicit reset for personal checklist items, with confirmation, and migration-safe defaults
-- [ ] Check content accuracy against the deployed server and Resource Hub before asserting an item is required
-- [ ] Test Lua 5.1 UI and in-game persistence through `/reload`, logout/login and tier transitions
+- [x] Add 81 guide-derived manual checklist tasks (4–5 per tier) across Vanilla, TBC and Wrath; separate access, progression, recommended and optional labels
+- [x] Store user marks per realm, character, tier and stable task ID in additive SavedVariables, retaining existing settings
+- [x] Keep notes explicitly non-authoritative: ticking a box does not modify quests, boss kills, gold, reputations, server tiers or database values
+- [x] Support independent completion per tier and prevent marks being shared by characters or realms in mocked tests
+- [x] Add individual unchecking and **two-click confirmation** to reset only the selected tier; clear confirmation on dialog close
+- [x] Keep the maintainer-approved **compact single-line sidebar** unchanged (button is on tier pages, not new navigation rows)
+- [ ] Review each task for accurate wording against live server rules and the Resource Hub before a stable release
+- [ ] Test in WoW 3.3.5a with custom fonts, `/reload` persistence, logout/login, tier changes and cross-character isolation
 
 **Acceptance:** Manual per-character preparation state survives reload, can be reversed safely, and never alters server-side progression.
 
