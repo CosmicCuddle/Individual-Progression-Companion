@@ -54,6 +54,16 @@ This is the **working project record**. Keep chronological entries with clear st
 ### Next action
 Complete baseline P1 verification, then deliver P1A in small reviewed PRs with checks in `docs/TESTING.md`. Do not silently change server authority or force-progress characters.
 
+## 13 October 2026 — Admina progress comparison and regression test
+
+**Status:** Live discrepancy confirmed, root cause unverified. See [bug #3](https://github.com/CosmicCuddle/Individual-Progression-Companion/issues/3).
+
+- Maintainer supplied an in-game screenshot of `.ip get` showing **`Progression Level for Admina = 2`**. A prior IP Companion screenshot for Admina showed **Tier 6**. This is confirmed disagreement between the two displayed results, not yet proof of the `.ipsvc data` response.
+- The next necessary read-only datum is Admina's **Settings → Server progression value** after a manual Refresh. Until that is provided, do not guess whether the bug is client-side stage selection or server-side `.ipsvc` reporting.
+- Added synthetic Lua 5.1 regression for **PD~6 → Refresh → PD~2**, asserting the selected guide returns to Tier 2, Tier 3 preview appears, old Tier 6 hides, future TBC guide hides, and the diagnostic changes to value 2.
+- GitHub Actions [run 38380306796](https://github.com/CosmicCuddle/Individual-Progression-Companion/actions/runs/38380306796): Lua 5.1 syntax, mocked UI flow including backward transitions, TOC and QA package **passed**.
+- **No live server state was changed**, no client tier remapping was invented and no deployed `.ipsvc` service code was modified. A passing simulation does not validate the actual server response.
+
 ## 13 October 2026 — Live tier mismatch and command permissions clarification
 
 **Status:** Open bug [#3](https://github.com/CosmicCuddle/Individual-Progression-Companion/issues/3); diagnosis pending. No character state, server command, or addon logic changed in response to this report.
