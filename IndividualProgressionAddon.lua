@@ -2025,6 +2025,8 @@ local ARGENT_TOURNAMENT_PAGE = {
     end,
 }
 
+local RESOURCE_HUB_URL = "https://cosmiccuddle.github.io/Naxxramas-Resource-Hub/"
+
 local GENERAL_PAGE = {
     title = "General Information",
     short = "Server rules, phasing, professions & travel",
@@ -2068,7 +2070,7 @@ local GENERAL_PAGE = {
             "",
             SH("FURTHER SERVER INFORMATION"),
             "For more information, server guides and helpful resources, visit the Naxxramas Resource Hub:",
-            C.blue .. "https://cosmiccuddle.github.io/Naxxramas-Resource-Hub/" .. C.reset,
+            C.blue .. RESOURCE_HUB_URL .. C.reset,
         })
     end,
 }
@@ -2701,13 +2703,13 @@ pageSub:SetJustifyH("LEFT")
 pageSub:SetTextColor(0.65, 0.65, 0.65)
 
 local divider = contentPanel:CreateTexture(nil, "ARTWORK")
-divider:SetPoint("TOPLEFT", 14, -72)
-divider:SetPoint("TOPRIGHT", -14, -72)
+divider:SetPoint("TOPLEFT", 14, -90)
+divider:SetPoint("TOPRIGHT", -14, -90)
 divider:SetHeight(1)
 divider:SetTexture(1, 0.82, 0, 0.22)
 
 local scrollFrame = CreateFrame("ScrollFrame", "IPGuideScrollFrame", contentPanel, "UIPanelScrollFrameTemplate")
-scrollFrame:SetPoint("TOPLEFT", 14, -82)
+scrollFrame:SetPoint("TOPLEFT", 14, -100)
 scrollFrame:SetPoint("BOTTOMRIGHT", -30, 31)
 
 local scrollChild = CreateFrame("Frame", nil, scrollFrame)
@@ -2765,7 +2767,7 @@ end
 
 -- Settings controls are displayed inside the content panel only on the Settings page.
 local settingsPanel = CreateFrame("Frame", nil, contentPanel)
-settingsPanel:SetPoint("TOPLEFT", contentPanel, "TOPLEFT", 22, -107)
+settingsPanel:SetPoint("TOPLEFT", contentPanel, "TOPLEFT", 22, -126)
 settingsPanel:SetSize(475, 310)
 settingsPanel:Hide()
 
@@ -2806,6 +2808,81 @@ footerNote:SetPoint("BOTTOMLEFT", 16, 10)
 footerNote:SetPoint("BOTTOMRIGHT", -16, 10)
 footerNote:SetJustifyH("LEFT")
 footerNote:SetText(C.dark .. "Server progression companion - Vanilla, TBC and Wrath progression, attunements, side content and server rules in one guide." .. C.reset)
+
+-- General Information has a dedicated action; opening it shows a real
+-- selectable edit box. WoW 3.3.5a has no reliable direct OS clipboard API.
+local copyHubButton = CreateFrame("Button", nil, contentPanel, "UIPanelButtonTemplate")
+copyHubButton:SetSize(195, 24)
+copyHubButton:SetPoint("BOTTOMRIGHT", contentPanel, "BOTTOMRIGHT", -36, 35)
+copyHubButton:SetText("Copy Resource Hub URL")
+copyHubButton:Hide()
+
+local hubCopyPopup = CreateFrame("Frame", "IPGuideResourceHubCopyFrame", mainFrame)
+hubCopyPopup:SetSize(560, 158)
+hubCopyPopup:SetPoint("CENTER", mainFrame, "CENTER", 0, 0)
+hubCopyPopup:SetFrameStrata("FULLSCREEN_DIALOG")
+hubCopyPopup:SetBackdrop(BACKDROP_MAIN)
+hubCopyPopup:SetBackdropColor(0.035, 0.035, 0.055, 1)
+hubCopyPopup:SetBackdropBorderColor(0.6, 0.49, 0.24, 1)
+hubCopyPopup:EnableMouse(true)
+hubCopyPopup:Hide()
+
+local hubCopyTitle = hubCopyPopup:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+hubCopyTitle:SetPoint("TOPLEFT", 25, -20)
+hubCopyTitle:SetText(C.gold .. "Naxxramas Resource Hub" .. C.reset)
+
+local hubCopyHelp = hubCopyPopup:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+hubCopyHelp:SetPoint("TOPLEFT", 25, -45)
+hubCopyHelp:SetWidth(505)
+hubCopyHelp:SetJustifyH("LEFT")
+hubCopyHelp:SetText("URL selected below. Press Ctrl+C to copy it, then paste into your browser.")
+
+local hubCopyEdit = CreateFrame("EditBox", "IPGuideResourceHubEditBox", hubCopyPopup, "InputBoxTemplate")
+hubCopyEdit:SetSize(478, 26)
+hubCopyEdit:SetPoint("TOPLEFT", hubCopyPopup, "TOPLEFT", 32, -80)
+hubCopyEdit:SetAutoFocus(false)
+hubCopyEdit:SetText(RESOURCE_HUB_URL)
+
+local hubCopyClose = CreateFrame("Button", nil, hubCopyPopup, "UIPanelCloseButton")
+hubCopyClose:SetPoint("TOPRIGHT", -4, -4)
+hubCopyClose:SetScript("OnClick", function() hubCopyPopup:Hide() end)
+
+hubCopyPopup:SetScript("OnShow", function()
+    hubCopyEdit:SetText(RESOURCE_HUB_URL)
+    hubCopyEdit:SetFocus()
+    hubCopyEdit:HighlightText()
+end)
+hubCopyPopup:SetScript("OnHide", function()
+    hubCopyEdit:ClearFocus()
+end)
+hubCopyEdit:SetScript("OnEscapePressed", function()
+    hubCopyPopup:Hide()
+end)
+hubCopyEdit:SetScript("OnEnterPressed", function(self)
+    self:HighlightText()
+end)
+copyHubButton:SetScript("OnClick", function()
+    hubCopyPopup:Show()
+end)
+mainFrame:SetScript("OnHide", function()
+    hubCopyPopup:Hide()
+end)
+if UISpecialFrames then
+    table.insert(UISpecialFrames, "IPGuideResourceHubCopyFrame")
+end
+
+-- Allow wrapped guidance to use the actual available panel width on clients
+-- with enlarged fonts and differing UI scale rather than a fixed 455 px width.
+local function FitSettingsText()
+    local panelWidth = contentPanel:GetWidth()
+    if panelWidth and panelWidth > 0 then
+        local width = math.max(240, panelWidth - 76)
+        settingsPanel:SetWidth(width + 12)
+        settingsHint:SetWidth(width)
+        settingsWarning:SetWidth(width)
+        settingsServerValueText:SetWidth(width)
+    end
+end
 
 -- ============================================================================
 -- NAVIGATION
@@ -3195,7 +3272,8 @@ local function SetPageContent(titleText, subText, text, iconTexture)
     pageIcon:SetTexture(iconTexture or "Interface\\Icons\\INV_Misc_Book_09")
 
     local width = scrollFrame:GetWidth() - 8
-    if width < 400 then width = 560 end
+    -- Small but valid widths should WRAP rather than force overflowing 560 px.
+    if width < 1 then width = math.max(220, contentPanel:GetWidth() - 60) end
 
     local chunks = SplitBodyText(text or "")
     local yOffset = 2
@@ -3232,6 +3310,13 @@ SelectPage = function(id)
     data.selectedPage = id or "overview"
     IndividualProgressionDB = IndividualProgressionDB or {}
     IndividualProgressionDB.lastPage = data.selectedPage
+    hubCopyPopup:Hide()
+    FitSettingsText()
+    -- Keep the Resource Hub action visible without covering guide text.
+    copyHubButton:SetShown(data.selectedPage == "general")
+    scrollFrame:ClearAllPoints()
+    scrollFrame:SetPoint("TOPLEFT", 14, -100)
+    scrollFrame:SetPoint("BOTTOMRIGHT", -30, data.selectedPage == "general" and 71 or 31)
     if data.selectedPage == "settings" then
         settingsCheckbox:SetChecked(IndividualProgressionDB.showAllContent == true)
         -- Hide the guide scroll area so it cannot cover Settings controls.
@@ -3451,6 +3536,7 @@ SlashCmdList["INDIVIDUALPROGRESSION"] = function(msg)
         DEFAULT_CHAT_FRAME:AddMessage("  /ip commands     - Open the addon command reference")
         DEFAULT_CHAT_FRAME:AddMessage("  /ip refresh      - Refresh progression from the server")
         DEFAULT_CHAT_FRAME:AddMessage("  /ip settings     - Guide visibility settings")
+        DEFAULT_CHAT_FRAME:AddMessage("  /ip hub          - Resource Hub copyable URL")
         return
     elseif msg == "current" then
         mainFrame:Show()
@@ -3535,6 +3621,10 @@ SlashCmdList["INDIVIDUALPROGRESSION"] = function(msg)
         return
     elseif msg == "settings" or msg == "options" then
         ShowGuidePage("settings")
+        return
+    elseif msg == "hub" or msg == "resourcehub" then
+        ShowGuidePage("general")
+        hubCopyPopup:Show()
         return
     elseif msg == "refresh" then
         if not mainFrame:IsShown() then mainFrame:Show() end
