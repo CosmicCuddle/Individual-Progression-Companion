@@ -32,6 +32,7 @@ An in-game, server-specific handbook that explains what a character can do now, 
 | `docs/ROADMAP.md` | Priorities and acceptance criteria |
 | `docs/DEVELOPMENT-LOG.md` | Decision and implementation history |
 | `docs/TESTING.md` | Regression checklist and result template |
+| `docs/RELEASE-CHECKLIST.md` | Standalone release gates, rollback and collection source-pin synchronization |
 
 At the baseline the addon is implemented in a single approximately 3,410-line Lua file. Any later split into modules must preserve its TOC load order and 3.3.5a Lua compatibility.
 
@@ -110,7 +111,15 @@ The maintainer has supplied rough feature notes, recorded precisely in [ROADMAP.
 
 **Important client-source distinction:** Existing Refresh and OnShow already send `.ipsvc data`, but receipt does not automatically force current-page navigation. The displayed Tier 1 issue may be a stale selection or a server-value discrepancy; do not assert a root cause without reproducing it. See [TESTING.md](TESTING.md) S04–S07/S12–S15.
 
-## 8. Immediate starting point
+## 8. Work in progress — feature branch
+
+A candidate UI implementation exists on branch `feat/ip-companion-stage-navigation-2026-10-12`, based on `docs/ip-companion-project-handover-2026-10-12`. It introduces reply-driven page focus, a default hidden-future navigation layout, a Show all content setting, and Escape-to-close. The same branch adds a Lua 5.1 syntax-check workflow.
+
+**The implementation is NOT a verified or published release.** Review the feature PR and test it in WoW 3.3.5a before merging. A reported Tier 0 character labelled Tier 1 still requires backend and UI evidence; the numeric mapping has intentionally not changed. See the latest Development Log entry and Testing plan for acceptance steps.
+
+The two PRs are stacked: documentation first, then this feature. If both are merged, refresh these notes to reflect the new baseline.
+
+## 9. Immediate starting point
 
 The repository was documented as v5.2.0 on 12 October 2026. No current post-5.2.0 in-game regression test is evidenced by these baseline documents. Start with the **read-only functionality audit and regression test plan** in the roadmap, rather than presuming a defect or changing server rules.
 

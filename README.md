@@ -281,6 +281,7 @@ Official project maintenance references:
 - [Development Roadmap](docs/ROADMAP.md) — existing features, requested improvements, priorities and acceptance criteria.
 - [Development Log](docs/DEVELOPMENT-LOG.md) — dated implementation decisions, outstanding work and verification results.
 - [Manual Test Plan](docs/TESTING.md) — regression steps and evidence requirements.
+- [Release & Collection Handover](docs/RELEASE-CHECKLIST.md) — versioning, validation, rollback and approved N-Addon-Collection import.
 
 The roadmap contains proposed features, including a progression-aware navigation and Settings experience. Proposed work is not included in the v5.2.0 release unless separately implemented, tested and released.
 

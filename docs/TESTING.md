@@ -30,8 +30,16 @@
 | S13 | Watch unrelated system chat | `##IPSVC##` protocol remains hidden, other messages visible |
 | S14 | Press Escape while window open | After feature implementation, window closes; default game Escape behaviour unaffected otherwise |
 | S15 | Open Settings and change future-content option | After feature implementation, default OFF, ON shows all pages, change persists |
+| S16 | Open Settings with a known Tier 0 character after reply | Shows raw **Server progression value: 0** if the server actually replies with 0; compare a reported 1 with the character's actual tier to isolate the fault |
+| S17 | Open Settings via `/ip settings` and inspect icon | Settings page opens; visible gear icon; no overlapping guide text/scroll region |
+| S18 | Open Settings with normal and enlarged/custom fonts | The Show all content explanation, intended-progression warning and server value are all readable; none overlaps the others |
+| S19 | Open General Information and scroll to the very bottom | A Further Server Information heading and the exact Naxxramas Resource Hub URL are visible |
 
 **Note:** S05, S06, S14, S15 contain requested future behaviour; **do not report them as current passes** before implementation and real-client testing.
+
+## Automated checks
+
+The feature branch includes `tests/test_ui_compatibility.lua` and GitHub Actions. These are **mocked Lua 5.1 tests**, not in-game acceptance tests. They simulate server replies for values 0, 1, 8, 13, 17 and 18, delayed/manual-navigation behaviour, Settings, and invalid replies. Always run the manual cases above before calling a UI feature verified or released.
 
 ## Progression boundary matrix
 
