@@ -147,3 +147,20 @@ Consult [PERSONAL-TIER-CHECKLISTS.md](PERSONAL-TIER-CHECKLISTS.md), [TESTING.md]
 
 Existing `N-Addon-Collection` is pinned to stable v5.2.0 until a **separately approved release**; do not update its lockfile early. No live database updates, `.ip set` commands, or server recompiles are required for these addon-only features.
 
+
+## 11. Authoritative post-integration status — 13 October 2026
+
+**This section supersedes the stale snapshot in sections 7–10.**
+
+- **Merged into `main`:** PRs [#1](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/1), [#2](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/2), [#5](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/5), [#6](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/6), [#7](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/7) and release-preparation [#8](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/8), in that order. The v5.3.0 code/metadata integration commit is `c9f7b20356fb02a686f44bc9bc808f07dd25ddb1`.
+- **Post-merge CI:** [run 38411492404](https://github.com/CosmicCuddle/Individual-Progression-Companion/actions/runs/38411492404) PASSED Lua 5.1, TOC, release metadata and mocked UI tests. The run uploaded **IP-Companion-v5.3.0-Standalone-Candidate**, retaining the correct one-folder standalone install layout and no PR-only QA notice.
+- **Tag/release status:** v5.3.0 is merged **source**, not yet an officially published GitHub Release. The latest existing official GitHub Release remains **v5.2.0**. See [RELEASE-NOTES-v5.3.0.md](RELEASE-NOTES-v5.3.0.md) for publishing steps. A temporary artifact is not a tag.
+- **In-game accepted:** authoritative GM-character tier detection, compact single-line sidebar, Tier 0/9 checklist readability, personal Tier 0 marks preserved after `/reload`, and temporary-tier two-step Reset/cancel without losing the four Molten Core marks.
+- **Product design:** 17 optional tier checklists with 81 stable task IDs; realm/character/tier-isolated local flags, no server mutation; manual notes remain separate from quest/boss/progression truth. Do not expand the compact sidebar without fresh maintainer approval.
+- **Server-specific War Effort:** the maintainer explicitly confirmed they manually set **1,500 Commendation Signets** in the deployed configuration. Public upstream's 1,000 differs intentionally; no further screenshot is required.
+- **Collection:** `CosmicCuddle/N-Addon-Collection` remains pinned to standalone v5.2.0 (`6872cc726052f7d271a28ba48baa9bb5c7ad36e9`) until a distinct approved v5.3.0 import PR. No changes to NCore, live DB or server quests were made.
+
+### Remaining release action
+
+Publish the **official tagged GitHub Release v5.3.0**, attached to the final validated `main` commit with an installable ZIP, preserving v5.2.0 for rollback. Only then consider the separately reviewed Addon Collection import. Consult the release checklist and final Actions workflow for exact release evidence. Do not call v5.3.0 officially released before the tag/Release appears.
+
