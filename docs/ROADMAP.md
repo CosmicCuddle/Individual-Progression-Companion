@@ -116,6 +116,7 @@ This roadmap separates **existing features** from **proposed work**. A roadmap c
 - [x] Add individual unchecking and **two-click confirmation** to reset only the selected tier; clear confirmation on dialog close
 - [x] Keep the maintainer-approved **compact single-line sidebar** unchanged (button is on tier pages, not new navigation rows)
 - [x] Respond to screenshot feedback: fully opaque scrollable task cards, meaningful descriptions for all 81 tasks, visual mark progress and prominent personal-notes disclaimer
+- [x] After in-game review, optimise adaptive card height so short five-item tiers can fit without scrolling; longer/custom-font task text retains scroll fallback (latest client recheck pending)
 - [ ] Review each task for accurate wording against live server rules and the Resource Hub before a stable release
 - [ ] Test in WoW 3.3.5a with custom fonts, `/reload` persistence, logout/login, tier changes and cross-character isolation
 
