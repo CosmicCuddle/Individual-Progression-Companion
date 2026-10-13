@@ -48,7 +48,9 @@ function Methods:Show()
     if wasHidden and self.scripts.OnShow then self.scripts.OnShow(self) end
 end
 function Methods:Hide()
+    local wasVisible = self.visible
     self.visible = false
+    if wasVisible and self.scripts.OnHide then self.scripts.OnHide(self) end
 end
 function Methods:IsShown()
     return self.visible
