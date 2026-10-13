@@ -34,6 +34,17 @@
 | S17 | Open Settings via `/ip settings` and inspect icon | Settings page opens; visible gear icon; no overlapping guide text/scroll region |
 | S18 | Open Settings with normal and enlarged/custom fonts | The Show all content explanation, intended-progression warning and server value are all readable; none overlaps the others |
 | S19 | Open General Information and scroll to the very bottom | A Further Server Information heading and the exact Naxxramas Resource Hub URL are visible |
+| S20 | On General Information, click **Copy Resource Hub URL** | Text box opens with exact website address selected; Ctrl+C copies it for pasting outside WoW |
+| S21 | Use `/ip hub`, Escape and the dialog X | The copy dialog opens, closes without leaving keyboard focus, and does not reopen unexpectedly |
+| S22 | Move from General Information to Settings/other sections | The copy action hides, the dialog closes, and normal guide scrolling has its usual height |
+| S23 | With custom font, check guide pages and the compact sidebar | Body text wraps inside the content panel, Settings remains legible, and sidebar rows **do not expand** into multiple lines |
+| S24 | Recheck GM character progression after installing PR #6 | Maintainer's known Admina Tier 2 still auto-detects through the approved `.ip get` method |
+| S25 | Using the maintainer's enlarged font, inspect Vanilla stages, General and Side Content | Restored compact sidebar remains a narrow, scrollable single-line list; long labels may truncate; Settings stays pinned |
+| S26 | Hover a long sidebar item and move the cursor away | Complete original label appears in a tooltip on hover and disappears on leave |
+| S27 | Inspect the short grey guide footer on Settings and long guide pages | `Guide only - server progression is unchanged.` is visible as one readable line without being clipped |
+| S28 | With enlarged font, review Overview / Roadmap, World Boss Timeline, Vanilla Reputations, General Information and TBC Overview | Sidebar remains compact rather than adding hard line breaks or oversized rows; full original label is accessible via hover |
+| S29 | Turn Show all content ON and inspect long TBC/Wrath tier names | Rows stay compact and scrolling reaches all entries; hovering over any shortened title shows the complete name |
+| S30 | Dismiss any ElvUI help/tutorial overlay and recheck the header | Companion is unobstructed, independent of ElvUI's own help overlay |
 
 **Note:** S05, S06, S14, S15 contain requested future behaviour; **do not report them as current passes** before implementation and real-client testing.
 

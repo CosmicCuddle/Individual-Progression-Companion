@@ -2,6 +2,18 @@
 
 This is the **working project record**. Keep chronological entries with clear status and links to GitHub PRs/commits. Published user-facing changes belong in the root [CHANGELOG.md](../CHANGELOG.md).
 
+## 13 October 2026 — Maintainer design decision: restore compact sidebar
+
+**Status:** User rejected the enlarged, multi-line sidebar after testing its appearance in WoW. The compact navigation restoration is implemented in [PR #6](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/6), with Lua 5.1 mock tests passed and client appearance awaiting quick confirmation.
+
+- Maintainer described the new multi-line navigation as **"awful and clunky/chunky"**, explicitly preferring the sidebar **as it looked before**. This takes priority over the previous proposal to force full labels on multiple lines.
+- Reverted the experimental **260px-wide sidebar**, explicit whole-word multiline wrapping, and 44px+ tall navigation rows. Restored the original **225px sidebar, 178x28px buttons, single-line labels, and 29px layout increments** from the tested compact navigation implementation.
+- Retained optional **full-label tooltip on hover**, the concise one-line footer, `/ip hub` URL-copy action, adaptable guide text, Settings, and the authoritative read-only `.ip get <player>` tier detection.
+- Accepted tradeoff: long labels may visually truncate in a compact single-line row, but hovering reveals the complete title. Do not reintroduce expanded multi-line sidebar rows without explicit maintainer approval.
+- Extended mock tests to assert compact dimensions and prevent automatic row growth even when custom font metrics are large, while covering hover, Settings, Resource Hub and tier regression.
+- [GitHub Actions run 38388470790](https://github.com/CosmicCuddle/Individual-Progression-Companion/actions/runs/38388470790) **passed** Lua 5.1 syntax, TOC, simulated UI checks and PR-only artifact upload.
+- **No live server/DB data, saved-variable schema, or actual character progression changed.** Revert the isolated UI commits or restore the last working addon folder and SavedVariables backup if necessary.
+
 ## 12 October 2026 — Development documentation foundation
 
 **Status:** Documentation-only PR prepared; pending review/merge.
@@ -53,6 +65,60 @@ This is the **working project record**. Keep chronological entries with clear st
 
 ### Next action
 Complete baseline P1 verification, then deliver P1A in small reviewed PRs with checks in `docs/TESTING.md`. Do not silently change server authority or force-progress characters.
+
+## 13 October 2026 — Second enlarged-font screenshot: hard-wrap sidebar titles
+
+**Status:** Follow-up client change in [PR #6](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/6); simulated tests passed, revised real-client test pending.
+
+- Maintainer's new in-game screenshots show that **Tier 0 → Molten Core** now displays on two lines and the shortened grey footer fits; however longer sidebar names still show ellipses including **World Boss Timeline**, **General Information**, **Vanilla Reputations**, and longer TBC stage/side-page titles. The old `SetWordWrap(true)` and resized rows were insufficient for the supplied custom font.
+- The companion correctly identified **Takali** as progression 0 in the screenshots. No tier-detection regression observed.
+- An **ElvUI help/tutorial panel** is visible across the top of the screen; it is external overlay content, not a title or tooltip added by IP Companion. Dismiss using its own **HIDE** control for a clean layout test.
+- New `WrapNavWords` explicitly inserts line breaks between words, limiting each line to at most 14 characters when practical while preserving whole words. Stage rows retain a separate `Tier N` line. Each row reserves minimum height for the actual number of lines, independent of unreliable old-client FontString height metrics.
+- The original full names remain in `btn.fullLabel` and its hover tooltip. Normal navigation and automated test lookups use the unabridged label; no progression commands or server rules changed.
+- [GitHub Actions run 38387540965](https://github.com/CosmicCuddle/Individual-Progression-Companion/actions/runs/38387540965) passed syntax, TOC, mocked UI flow, and artifact creation after the code and tests.
+- Real-game validation pending at the maintainer's custom font: check explicit two-line/further-line titles and sidebar scrolling, keeping the original tier detection and Resource Hub features.
+
+## 13 October 2026 — PR #6 enlarged-font sidebar and footer correction
+
+**Status:** Implemented and simulated tests passed; maintainer's in-game recheck pending. This is not a published release.
+
+### Evidence
+- The maintainer supplied two WoW 3.3.5a screenshots using an enlarged/custom font on character **Takali**, Level 60, with addon Settings showing authoritative server progression value **0**.
+- The Settings warning, tier headline and long World Boss guide wrapped legibly. However, multiple sidebar labels were visually cut off (for example Overview / Roadmap, Tier 0's Molten Core label, World Boss Timeline, Vanilla Reputations), and the original long grey footer was truncated.
+- The sidebar had a fixed 225px width, 178px navigation button, small single-row label area, and row-height calculations that did not explicitly enable label word wrapping.
+
+### Changes
+- Increased sidebar width to 260px and adjusted its navigation child and button widths consistently, preserving main content space.
+- Moved navigation label anchors to TOPLEFT/TOPRIGHT, enabled ordinary and non-space word wrapping, and split **Tier N** from the location/raid name onto separate lines for stage buttons.
+- Measured label/heading height after wrap and gave rows a minimum 44px for stage titles; preserved scrollable navigation and fixed Settings footer.
+- Added a complete original-label GameTooltip on hover as a fallback for unusual font metrics.
+- Replaced the truncated footer with the short non-authoritative reminder: **Guide only - server progression is unchanged.**
+- Expanded Lua 5.1 mock checks for the new row dimensions, wrap anchors, stage lines, hover tooltip, and footer; the original authoritative `.ip get` lookup code was not modified.
+
+### Verification and rollback
+- [GitHub Actions run 38386220003](https://github.com/CosmicCuddle/Individual-Progression-Companion/actions/runs/38386220003) passed Lua 5.1 syntax, TOC, mocked UI and QA artifact upload after code/test changes.
+- **In-game visual confirmation still needed** with the maintainer's custom font, including General Information's URL copy popup and Admina's accepted Tier 2 detection.
+- Back up the installed addon folder/SavedVariables before testing. Roll back by restoring the previously working addon folder. No live DB/quest/server progression changes.
+
+## 13 October 2026 — PR #6 Resource Hub copy and readability
+
+**Status:** Implemented in [PR #6](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/6), simulated tests passed; real WoW 3.3.5a test pending. This is not a released build.
+
+- Added **Copy Resource Hub URL** on General Information and a `/ip hub` shortcut. A native 3.3.5a `InputBoxTemplate` popup shows the exact Resource Hub URL, sets keyboard focus, selects the URL, and explains Ctrl+C. Escape/close/parent close dismiss the popup.
+- A fixed copy button only appears on General Information, and its guide scroll region is shortened to keep the button unobstructed. Switching pages closes/hides the popup.
+- Increased the content header spacing, removed a forced 560px text width that could cause clipping at narrower widths, sized Settings text to the usable panel width, and reflowed sidebar rows based on wrapped label height.
+- Expanded simulated Lua 5.1 tests for popup URL/focus/selection/close, slash alias, General-only button placement, Settings, narrow text widths, custom-font navigation and regression-safe tier lookup.
+- GitHub Actions [run 38384842721](https://github.com/CosmicCuddle/Individual-Progression-Companion/actions/runs/38384842721) passed Lua 5.1 syntax, TOC validation, and mocked UI behaviour after these changes.
+- The character's actual progression and server modules are untouched. No new SavedVariables fields are introduced. Backup the last working addon folder and relevant SavedVariables before testing the PR artifact.
+
+### Pending checks
+1. In WoW 3.3.5a, use General Information → Copy Resource Hub URL and verify Ctrl+A/Ctrl+C paste into a browser.
+2. Confirm the popup closes with Escape, X and closing the main addon; `/ip hub` also opens it.
+3. Check large/custom fonts, smaller UI scales, footer readability, nav scrolling, narrow text wrapping and Settings warning.
+4. Confirm the existing `.ip get`-based tier auto-detection still reports Admina's Tier 2.
+
+### Following approved feature
+Issue [#4](https://github.com/CosmicCuddle/Individual-Progression-Companion/issues/4): tier-specific personal preparation checklists. Keep them local and character-specific, not server progression.
 
 ## 13 October 2026 — Maintainer QA acceptance: GM tier detection
 
