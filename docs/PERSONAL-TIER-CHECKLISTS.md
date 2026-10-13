@@ -4,6 +4,12 @@
 **Implementation:** [PR #7](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/7)  
 **Status:** Draft feature; the maintainer has visually approved the compact Tier 0 checklist in the WoW client. Other tiers, SavedVariables persistence and task accuracy still need separate validation before a release.
 
+## Tier 0 four-of-five follow-up screenshot — 13 October 2026
+
+- The screenshot supplied in response to the `/reload` test request displays **4/5 manually checked**, with **Hydraxian Waterlords rune dousing** now checked and **Defeat Ragnaros** unchecked.
+- Visual rendering, card fit and progress-indicator consistency remain good. **Confirm whether the screenshot was taken after the reload** before changing SavedVariables persistence status from pending to passed.
+- No UI redesign or additional download is necessary for this follow-up.
+
 ## Goal
 
 Add lightweight, optional **personal checklist notes** to tier guide pages without changing the progression rules or the **maintainer-approved compact sidebar**.
