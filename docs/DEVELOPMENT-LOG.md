@@ -2,6 +2,17 @@
 
 This is the **working project record**. Keep chronological entries with clear status and links to GitHub PRs/commits. Published user-facing changes belong in the root [CHANGELOG.md](../CHANGELOG.md).
 
+## 13 October 2026 — PR #7 compact checklist visually accepted
+
+**Status:** **Maintainer-approved in-game visual layout** for the Tier 0 Molten Core checklist. Draft PR #7 remains unmerged; this is not complete release approval.
+
+- Maintainer installed the latest compact-card test build, provided a screenshot, and confirmed **"Yes i like it works really well."**
+- The screenshot confirms **all five Molten Core checklist cards and descriptions are visible together without scrolling**; the marked count is **3 of 5**, three checkboxes are visibly checked, the progress bar displays their proportion, and **Reset this tier** / **Done** remain accessible.
+- Layout includes clear compact headings, categories, detailed descriptions and an opaque background. The maintainer's preferred **compact main sidebar** remains unchanged.
+- This establishes an **in-game pass for the Tier 0 checklist layout**. The screenshot alone does **not** verify reloading SavedVariables, character/realm isolation, the reset confirmation flow, or how longer TBC/Wrath tiers scroll. These remain separately tracked and should not be recorded as passed.
+- No code change was needed in response to the successful screenshot; existing PR build is retained. The published v5.2.0 addon and N-Addon-Collection are unchanged.
+- Next development steps: check persistent checkmarks across `/reload` if practical, and review all checklist task descriptions against the currently deployed server rules and the Resource Hub before a release.
+
 ## 13 October 2026 — PR #7 compact adaptive task cards
 
 **Status:** Revision implemented, automated checks under review, latest client layout not yet re-tested.
