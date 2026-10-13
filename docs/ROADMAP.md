@@ -119,7 +119,10 @@ This roadmap separates **existing features** from **proposed work**. A roadmap c
 - [x] After in-game review, optimise adaptive card height so short five-item tiers can fit without scrolling; longer/custom-font task text retains scroll fallback (latest client recheck pending)
 - [x] Maintainer installed the revised test build and visually approved the compact Tier 0 five-card layout with all tasks visible at once (13 October 2026)
 - [x] Confirm Tier 0 notes persist across `/reload` on the tested character (maintainer-confirmed 4/5 screenshot)
-- [ ] Confirm safe reset and longer-tier scrolling when required
+- [x] Automated regression: Reset cancellation, two-click confirmation, per-character safety and **same-character cross-tier isolation** (GitHub Actions run 38406545987)
+- [x] Automated regression: longer tier descriptions enable scrolling when necessary and reopen at the top
+- [ ] Confirm safe Reset on a temporary note in-game without deleting the four approved Molten Core marks
+- [ ] Check a longer-tier checklist in-game for readable descriptions and access to the final item
 - [x] Audit all 81 task summaries against the existing companion guides, relevant Resource Hub content and upstream reference; correct misleading requirement categories and vague descriptions ([audit](TIER-CHECKLIST-CONTENT-AUDIT.md))
 - [ ] Resolve the **live-server War Effort signet-count discrepancy** before certifying the exact numeric gate: official guide/Resource Hub **1,500**, public upstream SQL **1,000**
 - [ ] Confirm custom first-entry and restored attunement claims from deployed server source when a player reports a discrepancy (current checklist faithfully represents the guide but is not independently live-verified)
