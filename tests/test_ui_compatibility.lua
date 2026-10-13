@@ -320,4 +320,20 @@ check(settingsCheckbox.parent:IsShown(), "/ip settings did not open Settings")
 check(widgetWithLabel("Settings").icon.texture[1] == "Interface\\Icons\\INV_Gizmo_02",
     "Settings navigation icon missing")
 
-print("PASS: 3.3.5a mocked addon flow, refresh/reopen, staged navigation, Settings and diagnostics")
+-- Regression: a genuine server-side progression decrease must move the
+-- guide backwards rather than leaving the previously displayed high tier.
+-- This is a simulated response; the live discrepancy needs separate diagnosis.
+click(refresh)
+serverReply("PD~6")
+check(isSelected(navLike("Tier 6")), "Simulated progression 6 should select Tier 6")
+check(navLike("Tier 7"):IsShown(), "Tier 7 preview should be shown at stage 6")
+click(refresh)
+serverReply("PD~2")
+check(isSelected(navLike("Tier 2")), "Refresh should move from Tier 6 back to Tier 2")
+check(navLike("Tier 3"):IsShown(), "Tier 3 preview should be visible at Tier 2")
+check(not navLike("Tier 6"):IsShown(), "Old Tier 6 should be hidden after Tier 2 reply")
+check(not navLike("TBC Overview"):IsShown(), "TBC should be hidden after return to Tier 2")
+check(widgetText("Server progression value: 2"),
+    "Server diagnostic should reflect new lower progression value")
+
+print("PASS: 3.3.5a mocked addon flow, refresh/reopen, stage regression, Settings and diagnostics")
