@@ -2669,7 +2669,7 @@ local PERSONAL_TIER_TASKS = {
         { id = "entry", kind = "Recommended", label = "Prepare to enter Ruby Sanctum after ICC" },
         { id = "outer", kind = "Access", label = "Clear Ruby Sanctum's outer encounters before Halion" },
         { id = "supplies", kind = "Recommended", label = "Prepare raid supplies for Halion" },
-        { id = "halion", kind = "Progression", label = "Defeat Halion on Normal" },
+        { id = "halion", kind = "Progression", label = "Defeat Halion" },
         { id = "finalgear", kind = "Optional", label = "Continue ICC/Ruby Sanctum for final gearing" },
     },
 }
@@ -2789,7 +2789,7 @@ local PERSONAL_TIER_DETAILS = {
         entry = "After the Lich King stage, assemble a Ruby Sanctum group and prepare for its encounter sequence.",
         outer = "Clear Baltharus the Warborn and Saviana Ragefire, then General Zarithrian, to open the route to Halion. These are the Ruby Sanctum outer encounters, not optional gearing tasks.",
         supplies = "Stock suitable consumables and coordinate the raid for Halion's mechanics and phase changes.",
-        halion = "Defeat Halion on Normal. The stage guide says this completes progression value 18.",
+        halion = "Defeat Halion after clearing the outer sanctum bosses. The Tier 17 guide recommends Normal for the intended final progression milestone; Heroic is optional mastery.",
         finalgear = "Continue Icecrown Citadel and Ruby Sanctum for optional final equipment and personal goals.",
     },
 }
