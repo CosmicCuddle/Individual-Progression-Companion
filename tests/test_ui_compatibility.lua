@@ -670,6 +670,16 @@ command("settings")
 settingsCheckbox:SetChecked(true)
 click(settingsCheckbox)
 local stageNumbers = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17 }
+local auditedTaskCount = 0
+-- Categories now distinguish an actual server gate from side preparation,
+-- a future tier attunement and the separately paid expansion service.
+local auditedCriticalItems = {
+    [3] = {index = 2, id = "signets", category = "[REQUIRED]", detail = "1,500"},
+    [7] = {index = 4, id = "vezrath", category = "[SERVICE]", detail = "2,500 gold"},
+    [8] = {index = 3, id = "nightbane", category = "[FUTURE ACCESS]", detail = "Tier 9"},
+    [10] = {index = 3, id = "hyjal", category = "[ACCESS]", detail = "An Artifact From the Past"},
+    [17] = {index = 2, id = "outer", category = "[ACCESS]", detail = "General Zarithrian"},
+}
 for _, number in ipairs(stageNumbers) do
     local nav
     for _, object in ipairs(objects) do
@@ -696,10 +706,22 @@ for _, number in ipairs(stageNumbers) do
     end
     check(visibleCount >= 4 and visibleCount <= 5,
         "Tier " .. number .. " should show four or five tasks")
+    auditedTaskCount = auditedTaskCount + visibleCount
+    local critical = auditedCriticalItems[number]
+    if critical then
+        local row = notesRows[critical.index]
+        check(row.taskId == critical.id and
+            row.title.value:find(critical.category, 1, true),
+            "Tier " .. number .. " has the wrong requirement/category for " .. critical.id)
+        check(row.detail.value:find(critical.detail, 1, true),
+            "Tier " .. number .. " is missing documented gate context")
+    end
     check(notesScroll:GetVerticalScroll() == 0,
         "Opening a different tier must reset the checklist scroll position")
     tierChecklist:Hide()
 end
+check(auditedTaskCount == 81,
+    "Expected all 81 manually tracked tasks across 17 progression stage guides")
 check(#outbound == beforeTierClick, "Exploring checklists sent extra server commands")
 command("settings")
 settingsCheckbox:SetChecked(false)
