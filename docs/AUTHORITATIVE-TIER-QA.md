@@ -1,6 +1,6 @@
 # Authoritative .ip get lookup — QA protocol
 
-**Status:** Candidate fix only; neither merged nor verified against the live server.  
+**Status:** Maintainer-accepted QA candidate based on the Admina GM-character test. Still unmerged and not a published release.  
 **Context:** [bug #3](https://github.com/CosmicCuddle/Individual-Progression-Companion/issues/3).
 
 ## Established evidence
@@ -28,7 +28,7 @@ Progression Level for <same character name> = <nonnegative integer>
 
 WoW colour escape codes around the name or number are removed before matching. Replies for other characters, malformed results, and `##IPSVC##PD~...` values are ignored. The guide updates **downward or upward** only upon a correctly matched reply. This does not call `.ip set` or change any hidden quests, DB records or server progression.
 
-**Important unverified assumption:** the maintainer confirmed ordinary players can use `.ip get`, but **has not yet tested the named argument form** on the deployed server. If that syntax is unsupported, this test build will remain in its pending state rather than trusting the known-discrepant service value. Do not release until confirmed and the error/timeout UX is addressed.
+**Confirmed on deployed server:** the maintainer tested `.ip get Admina` and received `Progression Level for Admina = 2`. The updated addon subsequently behaved correctly on Admina. This is the maintainer's accepted release-QA scope; it is not proof of every other character type or error path. Timeout/Retry UX remains a separate future improvement.
 
 ## Read-only in-game tests
 
@@ -45,12 +45,12 @@ WoW colour escape codes around the name or number are removed before matching. R
 
 - **Primary regression: maintainer-reported PASS.** On Admina, the previous addon displayed Tier 6 while `.ip get` reported Tier 2. After installing PR #5's candidate build, the maintainer confirmed the addon now appears to work as intended.
 - This confirms the original visible mismatch appears corrected in their client, **not** that every checkbox, target resolution, character swap or timeout case has been tested.
-- Follow-up acceptance needed: selected target/bot, ordinary player, reopening, Refresh and no-response handling. Remain unmerged until appropriately reviewed.
+- **Maintainer acceptance (13 October 2026):** testing the working GM character is sufficient proof for this fix; no further normal-player, selected-target or character-swap tests are required for their sign-off. Those scenarios remain **not independently tested**, not failed. Merge/release is a separate step requiring review of the stacked PRs.
 
 ## Known limits
 
 - The new command may briefly appear in chat; the addon attempts to suppress only a correctly matching own progression reply.
-- A missing or incompatible reply currently leaves a pending state. A dedicated timeout and Retry UX is a required follow-up for a general release.
+- A missing or incompatible reply currently leaves a pending state. An explicit timeout and Retry UX is a recommended future improvement, not part of the maintainer's required acceptance scope for this tier-detection fix.
 - The exact deployed parser and any name-resolution restrictions are not yet confirmed from server source.
 - The existing `GetCurrentStageId` numeric mapping is unchanged.
 - Passing mocked Lua 5.1 tests does **not** mean real server compatibility.
