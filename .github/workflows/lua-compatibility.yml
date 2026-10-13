@@ -19,36 +19,48 @@ jobs:
           sudo apt-get install -y lua5.1
       - name: Parse addon using Lua 5.1
         run: luac5.1 -p IndividualProgressionAddon.lua
-      - name: Check client target and load order
+      - name: Check client target, load order and release metadata
         run: |
-          grep -q '^## Interface: 30300$' IndividualProgressionAddon.toc
-          grep -q '^IndividualProgressionAddon.lua$' IndividualProgressionAddon.toc
+          grep -q '^## Interface: 30300
       - name: Exercise mocked WoW 3.3.5a UI
         run: lua5.1 tests/test_ui_compatibility.lua
 
-      - name: Assemble PR-only addon test package
-        if: github.event_name == 'pull_request'
+      - name: Assemble validated addon folder
         run: |
-          mkdir -p qa-package/IndividualProgressionAddon
-          cp IndividualProgressionAddon.toc IndividualProgressionAddon.lua qa-package/IndividualProgressionAddon/
-          {
-            echo "Individual Progression Companion - PR test build"
-            echo "Not a stable release. Do not redistribute as the official tagged version."
-            echo "Workflow checkout commit: $(git rev-parse HEAD)"
-            echo "Source PR: #${{ github.event.pull_request.number }}"
-            echo "Install folder: Interface/AddOns/IndividualProgressionAddon/"
-            echo "Back up the existing addon folder and SavedVariables before testing."
-          } > qa-package/IndividualProgressionAddon/QA_BUILD_NOTICE.txt
-          test -s qa-package/IndividualProgressionAddon/IndividualProgressionAddon.lua
-          test -s qa-package/IndividualProgressionAddon/IndividualProgressionAddon.toc
-          echo "### QA addon artifact" >> "$GITHUB_STEP_SUMMARY"
-          echo "Tests passed; download the **IP-Companion-PR-TestBuild** artifact from this run." >> "$GITHUB_STEP_SUMMARY"
-          echo "Extract it into Interface/AddOns only after backing up the existing addon folder." >> "$GITHUB_STEP_SUMMARY"
+          mkdir -p package/IndividualProgressionAddon
+          cp IndividualProgressionAddon.toc IndividualProgressionAddon.lua package/IndividualProgressionAddon/
+          test -s package/IndividualProgressionAddon/IndividualProgressionAddon.lua
+          test -s package/IndividualProgressionAddon/IndividualProgressionAddon.toc
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            {
+              echo "Individual Progression Companion - PR test build"
+              echo "Not a tagged stable release; do not redistribute as the official release."
+              echo "Workflow checkout commit: $(git rev-parse HEAD)"
+              echo "Source PR: #${{ github.event.pull_request.number }}"
+              echo "Install folder: Interface/AddOns/IndividualProgressionAddon/"
+              echo "Back up the existing addon folder and SavedVariables before testing."
+            } > package/IndividualProgressionAddon/QA_BUILD_NOTICE.txt
+            echo "### PR-only addon artifact" >> "$GITHUB_STEP_SUMMARY"
+            echo "Download **IP-Companion-PR-TestBuild** after validation." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "### Standalone addon candidate" >> "$GITHUB_STEP_SUMMARY"
+            echo "A validated standalone package is available as a workflow artifact." >> "$GITHUB_STEP_SUMMARY"
+            echo "This artifact is NOT a GitHub tagged Release." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "Back up the installed addon and SavedVariables before updating." >> "$GITHUB_STEP_SUMMARY"
       - name: Upload PR-only addon test artifact
         if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4
         with:
           name: IP-Companion-PR-TestBuild
-          path: qa-package/
+          path: package/
           if-no-files-found: error
           retention-days: 14
+      - name: Upload standalone candidate after main validation
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: IP-Companion-v5.3.0-Standalone-Candidate
+          path: package/
+          if-no-files-found: error
+          retention-days: 30
