@@ -53,6 +53,12 @@ After testing the opaque, detailed layout in WoW, the maintainer approved the im
 - **Later confirmed:** The maintainer took a second screenshot after `/reload`, with all **four** Molten Core marks preserved and progress **4/5**. This establishes Tier 0 reload persistence on the tested character. Longer-tier scrolling and the in-game Reset confirmation remain separately unverified.
 - Keep the original compact sidebar, task IDs, per-character SavedVariables model and optional scrolling for longer tiers. **Do not enlarge the Tier 0 cards again without new feedback.**
 
+## Safe tier reset — in-game acceptance (13 October 2026)
+
+- The maintainer completed the advised **temporary Tier 1 (or other empty tier)** Reset workflow and reported: **"Yes that worked correctly."** This follows successful cancellation of the first-click confirmation and deliberate double-click Reset, without deliberately resetting the four Molten Core checkmarks.
+- Record **S34 as maintainer-reported PASS**. The report covers the instructed return to Molten Core to check the four existing marks remained intact; it is not an independent screenshot verification.
+- Two-click Reset, close-to-cancel, same-character other-tier preservation, and cross-character preservation also passed Lua 5.1 mocked tests. Longer-tier scrolling in an actual client remains a separate check.
+
 ## SavedVariables contract
 
 Existing SavedVariables name: `IndividualProgressionDB` (unchanged).
