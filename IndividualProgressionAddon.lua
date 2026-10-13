@@ -3165,13 +3165,19 @@ local function LayoutNavigation()
 
         if table.getn(visible) > 0 then
             group.heading:Show()
+            group.heading:SetWidth(168)
+            group.heading:SetWordWrap(true)
             group.heading:ClearAllPoints()
             group.heading:SetPoint("TOPLEFT", 8, y - 2)
-            y = y - 24
+            local headingHeight = math.max(24, (group.heading:GetStringHeight() or 0) + 8)
+            y = y - headingHeight
             for _, btn in ipairs(visible) do
+                -- Expanded fonts may wrap navigation labels onto two lines.
+                local rowHeight = math.max(29, (btn.text:GetStringHeight() or 0) + 11)
+                btn:SetHeight(rowHeight - 1)
                 btn:ClearAllPoints()
                 btn:SetPoint("TOPLEFT", 10, y)
-                y = y - 29
+                y = y - rowHeight
             end
             y = y - 8
         else
@@ -3313,7 +3319,11 @@ SelectPage = function(id)
     hubCopyPopup:Hide()
     FitSettingsText()
     -- Keep the Resource Hub action visible without covering guide text.
-    copyHubButton:SetShown(data.selectedPage == "general")
+    if data.selectedPage == "general" then
+        copyHubButton:Show()
+    else
+        copyHubButton:Hide()
+    end
     scrollFrame:ClearAllPoints()
     scrollFrame:SetPoint("TOPLEFT", 14, -100)
     scrollFrame:SetPoint("BOTTOMRIGHT", -30, data.selectedPage == "general" and 71 or 31)
