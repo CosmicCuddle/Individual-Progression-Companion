@@ -723,6 +723,60 @@ end
 check(auditedTaskCount == 81,
     "Expected all 81 manually tracked tasks across 17 progression stage guides")
 check(#outbound == beforeTierClick, "Exploring checklists sent extra server commands")
+
+-- Safe reset regression: cancelling a pending reset preserves marks; a
+-- confirmed Tier 0 reset may not delete this same character's Tier 2 notes.
+-- Use only mock SavedVariables, never manipulate the user's real checks.
+check(IndividualProgressionDB.personalChecklists["Mock Realm"]["Tester"].bwl.blackhand == true,
+    "The Tier 2 note needed for reset isolation was unexpectedly cleared")
+click(navLike("Tier 0"))
+click(tierChecklistBtn)
+notesRows[1]:SetChecked(true)
+click(notesRows[1])
+notesRows[2]:SetChecked(true)
+click(notesRows[2])
+check(IndividualProgressionDB.personalChecklists["Mock Realm"]["Tester"].mc.gear == true
+    and IndividualProgressionDB.personalChecklists["Mock Realm"]["Tester"].mc.core == true,
+    "Tier 0 test notes were not saved")
+click(resetNotes)
+check(resetNotes.value == "Confirm reset?" and notesRows[1]:GetChecked()
+    and notesRows[2]:GetChecked(),
+    "First reset click must not remove notes")
+click(doneButton)
+click(tierChecklistBtn)
+check(resetNotes.value == "Reset this tier" and notesRows[1]:GetChecked()
+    and notesRows[2]:GetChecked(),
+    "Closing a pending reset must cancel without deleting marks")
+click(resetNotes)
+click(resetNotes)
+check(not notesRows[1]:GetChecked() and not notesRows[2]:GetChecked(),
+    "Confirmed reset should clear only Tier 0 mock notes")
+check(IndividualProgressionDB.personalChecklists["Mock Realm"]["Tester"].bwl.blackhand == true,
+    "Resetting Tier 0 removed the same character's Tier 2 preparation")
+check(IndividualProgressionDB.personalChecklists["Mock Realm"]["SomeoneElse"].mc.core == true,
+    "Resetting Tier 0 altered another character's checklist")
+tierChecklist:Hide()
+check(#outbound == beforeTierClick, "Reset sent a server message")
+
+-- Overflow must remain available in the same compact UI when a longer tier
+-- or font increases a card's height. Reopening must start at the first task.
+click(navLike("Tier 9"))
+click(tierChecklistBtn)
+notesRows[2].detail.simulatedStringHeight = 270
+notesRows[2]:SetChecked(true)
+click(notesRows[2])
+check(notesScrollChild.height > notesScroll:GetHeight()
+    and notesScroll:GetVerticalScrollRange() > 0,
+    "Longer task details should enable checklist scrolling")
+notesScroll.scripts.OnMouseWheel(notesScroll, -1)
+check(notesScroll:GetVerticalScroll() > 0, "Longer tier cannot be scrolled")
+tierChecklist:Hide()
+notesRows[2].detail.simulatedStringHeight = nil
+click(tierChecklistBtn)
+check(notesScroll:GetVerticalScroll() == 0,
+    "Reopening a checklist should return to its first task")
+tierChecklist:Hide()
+
 command("settings")
 settingsCheckbox:SetChecked(false)
 click(settingsCheckbox)
