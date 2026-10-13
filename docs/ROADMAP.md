@@ -1,8 +1,8 @@
 # Individual Progression Companion — Development Roadmap
 
-**Updated:** 12 October 2026
-**Current published code baseline:** v5.2.0 (September 2026)
-**Roadmap status:** planning baseline, not a release promise
+**Updated:** 13 October 2026
+**Source on main:** v5.3.0 merged 13 October 2026; **latest tagged GitHub Release:** v5.2.0 (pending v5.3.0 publishing)
+**Roadmap status:** v5.3.0 feature work integrated and verified by CI; tagged publishing and separate Addon Collection import remain outstanding
 
 This roadmap separates **existing features** from **proposed work**. A roadmap checkbox is not proof of a passing in-game test. Consult the handover and log before starting a milestone.
 
@@ -105,6 +105,17 @@ This roadmap separates **existing features** from **proposed work**. A roadmap c
 
 **Important:** Some long labels necessarily abbreviate visually in the compact bar. This is an accepted compromise; hovering provides the complete label. Future sidebar redesigns require renewed approval.
 
+## Integration milestone — 13 October 2026
+
+- [x] PRs #1 → #2 → #5 → #6 → #7 → #8 merged safely into standalone `main`, including user-approved compact guide UI and optional checklist features.
+- [x] v5.3.0 source metadata, README, CHANGELOG and version validation aligned.
+- [x] Post-merge Actions run [38411492404](https://github.com/CosmicCuddle/Individual-Progression-Companion/actions/runs/38411492404) passed Lua 5.1, 3.3.5a mock UI and standalone package creation.
+- [x] In-game acceptance: Tier 0 and Tier 9 layout; Tier 0 four marks across `/reload`; safe temporary-tier reset; maintainer-approved GM detection.
+- [ ] Publish official **GitHub Release v5.3.0** with permanently attached standalone ZIP. Current Actions artifact is temporary.
+- [ ] After official standalone release, optionally prepare the separate `N-Addon-Collection` v5.3.0 import PR with its pinned source commit and suite tests.
+
+See [v5.3.0 Release Notes](RELEASE-NOTES-v5.3.0.md) and [Release Checklist](RELEASE-CHECKLIST.md). Later-tier forced-overflow and other-character tests remain optional additional coverage, not evidence of failure.
+
 ## P2B — Tier-specific personal preparation checklists
 
 **Status:** Tier 0 compact layout **visually approved** and **SavedVariables persistence through `/reload` confirmed in-game** for the tested character. All 81 descriptions have a source-derived audit in draft [PR #7](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/7). The maintainer confirmed the 1,500 War Effort signets rule is an intentional server customization. Longer-tier scrolling, other characters, reset confirmation and remaining server-specific rules have not been independently tested. See [PERSONAL-TIER-CHECKLISTS.md](PERSONAL-TIER-CHECKLISTS.md).
@@ -127,7 +138,7 @@ This roadmap separates **existing features** from **proposed work**. A roadmap c
 - [x] Audit all 81 task summaries against the existing companion guides, relevant Resource Hub content and upstream reference; correct misleading requirement categories and vague descriptions ([audit](TIER-CHECKLIST-CONTENT-AUDIT.md))
 - [ ] Resolve the **live-server War Effort signet-count discrepancy** before certifying the exact numeric gate: official guide/Resource Hub **1,500**, public upstream SQL **1,000**
 - [ ] Confirm custom first-entry and restored attunement claims from deployed server source when a player reports a discrepancy (current checklist faithfully represents the guide but is not independently live-verified)
-- [ ] Test remaining WoW 3.3.5a scenarios: logout/login, longer tiers, and optional cross-character isolation (Tier 0 `/reload` already passed)
+- [ ] Optional extended coverage: logout/login, forced scroll overflow and a second character/realm. The maintainer-approved Tier 0 `/reload` and Tier 9 appearance tests already passed.
 
 **Acceptance:** Manual per-character preparation state survives reload, can be reversed safely, and never alters server-side progression.
 
