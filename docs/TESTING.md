@@ -48,7 +48,7 @@
 | S31 | Open a Tier 0 guide and click **Preparation Checklist** | A tier-specific popup appears with guide-based tasks and prominent disclaimer that these are manual notes, not verified by the server |
 | S32 | Tick checklist items, then `/reload` and reopen | **PASS — 13 Oct 2026:** maintainer confirmed a post-reload Tier 0 screenshot with all four Molten Core marks retained (including Hydraxian Waterlords), progress 4/5 |
 | S33 | Untick one item | Only that manual item clears; others remain checked |
-| S34 | On a different tier with **no important saved marks**, tick a temporary note; click Reset once, close/reopen, then confirm with two clicks | One click must **not** delete; closing cancels confirmation; confirmed reset clears only temporary tier marks, preserving the four saved Molten Core notes |
+| S34 | On a different empty tier, create one temporary mark; click Reset once, close/reopen, then confirm with two clicks | **PASS — 13 Oct 2026 (maintainer-reported):** confirmation/cancellation worked, temporary mark cleared only after confirmation and previously saved Tier 0 notes remained unaffected |
 | S35 | Switch between Tier 0, Tier 1 and Tier 2; optionally another character | Each tier has its own items and marks; another character/realm must not inherit them |
 | S36 | Open General Information, Settings and `/ip hub` | Checklist button is absent on those pages; Resource Hub, compact sidebar and settings still work |
 | S37 | Check checklist popup with larger/custom UI font and use `.ip get` separately | Text and controls are readable; manually checking boxes never changes the server progression value |
