@@ -41,6 +41,12 @@ WoW colour escape codes around the name or number are removed before matching. R
 7. Open/close, Refresh, ESC, Settings, Show all content and `/reload`, ensuring the addon does not affect actual progression.
 8. Compare other existing, known-tier characters, if available. Do **not** call `.ip set` to generate tests.
 
+## Live QA result (13 October 2026)
+
+- **Primary regression: maintainer-reported PASS.** On Admina, the previous addon displayed Tier 6 while `.ip get` reported Tier 2. After installing PR #5's candidate build, the maintainer confirmed the addon now appears to work as intended.
+- This confirms the original visible mismatch appears corrected in their client, **not** that every checkbox, target resolution, character swap or timeout case has been tested.
+- Follow-up acceptance needed: selected target/bot, ordinary player, reopening, Refresh and no-response handling. Remain unmerged until appropriately reviewed.
+
 ## Known limits
 
 - The new command may briefly appear in chat; the addon attempts to suppress only a correctly matching own progression reply.
