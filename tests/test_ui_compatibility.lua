@@ -294,6 +294,12 @@ for _, object in ipairs(objects) do
     end
 end
 check(#notesRows == 5 and resetNotes, "Expected five notes and a reset action")
+check(type(notesRows[1].position[2]) == "table"
+    and type(notesRows[1].position[2].value) == "string"
+    and notesRows[1].position[2].value:find("Marked manually:", 1, true),
+    "Checklist first row should follow the actual summary height")
+check(notesRows[2].position[2] == notesRows[1],
+    "Checklist rows must reflow relative to prior row")
 check(not notesRows[1]:GetChecked(), "New character checklist should be empty")
 notesRows[1]:SetChecked(true)
 click(notesRows[1])
