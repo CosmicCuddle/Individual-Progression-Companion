@@ -3295,14 +3295,14 @@ for i = 1, 5 do
     row.stateText = state
 
     local heading = card:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    heading:SetPoint("TOPLEFT", card, "TOPLEFT", 61, -9)
+    heading:SetPoint("TOPLEFT", card, "TOPLEFT", 61, -7)
     heading:SetWidth(465)
     heading:SetWordWrap(true)
     heading:SetJustifyH("LEFT")
     row.title = heading
 
     local detail = card:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    detail:SetPoint("TOPLEFT", heading, "BOTTOMLEFT", 0, -4)
+    detail:SetPoint("TOPLEFT", heading, "BOTTOMLEFT", 0, -3)
     detail:SetWidth(578)
     detail:SetWordWrap(true)
     detail:SetJustifyH("LEFT")
