@@ -3174,83 +3174,136 @@ checklistButton:SetText("Preparation Checklist")
 checklistButton:Hide()
 
 local checklistPopup = CreateFrame("Frame", "IPGuideTierChecklistFrame", mainFrame)
-checklistPopup:SetSize(630, 435)
+checklistPopup:SetSize(770, 590)
 checklistPopup:SetPoint("CENTER", mainFrame, "CENTER", 0, 0)
 checklistPopup:SetFrameStrata("FULLSCREEN_DIALOG")
 checklistPopup:SetBackdrop(BACKDROP_MAIN)
-checklistPopup:SetBackdropColor(0.035, 0.035, 0.055, 1)
-checklistPopup:SetBackdropBorderColor(0.6, 0.49, 0.24, 1)
+checklistPopup:SetBackdropColor(0.025, 0.025, 0.045, 1)
+checklistPopup:SetBackdropBorderColor(0.65, 0.52, 0.25, 1)
 checklistPopup:EnableMouse(true)
+
+-- Fully opaque centre: the first version let the underlying long guide show
+-- through, making the checkboxes hard to read over character/world content.
+local checklistOpaqueBg = checklistPopup:CreateTexture(nil, "BACKGROUND")
+checklistOpaqueBg:SetPoint("TOPLEFT", checklistPopup, "TOPLEFT", 10, -10)
+checklistOpaqueBg:SetPoint("BOTTOMRIGHT", checklistPopup, "BOTTOMRIGHT", -10, 10)
+checklistOpaqueBg:SetTexture("Interface\\Buttons\\WHITE8X8")
+checklistOpaqueBg:SetVertexColor(0.035, 0.035, 0.055, 1)
 checklistPopup:Hide()
 
-local checklistTitle = checklistPopup:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-checklistTitle:SetPoint("TOPLEFT", 22, -19)
-checklistTitle:SetWidth(570)
+local checklistEyebrow = checklistPopup:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+checklistEyebrow:SetPoint("TOPLEFT", 25, -18)
+checklistEyebrow:SetWidth(665)
+checklistEyebrow:SetJustifyH("LEFT")
+checklistEyebrow:SetText(C.gold .. "PERSONAL RAID PREPARATION" .. C.reset)
+
+local checklistTitle = checklistPopup:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+checklistTitle:SetPoint("TOPLEFT", checklistEyebrow, "BOTTOMLEFT", 0, -5)
+checklistTitle:SetWidth(680)
 checklistTitle:SetJustifyH("LEFT")
 
 local checklistNotice = checklistPopup:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-checklistNotice:SetPoint("TOPLEFT", 22, -48)
-checklistNotice:SetWidth(572)
+checklistNotice:SetPoint("TOPLEFT", checklistTitle, "BOTTOMLEFT", 0, -8)
+checklistNotice:SetWidth(680)
 checklistNotice:SetJustifyH("LEFT")
-checklistNotice:SetText("Personal notes only. NOT server-verified and does not unlock tiers.")
+checklistNotice:SetWordWrap(true)
+checklistNotice:SetText(C.grey .. "These checkmarks are your private planning notes, NOT server-verified completion or unlocks. See the full tier guide for complete instructions." .. C.reset)
 
 local checklistSummary = checklistPopup:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
 checklistSummary:SetPoint("TOPLEFT", checklistNotice, "BOTTOMLEFT", 0, -12)
-checklistSummary:SetWidth(572)
+checklistSummary:SetWidth(680)
 checklistSummary:SetJustifyH("LEFT")
+
+local checklistProgressTrack = CreateFrame("Frame", nil, checklistPopup)
+checklistProgressTrack:SetSize(680, 7)
+checklistProgressTrack:SetPoint("TOPLEFT", checklistSummary, "BOTTOMLEFT", 0, -9)
+checklistProgressTrack:SetBackdrop(BACKDROP_INNER)
+checklistProgressTrack:SetBackdropColor(0.12, 0.12, 0.16, 1)
+local checklistProgressFill = checklistProgressTrack:CreateTexture(nil, "ARTWORK")
+checklistProgressFill:SetPoint("TOPLEFT", 0, 0)
+checklistProgressFill:SetPoint("BOTTOMLEFT", 0, 0)
+checklistProgressFill:SetTexture("Interface\\Buttons\\WHITE8X8")
+checklistProgressFill:SetVertexColor(0.32, 0.75, 0.37, 1)
+checklistProgressFill:SetWidth(1)
+
+local checklistScroll = CreateFrame("ScrollFrame", "IPGuideTierChecklistScrollFrame", checklistPopup, "UIPanelScrollFrameTemplate")
+checklistScroll:SetPoint("TOPLEFT", checklistProgressTrack, "BOTTOMLEFT", 0, -15)
+checklistScroll:SetPoint("BOTTOMRIGHT", checklistPopup, "BOTTOMRIGHT", -45, 73)
+checklistScroll:EnableMouseWheel(true)
+checklistScroll:SetScript("OnMouseWheel", function(self, delta)
+    local nextScroll = (self:GetVerticalScroll() or 0) - delta * 52
+    local maximum = self:GetVerticalScrollRange() or 0
+    self:SetVerticalScroll(math.max(0, math.min(nextScroll, maximum)))
+end)
+
+local checklistScrollChild = CreateFrame("Frame", "IPGuideTierChecklistScrollChild", checklistScroll)
+checklistScrollChild:SetSize(670, 390)
+checklistScroll:SetScrollChild(checklistScrollChild)
 
 local checklistRows = {}
 local activeChecklistStage
 local checklistResetArmed = false
 local checklistResetButton = CreateFrame("Button", nil, checklistPopup, "UIPanelButtonTemplate")
-checklistResetButton:SetSize(164, 24)
-checklistResetButton:SetPoint("BOTTOMLEFT", 24, 20)
+checklistResetButton:SetSize(148, 24)
+checklistResetButton:SetPoint("BOTTOMLEFT", 25, 22)
 checklistResetButton:SetText("Reset this tier")
+
+local checklistFooterText = checklistPopup:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+checklistFooterText:SetPoint("LEFT", checklistResetButton, "RIGHT", 14, 0)
+checklistFooterText:SetWidth(375)
+checklistFooterText:SetJustifyH("LEFT")
+checklistFooterText:SetText(C.grey .. "Only this character's personal notes are affected." .. C.reset)
+
+local checklistDoneButton = CreateFrame("Button", nil, checklistPopup, "UIPanelButtonTemplate")
+checklistDoneButton:SetSize(82, 24)
+checklistDoneButton:SetPoint("BOTTOMRIGHT", -29, 22)
+checklistDoneButton:SetText("Done")
+checklistDoneButton:SetScript("OnClick", function() checklistPopup:Hide() end)
 
 local checklistClose = CreateFrame("Button", nil, checklistPopup, "UIPanelCloseButton")
 checklistClose:SetPoint("TOPRIGHT", -5, -5)
 checklistClose:SetScript("OnClick", function() checklistPopup:Hide() end)
 
-local function RefreshChecklistRows()
-    local items = PERSONAL_TIER_TASKS[activeChecklistStage]
-    if not items then return end
-    local marks = GetPersonalChecklist(activeChecklistStage, false)
-    local count = 0
-    for i, row in ipairs(checklistRows) do
-        local item = items[i]
-        if item then
-            row.taskId = item.id
-            row.stageId = activeChecklistStage
-            row.title:SetText(C.gold .. "[" .. item.kind .. "] " .. C.reset .. item.label)
-            local checked = marks and marks[item.id] == true or false
-            row:SetChecked(checked)
-            if checked then count = count + 1 end
-            row:Show()
-        else
-            row.taskId = nil
-            row.stageId = nil
-            row:Hide()
-        end
-    end
-    checklistSummary:SetText(C.cyan .. "Marked manually: " .. count .. "/" .. table.getn(items) .. C.reset)
-end
+local RefreshChecklistRows
 
 for i = 1, 5 do
-    local row = CreateFrame("CheckButton", nil, checklistPopup, "UICheckButtonTemplate")
+    local card = CreateFrame("Frame", nil, checklistScrollChild)
+    card:SetSize(662, 100)
+    card:SetBackdrop(BACKDROP_INNER)
+    card:SetBackdropColor(0.09, 0.09, 0.125, 1)
+    card:SetBackdropBorderColor(0.29, 0.27, 0.21, 0.85)
+
+    local row = CreateFrame("CheckButton", nil, card, "UICheckButtonTemplate")
     row:SetSize(28, 28)
-    -- Relative anchors follow the actual custom-font warning/summary height.
-    -- They do not affect the approved compact sidebar in any way.
-    if i == 1 then
-        row:SetPoint("TOPLEFT", checklistSummary, "BOTTOMLEFT", 0, -15)
-    else
-        row:SetPoint("TOPLEFT", checklistRows[i - 1], "BOTTOMLEFT", 0, -22)
-    end
-    local label = checklistPopup:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    label:SetPoint("TOPLEFT", row, "TOPRIGHT", 7, -2)
-    label:SetWidth(525)
-    label:SetJustifyH("LEFT")
-    label:SetWordWrap(true)
-    row.title = label
+    row:SetPoint("TOPLEFT", card, "TOPLEFT", 9, -26)
+    row.card = card
+
+    local kind = card:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    kind:SetPoint("TOPLEFT", card, "TOPLEFT", 49, -9)
+    kind:SetWidth(485)
+    kind:SetJustifyH("LEFT")
+    row.kindText = kind
+
+    local state = card:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    state:SetPoint("TOPRIGHT", card, "TOPRIGHT", -15, -9)
+    state:SetWidth(108)
+    state:SetJustifyH("RIGHT")
+    row.stateText = state
+
+    local heading = card:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    heading:SetPoint("TOPLEFT", kind, "BOTTOMLEFT", 0, -5)
+    heading:SetWidth(588)
+    heading:SetWordWrap(true)
+    heading:SetJustifyH("LEFT")
+    row.title = heading
+
+    local detail = card:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    detail:SetPoint("TOPLEFT", heading, "BOTTOMLEFT", 0, -7)
+    detail:SetWidth(588)
+    detail:SetWordWrap(true)
+    detail:SetJustifyH("LEFT")
+    row.detail = detail
+
     row:SetScript("OnClick", function(self)
         if self.stageId and self.taskId then
             SetPersonalTask(self.stageId, self.taskId, self:GetChecked() and true or false)
@@ -3260,6 +3313,49 @@ for i = 1, 5 do
         end
     end)
     checklistRows[i] = row
+end
+
+RefreshChecklistRows = function()
+    local items = PERSONAL_TIER_TASKS[activeChecklistStage]
+    if not items then return end
+    local marks = GetPersonalChecklist(activeChecklistStage, false)
+    local detailMap = PERSONAL_TIER_DETAILS[activeChecklistStage] or {}
+    local count, offset = 0, 5
+    for i, row in ipairs(checklistRows) do
+        local item = items[i]
+        if item then
+            local marked = marks and marks[item.id] == true or false
+            row.taskId = item.id
+            row.stageId = activeChecklistStage
+            row:SetChecked(marked)
+            if marked then count = count + 1 end
+            row.kindText:SetText(C.gold .. string.format("%02d / %02d", i, table.getn(items)) ..
+                "   " .. string.upper(item.kind) .. C.reset)
+            row.stateText:SetText(marked and (C.green .. "MARKED" .. C.reset)
+                or (C.grey .. "NOT MARKED" .. C.reset))
+            row.title:SetText((marked and C.green or C.white) .. item.label .. C.reset)
+            row.detail:SetText(C.grey .. (detailMap[item.id] or
+                "See the complete tier guide for the detailed requirements.") .. C.reset)
+            local titleHeight = row.title:GetStringHeight() or 20
+            local detailHeight = row.detail:GetStringHeight() or 20
+            local cardHeight = math.max(100, titleHeight + detailHeight + 46)
+            row.card:SetHeight(cardHeight)
+            row.card:ClearAllPoints()
+            row.card:SetPoint("TOPLEFT", checklistScrollChild, "TOPLEFT", 3, -offset)
+            row.card:Show()
+            row:Show()
+            offset = offset + cardHeight + 8
+        else
+            row.taskId = nil
+            row.stageId = nil
+            row.card:Hide()
+            row:Hide()
+        end
+    end
+    checklistScrollChild:SetHeight(math.max(200, offset + 5))
+    checklistSummary:SetText(C.cyan .. "MY NOTES: " .. count .. " of " ..
+        table.getn(items) .. " marked" .. C.reset)
+    checklistProgressFill:SetWidth(math.max(1, 676 * count / math.max(1, table.getn(items))))
 end
 
 checklistResetButton:SetScript("OnClick", function(self)
@@ -3290,8 +3386,9 @@ checklistButton:SetScript("OnClick", function()
     checklistResetArmed = false
     checklistResetButton:SetText("Reset this tier")
     local stage = VANILLA_STAGES[stageId] or TBC_STAGES[stageId] or WOTLK_STAGES[stageId]
-    checklistTitle:SetText(C.gold .. (stage and stage.title or "Tier") .. " - Personal Checklist" .. C.reset)
+    checklistTitle:SetText(C.white .. (stage and stage.title or "Tier") .. C.reset)
     RefreshChecklistRows()
+    checklistScroll:SetVerticalScroll(0)
     checklistPopup:Show()
 end)
 
