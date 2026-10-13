@@ -2,6 +2,17 @@
 
 This is the **working project record**. Keep chronological entries with clear status and links to GitHub PRs/commits. Published user-facing changes belong in the root [CHANGELOG.md](../CHANGELOG.md).
 
+## 13 October 2026 — Live test accepted: two-step reset on a temporary tier
+
+**Status:** **Maintainer-reported PASS** in WoW for the optional safe Reset workflow, following the six-step procedure in the preceding conversation.
+
+- The maintainer replied **"Yes that worked correctly"** after testing a temporary checkbox in Tier 1 (or another initially empty tier), verifying the first reset click only armed **Confirm reset?**, closing/reopening cancelled it, and deliberate double-click confirmation removed the temporary mark.
+- The procedure also instructed revisiting Tier 0 to check the four previously saved Molten Core marks were unchanged; the maintainer reported the procedure worked. This is a **user-reported acceptance**, not a separately captured screenshot of every screen.
+- Previously recorded independent success: Tier 0's four checkmarks persisted across `/reload`; all five tasks fit without scrolling and the compact layout was visually approved.
+- Mock tests additionally check same-character cross-tier and cross-character isolation and long task scroll overflow, [Actions run 38406545987](https://github.com/CosmicCuddle/Individual-Progression-Companion/actions/runs/38406545987).
+- **Still not separately tested in-game:** longer TBC/Wrath task overflow, optional other-character/realm persistence, remaining deployment-specific rule review. Do not mark these as passed by inference.
+- No runtime addon source, SavedVariables schema, server commands or database changed for this acceptance. Draft PR #7 remains unmerged pending final integration/release review.
+
 ## 13 October 2026 — Reset isolation and longer-tier scroll review
 
 **Status:** Automated test expansion passed; in-game confirmation of temporary-tier reset and longer guide readability remains optional/pending. Draft PR #7 remains unmerged.
