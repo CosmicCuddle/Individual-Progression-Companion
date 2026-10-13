@@ -99,7 +99,9 @@ When starting a new conversation, provide the following official entry points:
 
 > Continue development of Individual Progression Companion from the GitHub repository and official project handover. Read docs/PROJECT-HANDOVER.md, docs/ROADMAP.md, docs/DEVELOPMENT-LOG.md, docs/TESTING.md and the latest open/merged PRs before making changes. Follow the project's backup, compatibility, versioning, test and documentation rules. Resume the highest-priority unfinished milestone. Keep a log of decisions, changes, test results and next actions so the project can be resumed again.
 
-## 7. Current maintainer requests (12 October 2026)
+## 7. Historical maintainer requirements snapshot (12 October 2026)
+
+**Historical snapshot only.** This section describes original requests and no longer represents the current build status. The authoritative 13 October status is in section 10 and the development log.
 
 The maintainer has supplied rough feature notes, recorded precisely in [ROADMAP.md](ROADMAP.md) under **P1A — Player-requested current-stage experience**. Treat these as **requested, not implemented**:
 
@@ -124,4 +126,24 @@ The two PRs are stacked: documentation first, then this feature. If both are mer
 The repository was documented as v5.2.0 on 12 October 2026. No current post-5.2.0 in-game regression test is evidenced by these baseline documents. Start with the **read-only functionality audit and regression test plan** in the roadmap, rather than presuming a defect or changing server rules.
 
 If another session makes changes, record the PR and updated state in the development log; future chats should not rely on this snapshot alone.
+
+
+
+## 10. Current branch/PR status — 13 October 2026
+
+**This section supersedes the status in sections 7–9.** Stable `main` was still v5.2.0 when this draft work was prepared. No merges or standalone release/version bump have been authorised.
+
+### Stacked changes (merge in dependency order only)
+
+1. [PR #1](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/1) — documentation, base `main`.
+2. [PR #2](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/2) — stage focus, hidden future tiers, Settings, Escape and Resource Hub guide footer.
+3. [PR #5](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/5) — authoritative read-only self-character lookup via `.ip get <name>`. The maintainer tested `Admina` (progression **2**) successfully and explicitly accepted **that GM test alone** as sufficient verification of this specific tier-detection correction. No normal-player repetition is required for their acceptance.
+4. [PR #6](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/6) — Resource Hub copy editbox, adaptive text layout, concise footer and **the maintainer-approved ORIGINAL COMPACT sidebar**. An experimental wide, tall, multi-line sidebar was rejected in WoW as visually bulky and has been reverted. Do not reintroduce it without approval.
+5. **Draft** [PR #7](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/7) — 17 tier-specific optional personal checklists, 81 stable saved task IDs with detailed guide-derived descriptions, isolated per-realm/character/tier SavedVariables, manual progress display and guarded reset. After the maintainer showed the initial popup and called it visually lacklustre and vague, the popup was rebuilt with an **opaque backdrop, scrollable detailed task cards, category/mark labels, and a Done control**, without touching the compact sidebar. **The compact Tier 0 visual layout has now passed the maintainer's in-game review:** all five Molten Core task cards fit without scrolling, with a visible 3/5 indicator and preserved displayed checkmarks. The maintainer said it works well. The **81-item guide-source content audit** is now documented in [TIER-CHECKLIST-CONTENT-AUDIT.md](TIER-CHECKLIST-CONTENT-AUDIT.md), and misleading gates/categories were corrected without changing task IDs. **Live server details remain to be verified** where sources conflict (notably **1,500 War Effort signets in the Resource Hub/companion versus 1,000 in upstream SQL**). Other-tier overflow and `/reload` persistence remain untested. PR #7 is still draft/unmerged.
+
+### Next required step
+
+Consult [PERSONAL-TIER-CHECKLISTS.md](PERSONAL-TIER-CHECKLISTS.md), [TESTING.md](TESTING.md) S31–S41, and the latest passing GitHub Actions PR test artifact. Back up the standalone addon folder and SavedVariables before asking the maintainer to install a new build. Keep the approved Tier 0 visual layout and compact sidebar; next verify task persistence after `/reload`, reset cancellation, longer-tier scrolling and disputed live server requirements **before release**. Do not rerun the already accepted GM tier-detection test without a new issue. Never treat local checkboxes as proof of actual quest completion.
+
+Existing `N-Addon-Collection` is pinned to stable v5.2.0 until a **separately approved release**; do not update its lockfile early. No live database updates, `.ip set` commands, or server recompiles are required for these addon-only features.
 

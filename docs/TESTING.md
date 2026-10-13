@@ -45,6 +45,22 @@
 | S28 | With enlarged font, review Overview / Roadmap, World Boss Timeline, Vanilla Reputations, General Information and TBC Overview | Sidebar remains compact rather than adding hard line breaks or oversized rows; full original label is accessible via hover |
 | S29 | Turn Show all content ON and inspect long TBC/Wrath tier names | Rows stay compact and scrolling reaches all entries; hovering over any shortened title shows the complete name |
 | S30 | Dismiss any ElvUI help/tutorial overlay and recheck the header | Companion is unobstructed, independent of ElvUI's own help overlay |
+| S31 | Open a Tier 0 guide and click **Preparation Checklist** | A tier-specific popup appears with guide-based tasks and prominent disclaimer that these are manual notes, not verified by the server |
+| S32 | Tick checklist items, then `/reload` and reopen | **PASS — 13 Oct 2026:** maintainer confirmed a post-reload Tier 0 screenshot with all four Molten Core marks retained (including Hydraxian Waterlords), progress 4/5 |
+| S33 | Untick one item | Only that manual item clears; others remain checked |
+| S34 | On a different empty tier, create one temporary mark; click Reset once, close/reopen, then confirm with two clicks | **PASS — 13 Oct 2026 (maintainer-reported):** confirmation/cancellation worked, temporary mark cleared only after confirmation and previously saved Tier 0 notes remained unaffected |
+| S35 | Switch between Tier 0, Tier 1 and Tier 2; optionally another character | Each tier has its own items and marks; another character/realm must not inherit them |
+| S36 | Open General Information, Settings and `/ip hub` | Checklist button is absent on those pages; Resource Hub, compact sidebar and settings still work |
+| S37 | Check checklist popup with larger/custom UI font and use `.ip get` separately | Text and controls are readable; manually checking boxes never changes the server progression value |
+| S38 | Open the redesigned Tier 0 checklist near a busy in-game scene | Popup background is opaque; underlying guide/world text does not show through task cards; clear tier heading, disclaimer and progress indicator are visible |
+| S39 | Open Tier 0 Molten Core's five-item checklist at usual UI scale | **All five task cards and their descriptions fit in the popup without scrolling**, with enough separation and legible text |
+| S40 | Tick items, then try Reset and Done | X/Y progress display changes, previous marks persist on reopening, first reset click does not clear, Done closes and cancels pending reset |
+| S41 | View a longer stage (e.g. BWL or TBC) using the existing custom font | **PASS — 13 Oct 2026:** maintainer supplied a Tier 9 (SSC / Tempest Keep) screenshot; all five task descriptions, including Kael'thas, fit legibly without scrolling, and user confirmed the layout was fine. Long-content overflow still has automated coverage, not a separate in-game overflow test. |
+| S42 | Open a tier with longer text or enlarge font/UI scale temporarily | Cards grow according to actual text height; scrolling activates if required and reaches the final task without clipping |
+| S43 | Observe the compact Tier 0 checklist in the maintainer's actual WoW client | **PASS — 13 Oct 2026:** screenshot shows all five Molten Core tasks with descriptions simultaneously visible, a 3/5 progress indicator, and Reset/Done controls; maintainer approved the appearance |
+| S44 | Inspect Pre-AQ checklist's signet task and the active `Complete the War Effort` quest on an eligible character (read-only) | Signets correctly shown as a **required gate**; record whether live requirement is **1,500** (current Hub/guide) or **1,000** (public upstream SQL); do not edit quest or DB |
+| S45 | Inspect Pre-TBC, Tier 8 and Tier 10 checklists without changing progression | `Into the Breach` remains the Tier 7 quest gate while 2,500g Vezrath service is separate; Nightbane is future SSC access; Hyjal is part of restored Black Temple access |
+| S46 | Inspect Tier 17's final checklist | Outer bosses are distinguished from optional raid preparation; Halion boss is the final gate without claiming a Normal-only kill restriction |
 
 **Note:** S05, S06, S14, S15 contain requested future behaviour; **do not report them as current passes** before implementation and real-client testing.
 

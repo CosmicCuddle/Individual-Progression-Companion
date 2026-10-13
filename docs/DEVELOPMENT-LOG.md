@@ -2,6 +2,144 @@
 
 This is the **working project record**. Keep chronological entries with clear status and links to GitHub PRs/commits. Published user-facing changes belong in the root [CHANGELOG.md](../CHANGELOG.md).
 
+## 13 October 2026 — Tier 9 longer-stage checklist visual acceptance
+
+**Status:** **Maintainer-approved in-game presentation**, no code change required. Draft PR #7 remains unmerged.
+
+- In WoW, the maintainer opened Tier 9 **Serpentshrine Cavern / Tempest Keep** and supplied a screenshot showing all five checklists, complete readable descriptions, final **Defeat Kael'thas** card and fixed Reset/Done controls.
+- The display read **0 of 5 marked**, with no unexpected marks, clipping or overlapping. All five cards fit in the available panel; thus no manual scrolling was necessary.
+- The maintainer confirmed **"Yes i thought it was fine."** Record **PASS for Tier 9 layout and final-task access**. Do not claim an actual in-game overflow scroll test; long-text scrolling remains covered by Lua mocked tests and is optional additional coverage.
+- Already accepted in-game: Tier 0 compact visual layout, four marks surviving `/reload`, and the temporary-tier Reset confirmation/cancellation workflow.
+- Keep the current compact sidebar, checklist spacing, 81 task IDs and user SavedVariables unchanged. No further redesign or download is required for this acceptance.
+- Next release discussion: review dependencies PR #1 → #2 → #5 → #6 → #7 and request explicit maintainer authorization before merging or publishing; no automatic N-Addon-Collection pin change.
+
+## 13 October 2026 — Live test accepted: two-step reset on a temporary tier
+
+**Status:** **Maintainer-reported PASS** in WoW for the optional safe Reset workflow, following the six-step procedure in the preceding conversation.
+
+- The maintainer replied **"Yes that worked correctly"** after testing a temporary checkbox in Tier 1 (or another initially empty tier), verifying the first reset click only armed **Confirm reset?**, closing/reopening cancelled it, and deliberate double-click confirmation removed the temporary mark.
+- The procedure also instructed revisiting Tier 0 to check the four previously saved Molten Core marks were unchanged; the maintainer reported the procedure worked. This is a **user-reported acceptance**, not a separately captured screenshot of every screen.
+- Previously recorded independent success: Tier 0's four checkmarks persisted across `/reload`; all five tasks fit without scrolling and the compact layout was visually approved.
+- Mock tests additionally check same-character cross-tier and cross-character isolation and long task scroll overflow, [Actions run 38406545987](https://github.com/CosmicCuddle/Individual-Progression-Companion/actions/runs/38406545987).
+- **Still not separately tested in-game:** longer TBC/Wrath task overflow, optional other-character/realm persistence, remaining deployment-specific rule review. Do not mark these as passed by inference.
+- No runtime addon source, SavedVariables schema, server commands or database changed for this acceptance. Draft PR #7 remains unmerged pending final integration/release review.
+
+## 13 October 2026 — Reset isolation and longer-tier scroll review
+
+**Status:** Automated test expansion passed; in-game confirmation of temporary-tier reset and longer guide readability remains optional/pending. Draft PR #7 remains unmerged.
+
+- Maintainer explicitly confirmed the Tier 0 screenshot showing **4 of 5** marks was captured **after `/reload`**. The prior Tier 0 SavedVariables test therefore stays passed and need not be repeated.
+- Reviewed the Reset code: one click arms `Confirm reset?` without deleting any flags; closing/Done cancels the pending reset, and a second deliberate click clears **only the selected tier** for the current realm/character.
+- Extended Lua 5.1 mocked tests to create temporary Molten Core notes while retaining a Blackwing Lair mark on the **same character**. Verified cancel and confirmed Reset both preserve the Blackwing Lair data, as well as another character's Molten Core marks.
+- Extended mocked longer-tier overflow test: unusually tall task descriptions enable wheel scrolling; reopening resets to the top.
+- [GitHub Actions run 38406545987](https://github.com/CosmicCuddle/Individual-Progression-Companion/actions/runs/38406545987) **passed** Lua 5.1 parsing, 3.3.5a client load/TOC checks, mocked UI and PR-only packaging.
+- To avoid risking the maintainer's **four existing Tier 0 marks**, any optional in-game Reset test should use a **different, initially empty tier** with a temporary single mark. The full reset must never be tested on meaningful saved Tier 0 progress.
+- No production addon logic, task IDs, SavedVariables schema, live server, SQL or character progression was changed during this review. The current installed test build remains sufficient for manual QA.
+
+## 13 October 2026 — Tier 0 follow-up: four marks shown
+
+**Evidence:** Following the request to tick Hydraxian Waterlords rune dousing and test persistence with `/reload`, the maintainer supplied an in-game Molten Core screenshot showing **4 of 5 marked**, including the newly marked Hydraxian task. The previous visual acceptance screenshot showed **3 of 5 marked**.
+
+- All five compact task cards remain visible without scrolling; the mark count and progress bar agree; Ragnaros remains unchecked.
+- **PASS — confirmed by the maintainer:** The screenshot was captured **after `/reload`**. The four manual Molten Core marks, including Hydraxian Waterlords rune dousing, survived the reload, and the 4/5 progress bar remained correct. This verifies this character's Tier 0 SavedVariables persistence in game; other characters/tiers have not been independently tested.
+- No change to task IDs, saved state, UI layout, server progression or database. PR #7 is still a draft/unmerged.
+- No need to repeat the Tier 0 reload test. Remaining distinct release checks include longer-tier overflow, reset confirmation if desired, and selected server-specific task wording.
+
+## 13 October 2026 — Maintainer confirms custom Pre-AQ signet requirement
+
+- The maintainer explicitly confirms the Pre-AQ War Effort requirement was **manually changed to 1,500 Commendation Signets** on the server. This explains why the official companion/Resource Hub documentation differs from public upstream SQL at 1,000.
+- Treat **1,500** as the current intended server rule. Do not ask for extra quest screenshots merely to reconcile the upstream default; optional direct DB verification remains outside this source audit.
+- Keep the same checklist IDs, task states, addon layout and progression detection. No SQL, world DB, quests or server modules were changed as part of recording this clarification.
+- [Content audit](TIER-CHECKLIST-CONTENT-AUDIT.md) updated accordingly; other server-custom rule checks and SavedVariables `/reload` acceptance remain distinct tasks.
+
+## 13 October 2026 — Source review: 81 checklist items
+
+**Status:** Completed a **source-derived content audit of all 81 tasks** against the 17 built-in stage guides and available Naxxramas Resource Hub information. **Deployed server-rule verification is not complete**. Full per-tier review: [TIER-CHECKLIST-CONTENT-AUDIT.md](TIER-CHECKLIST-CONTENT-AUDIT.md).
+
+- Confirmed stable task IDs and saved per-character/realm/tier keys are unchanged. Checked category assignments and how each summary relates to **Required to Advance** versus optional/recommended preparation.
+- Corrected **Pre-AQ Commendation Signets** from `Recommended` to **`Required`**. Current official companion guide and Resource Hub state **1,500 signets**; the public upstream `aq_war_effort.sql` specifies **1,000**. **The maintainer has since confirmed that they deliberately changed the server requirement to 1,500**, explaining the divergence. No live database inspection was performed.
+- Separated Tier 7's **Into the Breach progression quest** from the separately paid **2,500g Chronomancer Vezrath TBC service**.
+- Labelled Nightbane's Blazing Signet **Future Access** for SSC, Hyjal's attunement sequence as **Access** rather than merely recommended, and Ruby Sanctum's outer bosses as the access path to Halion. Avoided implying only Normal Halion kills can satisfy the progression boss requirement.
+- Added concrete instructions from source guides: seven rune douses/Aqual versus Eternal, Pre-AQ gong shortcut/Mallet, Karazhan Master's Key dungeon fragments, Gruul and Nightbane SSC signets, Trials of the Naaru, Magisters' Terrace Hard to Kill, Naxx attunement reputation, Wrath's early emblem gear and Sapphiron/Malygos link.
+- Expanded Lua 5.1 mocked coverage to assert **81** task rows across **17** tiers plus key gate categories and details.
+- **No GM `.ip set`, world/character DB, actual quest progress, existing task IDs, or compact navigation design was modified.** Changes are limited to client wording/category presentation and tests.
+
+### Remaining accuracy and release checks
+- **Maintainer-confirmed custom rule:** the Pre-AQ `Complete the War Effort` requirement was manually changed to **1,500 signets**, differing from upstream's 1,000. No additional screenshot is required; optional DB inspection is separate.
+- **Medium:** get evidence for any further server-specific custom access/attunement rule if doubts arise; the deployed custom handler was not provided.
+- **Client:** `/reload` SavedVariables persistence and longer-tier scrolling are not yet independently tested in-game.
+- PR #7 remains a draft/unmerged. No stable release/N-Addon-Collection update was performed.
+
+## 13 October 2026 — PR #7 compact checklist visually accepted
+
+**Status:** **Maintainer-approved in-game visual layout** for the Tier 0 Molten Core checklist. Draft PR #7 remains unmerged; this is not complete release approval.
+
+- Maintainer installed the latest compact-card test build, provided a screenshot, and confirmed **"Yes i like it works really well."**
+- The screenshot confirms **all five Molten Core checklist cards and descriptions are visible together without scrolling**; the marked count is **3 of 5**, three checkboxes are visibly checked, the progress bar displays their proportion, and **Reset this tier** / **Done** remain accessible.
+- Layout includes clear compact headings, categories, detailed descriptions and an opaque background. The maintainer's preferred **compact main sidebar** remains unchanged.
+- This establishes an **in-game pass for the Tier 0 checklist layout**. The screenshot alone does **not** verify reloading SavedVariables, character/realm isolation, the reset confirmation flow, or how longer TBC/Wrath tiers scroll. These remain separately tracked and should not be recorded as passed.
+- No code change was needed in response to the successful screenshot; existing PR build is retained. The published v5.2.0 addon and N-Addon-Collection are unchanged.
+- Next development steps: check persistent checkmarks across `/reload` if practical, and review all checklist task descriptions against the currently deployed server rules and the Resource Hub before a release.
+
+## 13 October 2026 — PR #7 compact adaptive task cards
+
+**Status:** Revision implemented, automated checks under review, latest client layout not yet re-tested.
+
+### Maintainer feedback
+- The redesigned opaque/detailed popup is **visually accepted in principle** ("looks good i think") based on two in-game screenshots showing MC **3/5 marked** and scrolling through the final item.
+- One remaining request: the short five-item Molten Core list unnecessarily required scrolling because every card reserved at least 100 pixels plus broad gaps. The maintainer prefers **all five tasks in view where they fit** while retaining scrolling for tiers with longer descriptions.
+- These screenshots demonstrate existing checkmarks and actual scrolling, but do not independently verify SavedVariables persistence through `/reload`.
+
+### Layout refinement
+- Preserve **the same 770x590 opaque dialog**, task content, progress display, Done/reset controls, 81 stable task IDs and compact original navigation sidebar.
+- Combine the category and task name into the heading line, move the task index into the checkbox gutter, and reduce the empty minimum card height from 100 to **62**.
+- Derive each card height from actual title and description text heights; keep larger cards and scrolling when a custom font or longer tier needs room. Reduce the between-card gap from 8 to 5.
+- Shorten the explanatory disclaimer while preserving the statement that notes are **not server verified**. Reclaim some unnecessary header/footer spacing for the scroll viewport.
+- Add mock regression checks for five short tasks fitting in a simulated checklist viewport **without scrolling**, while simulated enlarged text forces natural overflow and remains reachable by mouse wheel.
+- No changes to `.ip get`, server quests/database, per-character persistence or the existing checkmarks. PR #7 stays a draft until the revised fit is confirmed in the actual game.
+
+## 13 October 2026 — PR #7 checklist presentation redesign after in-game feedback
+
+**Status:** Implemented and automated tests passed; updated visual layout **not yet tested in WoW**.
+
+### Maintainer evidence
+- The first draft checklist popup was installed and shown on **Admina** with Tier 0, showing 3/5 marks. This demonstrates that the initial window displayed and accepted manual marks, but it is **not** proof of persistence through `/reload`.
+- Maintainer described the interface as **lacklustre and vague**. Screenshot shows background guide text/characters visible through the checklist's dark area, little separation between tasks, no explanatory task details and a prominent bare reset button.
+
+### Changes
+- Retained **17 tier lists with the original 81 stable item IDs**, so the saved notes from the first draft remain compatible.
+- Added a separate **guide-derived description for every one of the 81 tasks**. For example, MC attunement now names Lothos Riftwaker, the Blackrock Depths Core Fragment, and returning the quest rather than just saying "complete attunement".
+- Rebuilt the popup as a **770 x 590** scrollable, opaque dark panel with a dedicated title/stage header, explicit personal-notes disclaimer, **X of Y marked** progress indicator and proportionate progress bar.
+- Each task appears in a distinct darker card with category, mark state, clear task name and a wrapping explanation. Rows are height-measured and scrollable so the larger/custom WoW font does not have to fit everything into a small rigid space.
+- Added an explicit **Done** button, and kept the double-click **Reset this tier** confirmation. Existing per-realm, per-character, per-tier persistence logic and read-only safety rules are unchanged.
+- **No change to the maintainer-approved compact single-line sidebar**, progression detection, database, quests, server commands or N-Addon-Collection.
+- GitHub Actions [run 38393048129](https://github.com/CosmicCuddle/Individual-Progression-Companion/actions/runs/38393048129) passed Lua 5.1 syntax, TOC, UI mocks and artifact upload after code/test improvements.
+
+### Pending acceptance
+- Inspect the actual opacity, contrast, task-card wrapping, scroll-wheel and Reset/Done controls in WoW with the maintainer's font.
+- Confirm previously checked tasks are retained and `/reload` keeps the marks; validate that reset still requires confirmation.
+- Review task descriptions against the deployed server. These are **source-guide-derived descriptions, not live quest verification**.
+- Backup the previously installed addon folder and SavedVariables before testing the new PR artifact; restore them if needed.
+
+## 13 October 2026 — Optional personal tier checklists (draft PR #7)
+
+**Status:** Draft [PR #7](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/7). Lua 5.1 mocked integration tests passed in the current feature branch; the actual WoW client, persistence over `/reload`, and checklist task wording **have not been accepted or reviewed in game**.
+
+- Based on the 17 tier-specific guides already in the Lua source, prepared **81 concise starter checklist tasks** covering access/attunement, reputation, equipment, optional activities and progression milestones.
+- Added a **Preparation Checklist** action in the fixed space below each stage's scrollable guide body. **No new sidebar rows and no changes to the compact single-line navigation design.**
+- A popup offers 4–5 manual checkboxes, a status count and a prominent reminder that ticking is **not server verified** and cannot unlock a tier.
+- New additive SavedVariables scope: `IndividualProgressionDB.personalChecklists[realm][character][tier][task_id]` stores checked flags only, leaving prior settings intact.
+- Ticking/unticking is reversible. A **two-click** `Reset this tier` action clears only the current character's selected tier; hiding the popup cancels confirmation.
+- In Lua 5.1 mocked tests, checked status persists across closing/reopening, characters and realms are isolated, tier-specific entries do not leak, all 17 stage pages load the right note set, and no new server commands are issued.
+- Popup notice and checkbox positions were anchored relative to preceding text for variable/custom WoW font heights. The compact sidebar was left unchanged.
+- New dedicated specification/test instructions: [PERSONAL-TIER-CHECKLISTS.md](PERSONAL-TIER-CHECKLISTS.md). Manual cases **S31–S37** added to [TESTING.md](TESTING.md).
+- Source and tests are stacked on [PR #6](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/6), itself dependent on #5, #2 and #1. **No merges, release tags, N-Addon-Collection imports, quest changes, server commands or SQL updates.**
+
+### Before marking this feature ready
+- Confirm popup layout, manual marks, `/reload` persistence, unchecking and reset cancellation in WoW 3.3.5a with the maintainer's custom font.
+- Review the starter task wording against server-specific progression guidance; categories are labels for **manual notes** rather than automated quest verification.
+- Keep a backup of the previous addon folder and SavedVariables. Restore those for rollback if needed.
+
 ## 13 October 2026 — Maintainer design decision: restore compact sidebar
 
 **Status:** User rejected the enlarged, multi-line sidebar after testing its appearance in WoW. The compact navigation restoration is implemented in [PR #6](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/6), with Lua 5.1 mock tests passed and client appearance awaiting quick confirmation.

@@ -67,6 +67,9 @@ end
 function Methods:SetTexture(...)
     self.texture = {...}
 end
+function Methods:SetVertexColor(...)
+    self.vertexColor = {...}
+end
 function Methods:SetSize(w, h)
     self.width, self.height = w, h
 end
@@ -87,6 +90,9 @@ function Methods:SetPoint(...)
 end
 function Methods:GetWidth()
     return rawget(self, "width") or 560
+end
+function Methods:GetHeight()
+    return rawget(self, "height")
 end
 function Methods:SetHeight(h)
     self.height = h
@@ -119,6 +125,11 @@ function Methods:SetVerticalScroll(n)
     self.scroll = n
 end
 function Methods:GetVerticalScrollRange()
+    local child = rawget(self, "scrollChild")
+    local height = rawget(self, "height")
+    if child and type(height) == "number" then
+        return math.max(0, (rawget(child, "height") or 0) - height)
+    end
     return 1000
 end
 function Methods:AddMessage(msg)
@@ -145,7 +156,10 @@ function SendChatMessage(message, channel)
     assert(channel == "SAY", "Expected SAY for ipsvc requests")
     table.insert(outbound, message)
 end
-function UnitName() return "Tester" end
+local mockPlayerName = "Tester"
+local mockRealmName = "Mock Realm"
+function UnitName() return mockPlayerName end
+function GetRealmName() return mockRealmName end
 function UnitClass() return "Priest", "PRIEST" end
 function UnitLevel() return 60 end
 function strtrim(s) return (s:gsub("^%s+", ""):gsub("%s+$", "")) end
@@ -245,6 +259,8 @@ local command = SlashCmdList.INDIVIDUALPROGRESSION
 check(type(command) == "function", "Missing /ip handler")
 check(main and not main:IsShown(), "Main addon frame should start hidden")
 check(UISpecialFrames[1] == "IndividualProgressionFrame", "Escape registration missing")
+check(UISpecialFrames[3] == "IPGuideTierChecklistFrame",
+    "Tier checklist popup missing Escape registration")
 
 command("")
 check(main:IsShown(), "Slash command did not open the frame")
@@ -262,6 +278,159 @@ check(not navLike("Tier 2"):IsShown(), "Tier 2 must be hidden for Tier 0")
 check(navLike("World Boss Timeline"):IsShown(), "Vanilla side content missing")
 check(not navLike("TBC Overview"):IsShown(), "TBC must be hidden for Tier 0")
 check(not navLike("Wrath Overview"):IsShown(), "Wrath must be hidden for Tier 0")
+
+-- The popup must be per character, per realm and per tier. It must never
+-- alter server progression or saved visibility settings.
+local tierChecklistBtn = buttonByText("Preparation Checklist")
+local tierChecklist = named.IPGuideTierChecklistFrame
+check(tierChecklistBtn:IsShown(), "Checklist button missing on a tier")
+check(named.IPGuideScrollFrame.position[3] == 71,
+    "Tier guide text must reserve space for checklist button")
+local sentBeforeNotes = #outbound
+click(tierChecklistBtn)
+check(tierChecklist:IsShown(), "Tier checklist popup failed to open")
+check(widgetContaining("Your personal notes only - not server verified"),
+    "Checklist must clearly say it is not server verification")
+check(widgetContaining("Tier 0 - Molten Core"),
+    "Tier checklist title should match selected page")
+check(widgetContaining("PERSONAL RAID PREPARATION"),
+    "Checklist needs its new prominent section heading")
+check(widgetContaining("MY NOTES: 0 of 5 marked"),
+    "Checklist must clearly distinguish manually marked items")
+check(tierChecklist.width == 770 and tierChecklist.height == 590,
+    "Checklist popup should have space for detailed task cards")
+local notesScroll = named.IPGuideTierChecklistScrollFrame
+local notesScrollChild = named.IPGuideTierChecklistScrollChild
+check(notesScroll and notesScrollChild and notesScroll.scrollChild == notesScrollChild,
+    "Detailed checklist needs its own scrollable viewport")
+local opaqueBackground
+for _, object in ipairs(objects) do
+    if object.kind == "Texture" and object.parent == tierChecklist
+        and object.texture and object.texture[1] == "Interface\\Buttons\\WHITE8X8" then
+        opaqueBackground = object
+    end
+end
+check(opaqueBackground and opaqueBackground.vertexColor
+    and opaqueBackground.vertexColor[4] == 1,
+    "Checklist must have an opaque background to block guide text underneath")
+
+local notesRows = {}
+local resetNotes
+for _, object in ipairs(objects) do
+    if object.kind == "CheckButton" and object.parent
+        and object.parent.parent == notesScrollChild then
+        table.insert(notesRows, object)
+    elseif object.kind == "Button" and object.parent == tierChecklist and
+        object.value == "Reset this tier" then
+        resetNotes = object
+    end
+end
+check(#notesRows == 5 and resetNotes, "Expected five notes and a reset action")
+check(notesRows[1].card and notesRows[1].card.parent == notesScrollChild
+    and notesRows[1].card.height >= 62 and notesRows[1].card.height < 100,
+    "Short descriptions should have compact but readable cards")
+check(notesRows[2].card.position[2] == notesScrollChild,
+    "Task cards must be positioned in their own scrolling area")
+check(notesRows[1].detail.value:find("Blackrock Depths", 1, true),
+    "Pre-raid task needs concrete dungeon/consumable guidance")
+check(notesRows[2].detail.value:find("Lothos Riftwaker", 1, true)
+    and notesRows[2].detail.value:find("Core Fragment", 1, true),
+    "Core attunement should explain NPC and quest objective")
+check(notesRows[1].stateText.value:find("NOT MARKED", 1, true),
+    "Unmarked task needs its own visible state label")
+-- Short guides should fit entirely in the popup without scrolling.
+notesScroll.height = 385 -- Simulate the available client viewport at normal UI scale.
+check(notesScrollChild.height <= notesScroll:GetHeight(),
+    "Five short Molten Core tasks should fit without scrolling")
+check(notesScroll:GetVerticalScrollRange() == 0,
+    "No scrolling is needed when all short tasks fit")
+check(notesRows[1].title.value:find("[RECOMMENDED]", 1, true),
+    "Task category must remain visible beside its title")
+check(notesRows[1].kindText.value:find("01/05", 1, true),
+    "Compact task number must remain visible")
+notesScroll.scripts.OnMouseWheel(notesScroll, -1)
+check(notesScroll:GetVerticalScroll() == 0,
+    "Wheel should not scroll away from a fully visible checklist")
+check(not notesRows[1]:GetChecked(), "New character checklist should be empty")
+notesRows[1]:SetChecked(true)
+click(notesRows[1])
+check(IndividualProgressionDB.personalChecklists["Mock Realm"]["Tester"].mc.gear == true,
+    "Manual completion was not saved to character and realm")
+check(#outbound == sentBeforeNotes, "Checklist sent an unexpected server command")
+check(not notesRows[2]:GetChecked(), "Manual notes leaked into other tasks")
+tierChecklist:Hide()
+click(tierChecklistBtn)
+check(notesRows[1]:GetChecked(), "Manual note did not survive reopening")
+check(notesRows[1].stateText.value:find("MARKED", 1, true),
+    "Marked task should visibly update its status")
+check(widgetContaining("MY NOTES: 1 of 5 marked"),
+    "Checklist must update visual progress after checking an item")
+-- A custom font may make a card taller, but should not clip the detail.
+notesRows[1].detail.simulatedStringHeight = 130
+click(notesRows[1]) -- unmark; remeasure the extended detail
+check(notesRows[1].card.height >= 160,
+    "Checklist should grow its card height to match large detail text")
+check(notesScrollChild.height > notesScroll:GetHeight(),
+    "Long/custom-font tier content should still scroll rather than clip")
+notesScroll.scripts.OnMouseWheel(notesScroll, -1)
+check(notesScroll:GetVerticalScroll() > 0,
+    "Scroll wheel must reach overflowed tasks")
+notesScroll.scripts.OnMouseWheel(notesScroll, 1)
+check(notesScroll:GetVerticalScroll() == 0,
+    "Scroll wheel must return to the beginning")
+click(notesRows[1]) -- mark again
+notesRows[1].detail.simulatedStringHeight = nil
+local doneButton = buttonByText("Done")
+click(doneButton)
+check(not tierChecklist:IsShown(), "Done button must close the checklist popup")
+click(tierChecklistBtn)
+check(notesRows[1]:GetChecked(), "Done should not erase saved marks")
+check(resetNotes.value == "Reset this tier", "Reset confirmation unexpectedly armed")
+click(resetNotes)
+check(resetNotes.value == "Confirm reset?" and notesRows[1]:GetChecked(),
+    "Reset must require two deliberate clicks")
+tierChecklist:Hide()
+click(tierChecklistBtn)
+check(resetNotes.value == "Reset this tier" and notesRows[1]:GetChecked(),
+    "Closing popup must cancel reset confirmation")
+mockPlayerName = "SomeoneElse"
+tierChecklist:Hide()
+click(tierChecklistBtn)
+check(not notesRows[1]:GetChecked(), "Manual notes leaked to another character")
+notesRows[2]:SetChecked(true)
+click(notesRows[2])
+check(IndividualProgressionDB.personalChecklists["Mock Realm"]["SomeoneElse"].mc.core == true,
+    "Second character's manual task did not save independently")
+tierChecklist:Hide()
+mockPlayerName = "Tester"
+mockRealmName = "Another Realm"
+click(tierChecklistBtn)
+check(not notesRows[1]:GetChecked() and not notesRows[2]:GetChecked(),
+    "Manual notes leaked to another realm")
+tierChecklist:Hide()
+mockRealmName = "Mock Realm"
+click(tierChecklistBtn)
+check(notesRows[1]:GetChecked() and not notesRows[2]:GetChecked(),
+    "Original character's notes were overwritten by another scope")
+notesRows[2]:SetChecked(true)
+click(notesRows[2])
+check(IndividualProgressionDB.personalChecklists["Mock Realm"]["Tester"].mc.core == true,
+    "Second independent task should be saved")
+notesRows[1]:SetChecked(false)
+click(notesRows[1])
+check(not notesRows[1]:GetChecked() and notesRows[2]:GetChecked(),
+    "Unchecking a single note should preserve other notes")
+check(not IndividualProgressionDB.personalChecklists["Mock Realm"]["Tester"].mc.gear,
+    "Unchecking did not remove only the selected mark")
+click(resetNotes)
+check(notesRows[2]:GetChecked(), "First reset click unexpectedly deleted progress")
+click(resetNotes)
+check(not notesRows[1]:GetChecked() and not notesRows[2]:GetChecked(),
+    "Confirmed reset did not clear this tier")
+check(IndividualProgressionDB.personalChecklists["Mock Realm"]["SomeoneElse"].mc.core == true,
+    "Reset damaged another character's notes")
+check(#outbound == sentBeforeNotes, "Local checklist must never send server commands")
+tierChecklist:Hide()
 check(widgetWithLabel("General Information"):IsShown(), "General must always be visible")
 check(widgetWithLabel("Settings"):IsShown(), "Settings must always be accessible")
 
@@ -343,6 +512,7 @@ local hubButton = buttonByText("Copy Resource Hub URL")
 local hubPopup = named.IPGuideResourceHubCopyFrame
 local hubEdit = named.IPGuideResourceHubEditBox
 check(hubButton:IsShown(), "Copy button should appear only on General Information")
+check(not tierChecklistBtn:IsShown(), "Tier checklist button must hide on general pages")
 check(named.IPGuideScrollFrame.position[3] == 71,
     "General guide content must leave room for its copy button")
 click(hubButton)
@@ -377,13 +547,18 @@ check(navLike("Wrath Reputations"):IsShown(), "Wrath side content missing")
 click(widgetWithLabel("Settings"))
 local settingsCheckbox
 for _, object in ipairs(objects) do
-    if object.kind == "CheckButton" then settingsCheckbox = object end
+    if object.kind == "CheckButton" and object.parent ~= tierChecklist
+        and object.parent ~= hubPopup then
+        settingsCheckbox = object
+        break
+    end
 end
 check(settingsCheckbox ~= nil, "Settings checkbox missing")
 check(settingsCheckbox.parent:IsShown(), "Settings panel is not visible")
 check(not named.IPGuideScrollFrame:IsShown(), "Guide scroll obscures Settings")
 check(not hubButton:IsShown(), "Hub copy button should hide outside General Information")
 check(not hubPopup:IsShown(), "Copy popup should not stay open on Settings")
+check(not tierChecklistBtn:IsShown(), "Tier notes button must hide on Settings")
 local warning = widgetContaining("This companion is designed to guide you through progression")
 local hint = widgetContaining("Off (recommended): follow the tiers")
 check(warning ~= nil and hint ~= nil, "Settings caveat or guidance text missing")
@@ -473,5 +648,139 @@ check(not navLike("TBC Overview"):IsShown(), "TBC should be hidden after return 
 check(widgetText("Server progression value: 2"),
     "Server diagnostic should reflect new lower progression value")
 check(isSelected(navLike("Tier 2")), "Tier 2 focus lost after sidebar reflow")
+check(tierChecklistBtn:IsShown(), "Tier 2 checklist button should be visible")
+click(tierChecklistBtn)
+check(widgetContaining("Tier 2 - Blackwing Lair"),
+    "Tier 2 checklist should show the appropriate stage heading")
+check(notesRows[1].detail.value:find("Scarshield Quartermaster", 1, true),
+    "Tier 2 checklist must explain Blackhand's Command")
+check(not notesRows[1]:GetChecked(), "Tier 0 notes incorrectly copied to Tier 2")
+notesRows[1]:SetChecked(true)
+click(notesRows[1])
+check(IndividualProgressionDB.personalChecklists["Mock Realm"]["Tester"].bwl.blackhand == true,
+    "Tier 2 note did not persist independently of other tiers")
+local beforeTierClick = #outbound
+tierChecklist:Hide()
+check(#outbound == beforeTierClick, "Tier checklist should not send a server command")
 
-print("PASS: 3.3.5a compact navigation, full-label hover, Resource Hub, Settings and tier regression")
+-- Every defined stage must have its own notes without adding sidebar rows.
+-- Show all content is used only to visit future stages; it does not alter
+-- actual player progression or the data returned by .ip get.
+command("settings")
+settingsCheckbox:SetChecked(true)
+click(settingsCheckbox)
+local stageNumbers = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17 }
+local auditedTaskCount = 0
+-- Categories now distinguish an actual server gate from side preparation,
+-- a future tier attunement and the separately paid expansion service.
+local auditedCriticalItems = {
+    [3] = {index = 2, id = "signets", category = "[REQUIRED]", detail = "1,500"},
+    [7] = {index = 4, id = "vezrath", category = "[SERVICE]", detail = "2,500 gold"},
+    [8] = {index = 3, id = "nightbane", category = "[FUTURE ACCESS]", detail = "Tier 9"},
+    [10] = {index = 3, id = "hyjal", category = "[ACCESS]", detail = "An Artifact From the Past"},
+    [17] = {index = 2, id = "outer", category = "[ACCESS]", detail = "General Zarithrian"},
+}
+for _, number in ipairs(stageNumbers) do
+    local nav
+    for _, object in ipairs(objects) do
+        if object.kind == "Button" and type(object.fullLabel) == "string"
+            and object.fullLabel:match("^Tier " .. number .. "%s") then
+            nav = object
+            break
+        end
+    end
+    check(nav and nav:IsShown(), "Missing testable tier " .. number)
+    click(nav)
+    check(tierChecklistBtn:IsShown(), "Tier " .. number .. " has no checklist")
+    click(tierChecklistBtn)
+    check(tierChecklist:IsShown(), "Tier " .. number .. " checklist failed to open")
+    local visibleCount = 0
+    for _, row in ipairs(notesRows) do
+        if row:IsShown() then
+            visibleCount = visibleCount + 1
+            check(row.taskId and row.stageId == nav.pageId and row.title.value
+                and type(row.detail.value) == "string" and
+                #row.detail.value > 50 and row.card.height >= 62,
+                "Tier " .. number .. " showed stale, vague or missing task details")
+        end
+    end
+    check(visibleCount >= 4 and visibleCount <= 5,
+        "Tier " .. number .. " should show four or five tasks")
+    auditedTaskCount = auditedTaskCount + visibleCount
+    local critical = auditedCriticalItems[number]
+    if critical then
+        local row = notesRows[critical.index]
+        check(row.taskId == critical.id and
+            row.title.value:find(critical.category, 1, true),
+            "Tier " .. number .. " has the wrong requirement/category for " .. critical.id)
+        check(row.detail.value:find(critical.detail, 1, true),
+            "Tier " .. number .. " is missing documented gate context")
+    end
+    check(notesScroll:GetVerticalScroll() == 0,
+        "Opening a different tier must reset the checklist scroll position")
+    tierChecklist:Hide()
+end
+check(auditedTaskCount == 81,
+    "Expected all 81 manually tracked tasks across 17 progression stage guides")
+check(#outbound == beforeTierClick, "Exploring checklists sent extra server commands")
+
+-- Safe reset regression: cancelling a pending reset preserves marks; a
+-- confirmed Tier 0 reset may not delete this same character's Tier 2 notes.
+-- Use only mock SavedVariables, never manipulate the user's real checks.
+check(IndividualProgressionDB.personalChecklists["Mock Realm"]["Tester"].bwl.blackhand == true,
+    "The Tier 2 note needed for reset isolation was unexpectedly cleared")
+click(navLike("Tier 0"))
+click(tierChecklistBtn)
+notesRows[1]:SetChecked(true)
+click(notesRows[1])
+notesRows[2]:SetChecked(true)
+click(notesRows[2])
+check(IndividualProgressionDB.personalChecklists["Mock Realm"]["Tester"].mc.gear == true
+    and IndividualProgressionDB.personalChecklists["Mock Realm"]["Tester"].mc.core == true,
+    "Tier 0 test notes were not saved")
+click(resetNotes)
+check(resetNotes.value == "Confirm reset?" and notesRows[1]:GetChecked()
+    and notesRows[2]:GetChecked(),
+    "First reset click must not remove notes")
+click(doneButton)
+click(tierChecklistBtn)
+check(resetNotes.value == "Reset this tier" and notesRows[1]:GetChecked()
+    and notesRows[2]:GetChecked(),
+    "Closing a pending reset must cancel without deleting marks")
+click(resetNotes)
+click(resetNotes)
+check(not notesRows[1]:GetChecked() and not notesRows[2]:GetChecked(),
+    "Confirmed reset should clear only Tier 0 mock notes")
+check(IndividualProgressionDB.personalChecklists["Mock Realm"]["Tester"].bwl.blackhand == true,
+    "Resetting Tier 0 removed the same character's Tier 2 preparation")
+check(IndividualProgressionDB.personalChecklists["Mock Realm"]["SomeoneElse"].mc.core == true,
+    "Resetting Tier 0 altered another character's checklist")
+tierChecklist:Hide()
+check(#outbound == beforeTierClick, "Reset sent a server message")
+
+-- Overflow must remain available in the same compact UI when a longer tier
+-- or font increases a card's height. Reopening must start at the first task.
+click(navLike("Tier 9"))
+click(tierChecklistBtn)
+notesRows[2].detail.simulatedStringHeight = 270
+notesRows[2]:SetChecked(true)
+click(notesRows[2])
+check(notesScrollChild.height > notesScroll:GetHeight()
+    and notesScroll:GetVerticalScrollRange() > 0,
+    "Longer task details should enable checklist scrolling")
+notesScroll.scripts.OnMouseWheel(notesScroll, -1)
+check(notesScroll:GetVerticalScroll() > 0, "Longer tier cannot be scrolled")
+tierChecklist:Hide()
+notesRows[2].detail.simulatedStringHeight = nil
+click(tierChecklistBtn)
+check(notesScroll:GetVerticalScroll() == 0,
+    "Reopening a checklist should return to its first task")
+tierChecklist:Hide()
+
+command("settings")
+settingsCheckbox:SetChecked(false)
+click(settingsCheckbox)
+check(IndividualProgressionDB.showAllContent == false,
+    "Checklist exploration changed saved Show all preference")
+
+print("PASS: 3.3.5a compact navigation, all tier checklists, character/realm isolation, URL and tier regression")

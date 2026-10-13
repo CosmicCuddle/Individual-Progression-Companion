@@ -107,15 +107,27 @@ This roadmap separates **existing features** from **proposed work**. A roadmap c
 
 ## P2B — Tier-specific personal preparation checklists
 
-**Status:** Approved direction, not yet implemented; tracked by [issue #4](https://github.com/CosmicCuddle/Individual-Progression-Companion/issues/4). Implement in a **separate** incremental PR after review of sample tasks.
+**Status:** Tier 0 compact layout **visually approved** and **SavedVariables persistence through `/reload` confirmed in-game** for the tested character. All 81 descriptions have a source-derived audit in draft [PR #7](https://github.com/CosmicCuddle/Individual-Progression-Companion/pull/7). The maintainer confirmed the 1,500 War Effort signets rule is an intentional server customization. Longer-tier scrolling, other characters, reset confirmation and remaining server-specific rules have not been independently tested. See [PERSONAL-TIER-CHECKLISTS.md](PERSONAL-TIER-CHECKLISTS.md).
 
-- [ ] Define tier-specific manual checklist entries for relevant attunements, gear and reputations, clearly distinguishing required from recommended
-- [ ] Keep checkbox state per character (and realm) in the existing addon SavedVariables namespace without corrupting existing settings
-- [ ] Make notes explicitly non-authoritative: ticking a box never modifies quests, boss kills, gold, reputations, server tiers or database values
-- [ ] Support independent completion per tier; prevent accidentally showing another character's preparation
-- [ ] Provide an explicit reset for personal checklist items, with confirmation, and migration-safe defaults
-- [ ] Check content accuracy against the deployed server and Resource Hub before asserting an item is required
-- [ ] Test Lua 5.1 UI and in-game persistence through `/reload`, logout/login and tier transitions
+- [x] Add 81 guide-derived manual checklist tasks (4–5 per tier) across Vanilla, TBC and Wrath; separate access, progression, recommended and optional labels
+- [x] Store user marks per realm, character, tier and stable task ID in additive SavedVariables, retaining existing settings
+- [x] Keep notes explicitly non-authoritative: ticking a box does not modify quests, boss kills, gold, reputations, server tiers or database values
+- [x] Support independent completion per tier and prevent marks being shared by characters or realms in mocked tests
+- [x] Add individual unchecking and **two-click confirmation** to reset only the selected tier; clear confirmation on dialog close
+- [x] Keep the maintainer-approved **compact single-line sidebar** unchanged (button is on tier pages, not new navigation rows)
+- [x] Respond to screenshot feedback: fully opaque scrollable task cards, meaningful descriptions for all 81 tasks, visual mark progress and prominent personal-notes disclaimer
+- [x] After in-game review, optimise adaptive card height so short five-item tiers can fit without scrolling; longer/custom-font task text retains scroll fallback (latest client recheck pending)
+- [x] Maintainer installed the revised test build and visually approved the compact Tier 0 five-card layout with all tasks visible at once (13 October 2026)
+- [x] Confirm Tier 0 notes persist across `/reload` on the tested character (maintainer-confirmed 4/5 screenshot)
+- [x] Automated regression: Reset cancellation, two-click confirmation, per-character safety and **same-character cross-tier isolation** (GitHub Actions run 38406545987)
+- [x] Automated regression: longer tier descriptions enable scrolling when necessary and reopen at the top
+- [x] **Maintainer-reported PASS:** safe Reset tested in game on a temporary note in another tier, without losing the four saved Molten Core marks
+- [x] **Maintainer-approved Tier 9 presentation in-game:** all five SSC / Tempest Keep descriptions fit without scrolling, including final Kael'thas task (13 October 2026)
+- [ ] Optional: separately verify the scroll fallback in a genuinely overflowing tier or with a larger client font (automated checks already pass)
+- [x] Audit all 81 task summaries against the existing companion guides, relevant Resource Hub content and upstream reference; correct misleading requirement categories and vague descriptions ([audit](TIER-CHECKLIST-CONTENT-AUDIT.md))
+- [ ] Resolve the **live-server War Effort signet-count discrepancy** before certifying the exact numeric gate: official guide/Resource Hub **1,500**, public upstream SQL **1,000**
+- [ ] Confirm custom first-entry and restored attunement claims from deployed server source when a player reports a discrepancy (current checklist faithfully represents the guide but is not independently live-verified)
+- [ ] Test remaining WoW 3.3.5a scenarios: logout/login, longer tiers, and optional cross-character isolation (Tier 0 `/reload` already passed)
 
 **Acceptance:** Manual per-character preparation state survives reload, can be reversed safely, and never alters server-side progression.
 

@@ -2553,6 +2553,247 @@ ChatFrame_AddMessageEventFilter("CHAT_MSG_SYSTEM", function(self, event, msg, ..
     end
 end)
 
+-- Personal, optional tier-preparation notes, based on the guide's own steps.
+-- Stable IDs allow text updates without invalidating existing checkmarks.
+-- These are not verified by the server, and checking one never completes a quest.
+local PERSONAL_TIER_TASKS = {
+    mc = {
+        { id = "gear", kind = "Recommended", label = "Prepare pre-raid equipment and raid consumables" },
+        { id = "core", kind = "Access", label = "Complete Attunement to the Core" },
+        { id = "brd_entry", kind = "Access", label = "Use the internal Blackrock Depths entrance for your first MC entry" },
+        { id = "hydraxis", kind = "Access", label = "Prepare Hydraxian Waterlords rune dousing" },
+        { id = "ragnaros", kind = "Progression", label = "Defeat Ragnaros" },
+    },
+    onyxia = {
+        { id = "chain", kind = "Access", label = "Complete your faction's Onyxia attunement chain" },
+        { id = "amulet", kind = "Access", label = "Obtain and carry the Drakefire Amulet" },
+        { id = "supplies", kind = "Recommended", label = "Prepare tank, healer and raid consumables" },
+        { id = "cloaks", kind = "Recommended", label = "Begin gathering Onyxia scales for BWL cloaks" },
+        { id = "onyxia", kind = "Progression", label = "Defeat Onyxia" },
+    },
+    bwl = {
+        { id = "blackhand", kind = "Access", label = "Complete Blackhand's Command in Upper Blackrock Spire" },
+        { id = "first_entry", kind = "Access", label = "Make first BWL entry through Upper Blackrock Spire" },
+        { id = "cloaks", kind = "Recommended", label = "Prepare Onyxia Scale Cloaks for Shadowflame" },
+        { id = "diremaul", kind = "Recommended", label = "Review Dire Maul gear and enchants" },
+        { id = "nefarian", kind = "Progression", label = "Defeat Nefarian" },
+    },
+    preaq = {
+        { id = "turnins", kind = "Access", label = "Complete each required War Effort turn-in" },
+        { id = "signets", kind = "Required", label = "Complete the required War Effort Commendation Signets" },
+        { id = "zul_gurub", kind = "Recommended", label = "Use Zul'Gurub for raid preparation" },
+        { id = "gong", kind = "Progression", label = "Complete the Scarab Gong objective" },
+    },
+    aqwar = {
+        { id = "chaos", kind = "Progression", label = "Complete and turn in Chaos and Destruction" },
+        { id = "aq20", kind = "Recommended", label = "Explore AQ20 during the outdoor war" },
+        { id = "aq40", kind = "Recommended", label = "Prepare for AQ40 if the raid is ready" },
+        { id = "reputation", kind = "Recommended", label = "Progress Cenarion Circle and Brood of Nozdormu" },
+    },
+    aq = {
+        { id = "resists", kind = "Recommended", label = "Prepare AQ consumables and resistance equipment" },
+        { id = "brood", kind = "Recommended", label = "Progress Brood of Nozdormu reputation" },
+        { id = "argent", kind = "Recommended", label = "Start Argent Dawn preparation for Naxxramas" },
+        { id = "cthun", kind = "Progression", label = "Defeat C'Thun" },
+    },
+    naxx = {
+        { id = "argent", kind = "Access", label = "Reach at least Honored with Argent Dawn" },
+        { id = "attunement", kind = "Access", label = "Complete The Dread Citadel - Naxxramas" },
+        { id = "first_entry", kind = "Access", label = "Make first Naxxramas entry through Stratholme" },
+        { id = "frost", kind = "Recommended", label = "Prepare Frost Resistance for later bosses" },
+        { id = "kelthuzad", kind = "Progression", label = "Defeat Kel'Thuzad" },
+    },
+    pretbc = {
+        { id = "breach", kind = "Access", label = "Complete Into the Breach at the Dark Portal" },
+        { id = "vanilla", kind = "Optional", label = "Finish any remaining Vanilla goals" },
+        { id = "gear", kind = "Recommended", label = "Prepare equipment for Outland" },
+        { id = "vezrath", kind = "Service", label = "Purchase separate TBC access from Chronomancer Vezrath" },
+    },
+    tbc8 = {
+        { id = "outland", kind = "Recommended", label = "Level and build Outland dungeon reputations" },
+        { id = "masters_key", kind = "Access", label = "Complete the Karazhan Master's Key questline" },
+        { id = "nightbane", kind = "Future Access", label = "Obtain Nightbane's Blazing Signet for SSC attunement" },
+        { id = "heroics", kind = "Recommended", label = "Prepare for TBC heroics and early raids" },
+        { id = "prince", kind = "Progression", label = "Defeat Prince Malchezaar" },
+    },
+    tbc9 = {
+        { id = "ssc", kind = "Access", label = "Finish The Cudgel of Kar'desh for SSC" },
+        { id = "tk", kind = "Access", label = "Complete Cipher of Damnation and Trial of the Naaru" },
+        { id = "vials", kind = "Access", label = "Complete The Vials of Eternity for the next tier" },
+        { id = "bt", kind = "Recommended", label = "Continue Black Temple attunement" },
+        { id = "kael", kind = "Progression", label = "Defeat Kael'thas" },
+    },
+    tbc10 = {
+        { id = "vials", kind = "Access", label = "Confirm The Vials of Eternity is complete" },
+        { id = "karabor", kind = "Access", label = "Complete the Medallion of Karabor attunement" },
+        { id = "hyjal", kind = "Access", label = "Clear Mount Hyjal and progress Black Temple access" },
+        { id = "bt", kind = "Recommended", label = "Prepare Black Temple raid equipment" },
+        { id = "illidan", kind = "Progression", label = "Defeat Illidan" },
+    },
+    tbc12 = {
+        { id = "queldanas", kind = "Recommended", label = "Begin Isle of Quel'Danas progression" },
+        { id = "terrace", kind = "Recommended", label = "Run Normal Magisters' Terrace" },
+        { id = "za", kind = "Optional", label = "Use Zul'Aman for preparation" },
+        { id = "sunwell", kind = "Recommended", label = "Prepare Sunwell-specific raid supplies" },
+        { id = "kiljaeden", kind = "Progression", label = "Defeat Kil'jaeden" },
+    },
+    wrath13 = {
+        { id = "level", kind = "Recommended", label = "Level to 80 and unlock Wrath systems" },
+        { id = "gear", kind = "Recommended", label = "Build a Wrath pre-raid set" },
+        { id = "emblems", kind = "Recommended", label = "Farm Heroics and opening emblems" },
+        { id = "raids", kind = "Recommended", label = "Prepare for Eye of Eternity and Obsidian Sanctum" },
+        { id = "kel", kind = "Progression", label = "Defeat Kel'Thuzad in Wrath Naxxramas" },
+    },
+    wrath14 = {
+        { id = "emblems", kind = "Recommended", label = "Review heroic gear and emblem upgrades" },
+        { id = "siege", kind = "Recommended", label = "Prepare for the Siege of Ulduar" },
+        { id = "keepers", kind = "Recommended", label = "Prepare encounters with the four Keepers" },
+        { id = "hardmodes", kind = "Optional", label = "Plan optional hard modes" },
+        { id = "yogg", kind = "Progression", label = "Defeat Yogg-Saron" },
+    },
+    wrath15 = {
+        { id = "tournament", kind = "Optional", label = "Progress Argent Tournament activities" },
+        { id = "champion", kind = "Recommended", label = "Run Trial of the Champion for upgrades" },
+        { id = "consumables", kind = "Recommended", label = "Prepare raid consumables for Trial" },
+        { id = "heroic", kind = "Optional", label = "Plan Trial of the Grand Crusader" },
+        { id = "anubarak", kind = "Progression", label = "Defeat Anub'arak" },
+    },
+    wrath16 = {
+        { id = "halls", kind = "Recommended", label = "Complete the Frozen Halls dungeon sequence" },
+        { id = "verdict", kind = "Recommended", label = "Work on Ashen Verdict reputation" },
+        { id = "supplies", kind = "Recommended", label = "Prepare Icecrown raid equipment and supplies" },
+        { id = "shadowmourne", kind = "Optional", label = "Plan Shadowmourne only for a chosen recipient" },
+        { id = "lichking", kind = "Progression", label = "Defeat the Lich King" },
+    },
+    wrath17 = {
+        { id = "entry", kind = "Recommended", label = "Prepare to enter Ruby Sanctum after ICC" },
+        { id = "outer", kind = "Access", label = "Clear Ruby Sanctum's outer encounters before Halion" },
+        { id = "supplies", kind = "Recommended", label = "Prepare raid supplies for Halion" },
+        { id = "halion", kind = "Progression", label = "Defeat Halion" },
+        { id = "finalgear", kind = "Optional", label = "Continue ICC/Ruby Sanctum for final gearing" },
+    },
+}
+
+-- Detailed descriptions are sourced from the existing tier guide steps.
+-- IDs intentionally match PERSONAL_TIER_TASKS; notes already saved keep their meaning.
+local PERSONAL_TIER_DETAILS = {
+    mc = {
+        gear = "Before Molten Core, improve gear in Blackrock Depths (BRD), Lower/Upper Blackrock Spire, Scholomance and Stratholme. Bring class consumables, food and Greater Fire Protection Potions.",
+        core = "Speak with Lothos Riftwaker at Blackrock Mountain. Retrieve the Core Fragment beside the Molten Core portal inside BRD, then turn the quest in.",
+        brd_entry = "For your first Molten Core run, reach its original internal portal by travelling through Blackrock Depths. Use the Lothos shortcut only after the server's first-entry requirement.",
+        hydraxis = "Begin Duke Hydraxis's questline in Azshara. Aqual Quintessence is single-use; at Revered, Eternal Quintessence is reusable with a cooldown. Arrange all seven rune douses before Majordomo.",
+        ragnaros = "After the seven runes and Majordomo encounter are complete, defeat Ragnaros. This is the server's Tier 0 progression milestone.",
+    },
+    onyxia = {
+        chain = "Follow the full Horde or Alliance chain in the Onyxia guide. Horde begins with Warlord's Command; Alliance begins with Dragonkin Menace.",
+        amulet = "Finish the upper Blackrock Spire steps and obtain the Drakefire Amulet. Keep it in your inventory when entering Onyxia's Lair.",
+        supplies = "Prepare tank threat, healing, positioning and ordinary consumables for Onyxia's multi-phase encounter. Continue Molten Core gearing as needed.",
+        cloaks = "Save Onyxia Scales from Tier 1 kills and arrange Onyxia Scale Cloaks for the raid before the Shadowflame encounters in Blackwing Lair.",
+        onyxia = "Defeat Onyxia after attunement. Her defeat advances the character into Tier 2, Blackwing Lair.",
+    },
+    bwl = {
+        blackhand = "Loot Blackhand's Command from the Scarshield Quartermaster, defeat General Drakkisath in UBRS and use the Orb of Ascension behind him.",
+        first_entry = "For your first Blackwing Lair entry, use the entrance inside Upper Blackrock Spire. The outside Orb of Command is for later access.",
+        cloaks = "Arrange enough Onyxia Scale Cloaks for raid members facing Shadowflame. Use scales gathered during Onyxia farming.",
+        diremaul = "Visit Dire Maul East, West and North to review gear, class rewards, librams, enchants and North Tribute benefits before serious BWL progression.",
+        nefarian = "Progress through Blackwing Lair and defeat Nefarian to finish Tier 2 and open Pre-AQ.",
+    },
+    preaq = {
+        turnins = "Complete every War Effort resource category required by the stage at least once. Review the tier guide for the precise resource and turn-in routes.",
+        signets = "After completing every required resource turn-in at least once, fulfil the War Effort signet gate. Your Resource Hub specifies 1,500 Commendation Signets; confirm the exact number from the in-game quest counter.",
+        zul_gurub = "Use Zul'Gurub as supporting raid content for gear, reputation and consumables during the Pre-AQ phase.",
+        gong = "After the War Effort requirements, ring the Scarab Gong. The full Scepter of the Shifting Sands route or Simply Bang a Gong! alternative can be used; the shortcut requires the Mallet of Zul'Farrak.",
+    },
+    aqwar = {
+        chaos = "Follow the Silithus outdoor war objectives and turn in Chaos and Destruction when complete. This is the stage's required completion step.",
+        aq20 = "Use Ruins of Ahn'Qiraj (AQ20) for gear and reputation while the outdoor war is underway, if suitable for your raid.",
+        aq40 = "Prepare consumables and a raid group for Temple of Ahn'Qiraj (AQ40) once your roster is ready.",
+        reputation = "Build Cenarion Circle and Brood of Nozdormu reputation through available Silithus and AQ activities.",
+    },
+    aq = {
+        resists = "Bring AQ-specific consumables and appropriate resistance gear for encounters where your raid needs them. Do not abandon core stats unnecessarily.",
+        brood = "Progress Brood of Nozdormu reputation for AQ40 rewards, alongside Cenarion Circle where relevant.",
+        argent = "Begin farming Argent Dawn reputation before Tier 6, so Naxxramas attunement is not left until the last minute.",
+        cthun = "Clear the required AQ40 encounter path and defeat C'Thun. This unlocks the Naxxramas progression stage.",
+    },
+    naxx = {
+        argent = "Reach at least Honored with Argent Dawn for Naxxramas attunement. Higher reputation can reduce its material and gold costs.",
+        attunement = "Take The Dread Citadel - Naxxramas from Archmage Angela Dosantos at Light's Hope Chapel. The guide lists Honored, Revered and Exalted costs; higher Argent Dawn reputation reduces the price.",
+        first_entry = "Make your first Naxxramas entry using the original entrance behind Stratholme. The Eastern Plaguelands teleport crystal becomes useful afterwards.",
+        frost = "Prepare Frost Resistance for Sapphiron and late Naxxramas encounters while balancing normal survivability and performance.",
+        kelthuzad = "Clear the Naxxramas wings, defeat Sapphiron and then Kel'Thuzad. The final kill completes Tier 6.",
+    },
+    pretbc = {
+        breach = "Travel to the Dark Portal and complete the Into the Breach invasion objectives as described in the Pre-TBC guide.",
+        vanilla = "Finish any desired unfinished Vanilla goals, crafting or raid rewards before moving to the next expansion.",
+        gear = "Review gear, professions, consumables and inventory capacity before beginning the Outland journey.",
+        vezrath = "Complete Into the Breach for the Tier 7 progression gate. Buying TBC access is a separate character service: find Chronomancer Vezrath near a faction leader in a capital city. The current guide lists 2,500 gold.",
+    },
+    tbc8 = {
+        outland = "Level through Outland, build useful dungeon reputations and prepare for Heroic dungeons and entry-level TBC raids.",
+        masters_key = "Follow Archmage Alturus and Khadgar's Karazhan chain: retrieve fragments from Shadow Labyrinth, Steamvault and Arcatraz, protect Medivh in Black Morass, then return to Khadgar for The Master's Key.",
+        nightbane = "Complete the Karazhan Nightbane summon route and defeat Nightbane for his Blazing Signet. It is needed for The Cudgel of Kar'desh in Tier 9, not to trigger Tier 8 completion.",
+        heroics = "Plan Heroic dungeon access, tanks/healers, resistances and consumables for Karazhan, Gruul and Magtheridon.",
+        prince = "Defeat Prince Malchezaar in Karazhan. The guide identifies this kill as the Tier 8 progression trigger.",
+    },
+    tbc9 = {
+        ssc = "Speak to Skar'this the Heretic in Heroic Slave Pens for The Cudgel of Kar'desh. Return with the Earthen Signet from Gruul and Blazing Signet from Nightbane to complete SSC attunement.",
+        tk = "Complete The Cipher of Damnation and Trials of the Naaru: Mercy (Heroic Shattered Halls), Strength (Heroic Steamvault/Shadow Labyrinth), Tenacity (Heroic Arcatraz) and Magtheridon.",
+        vials = "Collect the vial remnants from Lady Vashj and Kael'thas, then complete The Vials of Eternity for the next tier.",
+        bt = "Work through the earlier steps of the restored Black Temple attunement route as access becomes available.",
+        kael = "Clear The Eye's required encounters and defeat Kael'thas Sunstrider to finish this stage.",
+    },
+    tbc10 = {
+        vials = "Check that The Vials of Eternity has been completed before starting the Mount Hyjal and Black Temple tier.",
+        karabor = "Finish the Akama/Medallion of Karabor route for restored Black Temple access. Consult the full tier guide for the ordered chain.",
+        hyjal = "After The Vials of Eternity, clear Mount Hyjal through Archimonde. A Hyjal objective is part of the restored Black Temple attunement chain, including An Artifact From the Past; follow the full guide's quest order.",
+        bt = "Coordinate tanks, healers, resistance preparation and consumables for Black Temple's raid encounters.",
+        illidan = "Defeat Illidan Stormrage. The server progresses directly to the Sunwell-era stage, skipping the unused ZA tier.",
+    },
+    tbc12 = {
+        queldanas = "Begin Isle of Quel'Danas daily/quest progression as the Sunwell era opens.",
+        terrace = "Complete the Normal Magisters' Terrace quest chain through Hard to Kill before using Heroic Magisters' Terrace as a repeatable preparation option. The full tier guide explains the sequence.",
+        za = "If useful for your group, clear Zul'Aman for optional catch-up gear before Sunwell.",
+        sunwell = "Organise appropriate consumables, profession supplies, gear and raid assignments for Sunwell Plateau.",
+        kiljaeden = "Progress through Sunwell Plateau and defeat Kil'jaeden to complete TBC progression.",
+    },
+    wrath13 = {
+        level = "Reach level 80, progress through Northrend and unlock relevant Wrath dungeons, factions and systems.",
+        gear = "Build an entry-level Wrath raid set through normal and Heroic dungeons, quests, professions and reputation rewards.",
+        emblems = "At Tier 13, Heroic dungeon bosses award Emblems of Heroism on this server. Use them and early raid/dungeon upgrades to replace weaker slots before later Naxxramas progression.",
+        raids = "Prepare Malygos in Eye of Eternity (a Key to the Focusing Iris comes from Sapphiron) and Sartharion in Obsidian Sanctum. Both are valuable side raids, not the Tier 13 progression trigger.",
+        kel = "Defeat Kel'Thuzad in Wrath Naxxramas to unlock the Ulduar stage.",
+    },
+    wrath14 = {
+        emblems = "Review newly available emblem gear and Heroic upgrades for weak slots before Ulduar.",
+        siege = "Prepare for the Siege of Ulduar encounters, including early vehicle and raid coordination needs.",
+        keepers = "Organise your raid for the four Keepers and the later General Vezax/Yogg-Saron sequence.",
+        hardmodes = "Consider optional Ulduar hard modes only after normal progression is stable.",
+        yogg = "Defeat Yogg-Saron to complete Ulduar progression and unlock the Trial era.",
+    },
+    wrath15 = {
+        tournament = "Continue Argent Tournament activities for optional rewards and reputation if useful to your character.",
+        champion = "Run Trial of the Champion for gear upgrades and preparation for the Trial of the Crusader.",
+        consumables = "Restock raid consumables and coordinate assignments for the Trial of the Crusader encounters.",
+        heroic = "Once Normal is secure, consider optional Trial of the Grand Crusader mastery and loot.",
+        anubarak = "Clear Trial of the Crusader and defeat Anub'arak to unlock the Icecrown stage.",
+    },
+    wrath16 = {
+        halls = "Complete the Frozen Halls dungeon progression leading into Icecrown Citadel.",
+        verdict = "Earn Ashen Verdict reputation through Icecrown activities for the associated reputation ring improvements.",
+        supplies = "Prepare consumables, class gear sets and raid assignments for Icecrown's different wings.",
+        shadowmourne = "If the raid has designated a recipient, plan the optional Shadowmourne chain and its group requirements.",
+        lichking = "Clear Icecrown's required encounters and defeat the Lich King to advance to Ruby Sanctum.",
+    },
+    wrath17 = {
+        entry = "After the Lich King stage, assemble a Ruby Sanctum group and prepare for its encounter sequence.",
+        outer = "Clear Baltharus the Warborn and Saviana Ragefire, then General Zarithrian, to open the route to Halion. These are the Ruby Sanctum outer encounters, not optional gearing tasks.",
+        supplies = "Stock suitable consumables and coordinate the raid for Halion's mechanics and phase changes.",
+        halion = "Defeat Halion after clearing the outer sanctum bosses. The Tier 17 guide recommends Normal for the intended final progression milestone; Heroic is optional mastery.",
+        finalgear = "Continue Icecrown Citadel and Ruby Sanctum for optional final equipment and personal goals.",
+    },
+}
+
 -- ============================================================================
 -- UI BACKDROPS
 -- ============================================================================
@@ -2570,6 +2811,62 @@ local BACKDROP_INNER = {
     tile = true, tileSize = 16, edgeSize = 16,
     insets = { left = 4, right = 4, top = 4, bottom = 4 },
 }
+
+-- Keep saved notes isolated by realm and character. No progress value is
+-- used in these keys because the player can revisit any completed tier.
+local function GetPersonalChecklist(stageId, create)
+    if not PERSONAL_TIER_TASKS[stageId] then return nil end
+    local realm = GetRealmName and GetRealmName()
+    local name = UnitName("player")
+    if type(realm) ~= "string" or realm == "" or
+       type(name) ~= "string" or name == "" then return nil end
+    IndividualProgressionDB = IndividualProgressionDB or {}
+    local all = IndividualProgressionDB.personalChecklists
+    if type(all) ~= "table" then
+        if not create then return nil end
+        all = {}
+        IndividualProgressionDB.personalChecklists = all
+    end
+    if type(all[realm]) ~= "table" then
+        if not create then return nil end
+        all[realm] = {}
+    end
+    if type(all[realm][name]) ~= "table" then
+        if not create then return nil end
+        all[realm][name] = {}
+    end
+    if type(all[realm][name][stageId]) ~= "table" then
+        if not create then return nil end
+        all[realm][name][stageId] = {}
+    end
+    return all[realm][name][stageId]
+end
+
+local function SetPersonalTask(stageId, taskId, checked)
+    local tasks = PERSONAL_TIER_TASKS[stageId]
+    if not tasks then return end
+    local valid = false
+    for _, task in ipairs(tasks) do
+        if task.id == taskId then valid = true break end
+    end
+    if not valid then return end
+    local marks = GetPersonalChecklist(stageId, checked)
+    if not marks then return end
+    if checked then marks[taskId] = true else marks[taskId] = nil end
+end
+
+local function ResetPersonalTier(stageId)
+    if not PERSONAL_TIER_TASKS[stageId] then return end
+    local realm = GetRealmName and GetRealmName()
+    local name = UnitName("player")
+    local db = IndividualProgressionDB
+    local all = db and db.personalChecklists
+    if type(all) ~= "table" or type(realm) ~= "string" or
+       type(name) ~= "string" then return end
+    local byRealm = all[realm]
+    local byCharacter = type(byRealm) == "table" and byRealm[name]
+    if type(byCharacter) == "table" then byCharacter[stageId] = nil end
+end
 
 -- ============================================================================
 -- MAIN FRAME
@@ -2867,11 +3164,256 @@ end)
 copyHubButton:SetScript("OnClick", function()
     hubCopyPopup:Show()
 end)
+-- A second fixed footer action appears on actual tier pages, not in the
+-- compact sidebar. The scroll region is shortened so neither action overlays
+-- guide text, and the sidebar's original size/appearance remains untouched.
+local checklistButton = CreateFrame("Button", "IPGuideTierChecklistButton", contentPanel, "UIPanelButtonTemplate")
+checklistButton:SetSize(190, 24)
+checklistButton:SetPoint("BOTTOMRIGHT", contentPanel, "BOTTOMRIGHT", -36, 35)
+checklistButton:SetText("Preparation Checklist")
+checklistButton:Hide()
+
+local checklistPopup = CreateFrame("Frame", "IPGuideTierChecklistFrame", mainFrame)
+checklistPopup:SetSize(770, 590)
+checklistPopup:SetPoint("CENTER", mainFrame, "CENTER", 0, 0)
+checklistPopup:SetFrameStrata("FULLSCREEN_DIALOG")
+checklistPopup:SetBackdrop(BACKDROP_MAIN)
+checklistPopup:SetBackdropColor(0.025, 0.025, 0.045, 1)
+checklistPopup:SetBackdropBorderColor(0.65, 0.52, 0.25, 1)
+checklistPopup:EnableMouse(true)
+
+-- Fully opaque centre: the first version let the underlying long guide show
+-- through, making the checkboxes hard to read over character/world content.
+local checklistOpaqueBg = checklistPopup:CreateTexture(nil, "BACKGROUND")
+checklistOpaqueBg:SetPoint("TOPLEFT", checklistPopup, "TOPLEFT", 10, -10)
+checklistOpaqueBg:SetPoint("BOTTOMRIGHT", checklistPopup, "BOTTOMRIGHT", -10, 10)
+checklistOpaqueBg:SetTexture("Interface\\Buttons\\WHITE8X8")
+checklistOpaqueBg:SetVertexColor(0.035, 0.035, 0.055, 1)
+checklistPopup:Hide()
+
+local checklistEyebrow = checklistPopup:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+checklistEyebrow:SetPoint("TOPLEFT", 25, -18)
+checklistEyebrow:SetWidth(665)
+checklistEyebrow:SetJustifyH("LEFT")
+checklistEyebrow:SetText(C.gold .. "PERSONAL RAID PREPARATION" .. C.reset)
+
+local checklistTitle = checklistPopup:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+checklistTitle:SetPoint("TOPLEFT", checklistEyebrow, "BOTTOMLEFT", 0, -5)
+checklistTitle:SetWidth(680)
+checklistTitle:SetJustifyH("LEFT")
+
+local checklistNotice = checklistPopup:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+checklistNotice:SetPoint("TOPLEFT", checklistTitle, "BOTTOMLEFT", 0, -8)
+checklistNotice:SetWidth(680)
+checklistNotice:SetJustifyH("LEFT")
+checklistNotice:SetWordWrap(true)
+checklistNotice:SetText(C.grey .. "Your personal notes only - not server verified. See the tier guide for full requirements." .. C.reset)
+
+local checklistSummary = checklistPopup:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+checklistSummary:SetPoint("TOPLEFT", checklistNotice, "BOTTOMLEFT", 0, -12)
+checklistSummary:SetWidth(680)
+checklistSummary:SetJustifyH("LEFT")
+
+local checklistProgressTrack = CreateFrame("Frame", nil, checklistPopup)
+checklistProgressTrack:SetSize(680, 7)
+checklistProgressTrack:SetPoint("TOPLEFT", checklistSummary, "BOTTOMLEFT", 0, -9)
+checklistProgressTrack:SetBackdrop(BACKDROP_INNER)
+checklistProgressTrack:SetBackdropColor(0.12, 0.12, 0.16, 1)
+local checklistProgressFill = checklistProgressTrack:CreateTexture(nil, "ARTWORK")
+checklistProgressFill:SetPoint("TOPLEFT", 0, 0)
+checklistProgressFill:SetPoint("BOTTOMLEFT", 0, 0)
+checklistProgressFill:SetTexture("Interface\\Buttons\\WHITE8X8")
+checklistProgressFill:SetVertexColor(0.32, 0.75, 0.37, 1)
+checklistProgressFill:SetWidth(1)
+
+local checklistScroll = CreateFrame("ScrollFrame", "IPGuideTierChecklistScrollFrame", checklistPopup, "UIPanelScrollFrameTemplate")
+-- Reclaim unnecessary padding to fit five short tasks without scrolling.
+-- Longer or custom-font descriptions still use the scroll frame normally.
+checklistScroll:SetPoint("TOPLEFT", checklistProgressTrack, "BOTTOMLEFT", 0, -7)
+checklistScroll:SetPoint("BOTTOMRIGHT", checklistPopup, "BOTTOMRIGHT", -45, 60)
+checklistScroll:EnableMouseWheel(true)
+checklistScroll:SetScript("OnMouseWheel", function(self, delta)
+    local nextScroll = (self:GetVerticalScroll() or 0) - delta * 52
+    local maximum = self:GetVerticalScrollRange() or 0
+    self:SetVerticalScroll(math.max(0, math.min(nextScroll, maximum)))
+end)
+
+local checklistScrollChild = CreateFrame("Frame", "IPGuideTierChecklistScrollChild", checklistScroll)
+checklistScrollChild:SetSize(670, 390)
+checklistScroll:SetScrollChild(checklistScrollChild)
+
+local checklistRows = {}
+local activeChecklistStage
+local checklistResetArmed = false
+local checklistResetButton = CreateFrame("Button", nil, checklistPopup, "UIPanelButtonTemplate")
+checklistResetButton:SetSize(148, 24)
+checklistResetButton:SetPoint("BOTTOMLEFT", 25, 22)
+checklistResetButton:SetText("Reset this tier")
+
+local checklistFooterText = checklistPopup:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+checklistFooterText:SetPoint("LEFT", checklistResetButton, "RIGHT", 14, 0)
+checklistFooterText:SetWidth(375)
+checklistFooterText:SetJustifyH("LEFT")
+checklistFooterText:SetText(C.grey .. "Only this character's personal notes are affected." .. C.reset)
+
+local checklistDoneButton = CreateFrame("Button", nil, checklistPopup, "UIPanelButtonTemplate")
+checklistDoneButton:SetSize(82, 24)
+checklistDoneButton:SetPoint("BOTTOMRIGHT", -29, 22)
+checklistDoneButton:SetText("Done")
+checklistDoneButton:SetScript("OnClick", function() checklistPopup:Hide() end)
+
+local checklistClose = CreateFrame("Button", nil, checklistPopup, "UIPanelCloseButton")
+checklistClose:SetPoint("TOPRIGHT", -5, -5)
+checklistClose:SetScript("OnClick", function() checklistPopup:Hide() end)
+
+local RefreshChecklistRows
+
+for i = 1, 5 do
+    local card = CreateFrame("Frame", nil, checklistScrollChild)
+    card:SetSize(662, 66)
+    card:SetBackdrop(BACKDROP_INNER)
+    card:SetBackdropColor(0.09, 0.09, 0.125, 1)
+    card:SetBackdropBorderColor(0.29, 0.27, 0.21, 0.85)
+
+    local row = CreateFrame("CheckButton", nil, card, "UICheckButtonTemplate")
+    row:SetSize(28, 28)
+    row:SetPoint("TOPLEFT", card, "TOPLEFT", 9, -26)
+    row.card = card
+
+    local kind = card:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    -- Put the item number in the checkbox gutter. The category belongs on
+    -- the title line rather than consuming a whole extra line of each card.
+    kind:SetPoint("TOPLEFT", card, "TOPLEFT", 10, -7)
+    kind:SetWidth(46)
+    kind:SetJustifyH("LEFT")
+    row.kindText = kind
+
+    local state = card:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    state:SetPoint("TOPRIGHT", card, "TOPRIGHT", -15, -9)
+    state:SetWidth(108)
+    state:SetJustifyH("RIGHT")
+    row.stateText = state
+
+    local heading = card:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    heading:SetPoint("TOPLEFT", card, "TOPLEFT", 61, -7)
+    heading:SetWidth(465)
+    heading:SetWordWrap(true)
+    heading:SetJustifyH("LEFT")
+    row.title = heading
+
+    local detail = card:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    detail:SetPoint("TOPLEFT", heading, "BOTTOMLEFT", 0, -3)
+    detail:SetWidth(578)
+    detail:SetWordWrap(true)
+    detail:SetJustifyH("LEFT")
+    row.detail = detail
+
+    row:SetScript("OnClick", function(self)
+        if self.stageId and self.taskId then
+            SetPersonalTask(self.stageId, self.taskId, self:GetChecked() and true or false)
+            checklistResetArmed = false
+            checklistResetButton:SetText("Reset this tier")
+            RefreshChecklistRows()
+        end
+    end)
+    checklistRows[i] = row
+end
+
+RefreshChecklistRows = function()
+    local items = PERSONAL_TIER_TASKS[activeChecklistStage]
+    if not items then return end
+    local marks = GetPersonalChecklist(activeChecklistStage, false)
+    local detailMap = PERSONAL_TIER_DETAILS[activeChecklistStage] or {}
+    local count, offset = 0, 3
+    for i, row in ipairs(checklistRows) do
+        local item = items[i]
+        if item then
+            local marked = marks and marks[item.id] == true or false
+            row.taskId = item.id
+            row.stageId = activeChecklistStage
+            row:SetChecked(marked)
+            if marked then count = count + 1 end
+            row.kindText:SetText(C.gold .. string.format("%02d/%02d", i, table.getn(items)) .. C.reset)
+            row.stateText:SetText(marked and (C.green .. "MARKED" .. C.reset)
+                or (C.grey .. "NOT MARKED" .. C.reset))
+            -- Category and title share one line, preserving all information
+            -- and allowing extra lines only when the player's font needs it.
+            row.title:SetText(C.gold .. "[" .. string.upper(item.kind) .. "] " .. C.reset ..
+                (marked and C.green or C.white) .. item.label .. C.reset)
+            row.detail:SetText(C.grey .. (detailMap[item.id] or
+                "See the complete tier guide for the detailed requirements.") .. C.reset)
+            local titleHeight = row.title:GetStringHeight() or 20
+            local detailHeight = row.detail:GetStringHeight() or 20
+            -- Only text height earns extra space. No more 100px minimum:
+            -- MC's five short descriptions can fit in the existing popup,
+            -- while longer tiers naturally increase content height and scroll.
+            local cardHeight = math.max(62, titleHeight + detailHeight + 16)
+            row.card:SetHeight(cardHeight)
+            row.card:ClearAllPoints()
+            row.card:SetPoint("TOPLEFT", checklistScrollChild, "TOPLEFT", 3, -offset)
+            row.card:Show()
+            row:Show()
+            offset = offset + cardHeight + 5
+        else
+            row.taskId = nil
+            row.stageId = nil
+            row.card:Hide()
+            row:Hide()
+        end
+    end
+    checklistScrollChild:SetHeight(math.max(1, offset + 2))
+    -- If the current tier fits, don't retain an old scroll offset from a
+    -- longer list; otherwise the first task could look hidden.
+    local available = checklistScroll:GetHeight()
+    if available and available > 0 and offset + 2 <= available then
+        checklistScroll:SetVerticalScroll(0)
+    end
+    checklistSummary:SetText(C.cyan .. "MY NOTES: " .. count .. " of " ..
+        table.getn(items) .. " marked" .. C.reset)
+    checklistProgressFill:SetWidth(math.max(1, 676 * count / math.max(1, table.getn(items))))
+end
+
+checklistResetButton:SetScript("OnClick", function(self)
+    if not activeChecklistStage then return end
+    if checklistResetArmed then
+        ResetPersonalTier(activeChecklistStage)
+        checklistResetArmed = false
+        self:SetText("Reset this tier")
+        RefreshChecklistRows()
+    else
+        checklistResetArmed = true
+        self:SetText("Confirm reset?")
+    end
+end)
+
+checklistPopup:SetScript("OnHide", function()
+    activeChecklistStage = nil
+    checklistResetArmed = false
+    checklistResetButton:SetText("Reset this tier")
+end)
+
+checklistButton:SetScript("OnClick", function()
+    local stageId = data.selectedPage
+    if not PERSONAL_TIER_TASKS[stageId] then return end
+    -- Disable note changes if the client cannot identify this character.
+    if not (GetRealmName and GetRealmName()) or not UnitName("player") then return end
+    activeChecklistStage = stageId
+    checklistResetArmed = false
+    checklistResetButton:SetText("Reset this tier")
+    local stage = VANILLA_STAGES[stageId] or TBC_STAGES[stageId] or WOTLK_STAGES[stageId]
+    checklistTitle:SetText(C.white .. (stage and stage.title or "Tier") .. C.reset)
+    RefreshChecklistRows()
+    checklistScroll:SetVerticalScroll(0)
+    checklistPopup:Show()
+end)
+
 mainFrame:SetScript("OnHide", function()
     hubCopyPopup:Hide()
+    checklistPopup:Hide()
 end)
 if UISpecialFrames then
     table.insert(UISpecialFrames, "IPGuideResourceHubCopyFrame")
+    table.insert(UISpecialFrames, "IPGuideTierChecklistFrame")
 end
 
 -- Allow wrapped guidance to use the actual available panel width on clients
@@ -2979,6 +3521,7 @@ local function CreateNavButton(id, label, y)
     txt:SetJustifyH("LEFT")
     txt:SetText(label)
     btn.text = txt
+    btn.pageId = id -- Navigation ID is stable, unlike the text and font.
     btn.fullLabel = label -- Needed for full-name hover and stable UI test lookup.
 
     -- Keep the original compact one-line appearance. The complete title is
@@ -3323,16 +3866,18 @@ SelectPage = function(id)
     IndividualProgressionDB = IndividualProgressionDB or {}
     IndividualProgressionDB.lastPage = data.selectedPage
     hubCopyPopup:Hide()
+    checklistPopup:Hide()
     FitSettingsText()
-    -- Keep the Resource Hub action visible without covering guide text.
-    if data.selectedPage == "general" then
-        copyHubButton:Show()
-    else
-        copyHubButton:Hide()
-    end
+    -- Both footer actions share a location, but their pages are exclusive.
+    if data.selectedPage == "general" then copyHubButton:Show()
+    else copyHubButton:Hide() end
+    if PERSONAL_TIER_TASKS[data.selectedPage] then checklistButton:Show()
+    else checklistButton:Hide() end
     scrollFrame:ClearAllPoints()
     scrollFrame:SetPoint("TOPLEFT", 14, -100)
-    scrollFrame:SetPoint("BOTTOMRIGHT", -30, data.selectedPage == "general" and 71 or 31)
+    local hasFooterAction = data.selectedPage == "general"
+        or PERSONAL_TIER_TASKS[data.selectedPage] ~= nil
+    scrollFrame:SetPoint("BOTTOMRIGHT", -30, hasFooterAction and 71 or 31)
     if data.selectedPage == "settings" then
         settingsCheckbox:SetChecked(IndividualProgressionDB.showAllContent == true)
         -- Hide the guide scroll area so it cannot cover Settings controls.
