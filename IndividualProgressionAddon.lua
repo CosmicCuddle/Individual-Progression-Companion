@@ -3072,10 +3072,10 @@ local checklistNotice = checklistPopup:CreateFontString(nil, "OVERLAY", "GameFon
 checklistNotice:SetPoint("TOPLEFT", 22, -48)
 checklistNotice:SetWidth(572)
 checklistNotice:SetJustifyH("LEFT")
-checklistNotice:SetText("Personal notes only. Checked items are NOT verified by the server and do not unlock progression.")
+checklistNotice:SetText("Personal notes only. NOT server-verified and does not unlock tiers.")
 
 local checklistSummary = checklistPopup:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-checklistSummary:SetPoint("TOPLEFT", 22, -91)
+checklistSummary:SetPoint("TOPLEFT", checklistNotice, "BOTTOMLEFT", 0, -12)
 checklistSummary:SetWidth(572)
 checklistSummary:SetJustifyH("LEFT")
 
@@ -3118,7 +3118,13 @@ end
 for i = 1, 5 do
     local row = CreateFrame("CheckButton", nil, checklistPopup, "UICheckButtonTemplate")
     row:SetSize(28, 28)
-    row:SetPoint("TOPLEFT", checklistPopup, "TOPLEFT", 22, -116 - (i - 1) * 50)
+    -- Relative anchors follow the actual custom-font warning/summary height.
+    -- They do not affect the approved compact sidebar in any way.
+    if i == 1 then
+        row:SetPoint("TOPLEFT", checklistSummary, "BOTTOMLEFT", 0, -15)
+    else
+        row:SetPoint("TOPLEFT", checklistRows[i - 1], "BOTTOMLEFT", 0, -22)
+    end
     local label = checklistPopup:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     label:SetPoint("TOPLEFT", row, "TOPRIGHT", 7, -2)
     label:SetWidth(525)
