@@ -46,7 +46,7 @@
 | S29 | Turn Show all content ON and inspect long TBC/Wrath tier names | Rows stay compact and scrolling reaches all entries; hovering over any shortened title shows the complete name |
 | S30 | Dismiss any ElvUI help/tutorial overlay and recheck the header | Companion is unobstructed, independent of ElvUI's own help overlay |
 | S31 | Open a Tier 0 guide and click **Preparation Checklist** | A tier-specific popup appears with guide-based tasks and prominent disclaimer that these are manual notes, not verified by the server |
-| S32 | Tick two items, close/reopen, then `/reload` | Both items remain checked for the same character, realm and tier |
+| S32 | Tick checklist items, then `/reload` and reopen | **PASS — 13 Oct 2026:** maintainer confirmed a post-reload Tier 0 screenshot with all four Molten Core marks retained (including Hydraxian Waterlords), progress 4/5 |
 | S33 | Untick one item | Only that manual item clears; others remain checked |
 | S34 | Click **Reset this tier** once, then close; reopen and click twice | Closing cancels confirmation; two deliberate clicks clear only the active tier's marks |
 | S35 | Switch between Tier 0, Tier 1 and Tier 2; optionally another character | Each tier has its own items and marks; another character/realm must not inherit them |
