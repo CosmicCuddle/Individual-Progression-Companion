@@ -122,7 +122,8 @@ This roadmap separates **existing features** from **proposed work**. A roadmap c
 - [x] Automated regression: Reset cancellation, two-click confirmation, per-character safety and **same-character cross-tier isolation** (GitHub Actions run 38406545987)
 - [x] Automated regression: longer tier descriptions enable scrolling when necessary and reopen at the top
 - [x] **Maintainer-reported PASS:** safe Reset tested in game on a temporary note in another tier, without losing the four saved Molten Core marks
-- [ ] Check a longer-tier checklist in-game for readable descriptions and access to the final item
+- [x] **Maintainer-approved Tier 9 presentation in-game:** all five SSC / Tempest Keep descriptions fit without scrolling, including final Kael'thas task (13 October 2026)
+- [ ] Optional: separately verify the scroll fallback in a genuinely overflowing tier or with a larger client font (automated checks already pass)
 - [x] Audit all 81 task summaries against the existing companion guides, relevant Resource Hub content and upstream reference; correct misleading requirement categories and vague descriptions ([audit](TIER-CHECKLIST-CONTENT-AUDIT.md))
 - [ ] Resolve the **live-server War Effort signet-count discrepancy** before certifying the exact numeric gate: official guide/Resource Hub **1,500**, public upstream SQL **1,000**
 - [ ] Confirm custom first-entry and restored attunement claims from deployed server source when a player reports a discrepancy (current checklist faithfully represents the guide but is not independently live-verified)
