@@ -283,7 +283,8 @@ check(widgetContaining("Personal notes only."),
 check(widgetContaining("Tier 0 - Molten Core - Personal Checklist"),
     "Tier checklist title should match selected page")
 
-local notesRows, resetNotes
+local notesRows = {}
+local resetNotes
 for _, object in ipairs(objects) do
     if object.kind == "CheckButton" and object.parent == tierChecklist then
         table.insert(notesRows, object)
