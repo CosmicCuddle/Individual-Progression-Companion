@@ -69,7 +69,7 @@
 
 - **Current companion + Resource Hub:** **1,500** required Commendation Signets.
 - **Public upstream module's** `aq_war_effort.sql`: **1,000** for the `Complete the War Effort` quest.
-- **Unknown:** live deployed SQL, quests and overrides for this server. Do not overwrite live DB records or silently change to 1,000. The current player-facing checklist calls out the documented 1,500 **and tells players to check their in-game quest counter**.
+- **Maintainer clarification (13 October 2026):** the 1,500-signets requirement was deliberately set manually on the maintainer's server. The public upstream's 1,000 value reflects an earlier/default implementation, not a newly discovered contradiction in the intended configuration. The deployed database was not independently inspected. Do not overwrite live DB records or silently change to 1,000. The current player-facing checklist calls out the documented 1,500 **and tells players to check their in-game quest counter**.
 - **For future verification:** Inspect the in-game `Complete the War Effort` quest/requirements on a suitable character, or review the currently deployed world DB/SQL migration as read-only evidence. No direct access to live DB is available here.
 
 ### MEDIUM — Custom first-entry, restored attunements and progression phasing
