@@ -15,7 +15,7 @@ This is the **working project record**. Keep chronological entries with clear st
 
 ## 13 October 2026 — Live test accepted: two-step reset on a temporary tier
 
-**Status:** **Maintainer-reported PASS** in WoW for the optional safe Reset workflow, following the six-step procedure in the preceding conversation.
+**Status:** **Maintainer-reported PASS** in WoW for the optional safe Reset workflow, following the documented six-step verification procedure.
 
 - The maintainer replied **"Yes that worked correctly"** after testing a temporary checkbox in Tier 1 (or another initially empty tier), verifying the first reset click only armed **Confirm reset?**, closing/reopening cancelled it, and deliberate double-click confirmation removed the temporary mark.
 - The procedure also instructed revisiting Tier 0 to check the four previously saved Molten Core marks were unchanged; the maintainer reported the procedure worked. This is a **user-reported acceptance**, not a separately captured screenshot of every screen.
@@ -156,7 +156,7 @@ This is the **working project record**. Keep chronological entries with clear st
 
 **Status:** Documentation-only PR prepared; pending review/merge.
 **Current addon baseline:** v5.2.0, commit `6872cc726052f7d271a28ba48baa9bb5c7ad36e9`.
-**Scope:** Establish a durable GitHub handover/roadmap/test plan to survive chat transitions.
+**Scope:** Establish a durable GitHub project reference, roadmap and test plan to maintain continuity across development cycles.
 
 ### Repository observations
 - Existing files at baseline: `IndividualProgressionAddon.lua`, `IndividualProgressionAddon.toc`, `README.md` and `CHANGELOG.md`.
