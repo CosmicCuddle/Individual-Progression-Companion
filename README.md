@@ -290,7 +290,7 @@ See [CHANGELOG.md](CHANGELOG.md) for version history.
 
 Official project maintenance references:
 
-- [Project Handover](docs/PROJECT-HANDOVER.md) — continuation instructions, architecture and safeguards.
+- [Project Handover](docs/PROJECT-HANDOVER.md) — project overview, architecture, working procedures and safeguards.
 - [Development Roadmap](docs/ROADMAP.md) — existing features, requested improvements, priorities and acceptance criteria.
 - [Development Log](docs/DEVELOPMENT-LOG.md) — dated implementation decisions, outstanding work and verification results.
 - [Manual Test Plan](docs/TESTING.md) — regression steps and evidence requirements.
