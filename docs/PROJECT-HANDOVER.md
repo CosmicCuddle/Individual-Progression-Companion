@@ -8,7 +8,7 @@
 **Confirmed baseline:** v5.2.0; last pre-documentation commit `6872cc726052f7d271a28ba48baa9bb5c7ad36e9` (11 September 2026)
 **Client:** World of Warcraft 3.3.5a (TOC interface `30300`)
 
-> This is the canonical continuation brief for future development sessions. Read it alongside [ROADMAP.md](ROADMAP.md), [DEVELOPMENT-LOG.md](DEVELOPMENT-LOG.md), [TESTING.md](TESTING.md), the root README, and CHANGELOG. Before editing, verify the current `main` branch, recent PRs, and code; this snapshot may be superseded.
+> This is the canonical technical reference for ongoing maintenance and future development work. Read it alongside [ROADMAP.md](ROADMAP.md), [DEVELOPMENT-LOG.md](DEVELOPMENT-LOG.md), [TESTING.md](TESTING.md), the root README, and CHANGELOG. Before editing, verify the current `main` branch, recent PRs, and code; this snapshot may be superseded.
 
 ## 1. Project mission
 
@@ -28,7 +28,7 @@ An in-game, server-specific handbook that explains what a character can do now, 
 | `IndividualProgressionAddon.lua` | Progression pages, guide content, status mapping, slash commands, UI and server-message handling |
 | `README.md` | User features, installation and server-specific usage |
 | `CHANGELOG.md` | Historical release notes, 1.0.0–5.2.0 |
-| `docs/PROJECT-HANDOVER.md` | Session continuation and project boundaries |
+| `docs/PROJECT-HANDOVER.md` | Project reference, working procedures and safeguards |
 | `docs/ROADMAP.md` | Priorities and acceptance criteria |
 | `docs/DEVELOPMENT-LOG.md` | Decision and implementation history |
 | `docs/TESTING.md` | Regression checklist and result template |
@@ -85,9 +85,9 @@ Do **not** silently replace the protocol or hide unrelated system messages.
 7. After verification/merge, update the roadmap state, append a dated log entry, update the README if user-facing behaviour changed, and update CHANGELOG for release-worthy changes.
 8. Do not mark a feature complete solely because its PR exists or code was written. Keep statuses explicit: Proposed → In progress → Implemented / awaiting in-game verification → Verified → Released.
 
-## 6. Continuation protocol
+## 6. Development reference and resumption procedure
 
-When starting a new conversation, provide the following official entry points:
+Use the following documents when taking up ongoing maintenance or development work:
 
 - Repository: https://github.com/CosmicCuddle/Individual-Progression-Companion
 - Handover: https://github.com/CosmicCuddle/Individual-Progression-Companion/blob/main/docs/PROJECT-HANDOVER.md
@@ -95,9 +95,13 @@ When starting a new conversation, provide the following official entry points:
 - Development log: https://github.com/CosmicCuddle/Individual-Progression-Companion/blob/main/docs/DEVELOPMENT-LOG.md
 - Test checklist: https://github.com/CosmicCuddle/Individual-Progression-Companion/blob/main/docs/TESTING.md
 
-**Paste into the next chat:**
+### Resuming development
 
-> Continue development of Individual Progression Companion from the GitHub repository and official project handover. Read docs/PROJECT-HANDOVER.md, docs/ROADMAP.md, docs/DEVELOPMENT-LOG.md, docs/TESTING.md and the latest open/merged PRs before making changes. Follow the project's backup, compatibility, versioning, test and documentation rules. Resume the highest-priority unfinished milestone. Keep a log of decisions, changes, test results and next actions so the project can be resumed again.
+1. Confirm the repository's current state and review recently opened or merged pull requests.
+2. Consult `docs/PROJECT-HANDOVER.md`, `docs/ROADMAP.md`, `docs/DEVELOPMENT-LOG.md` and `docs/TESTING.md` before planning changes.
+3. Follow the established backup, compatibility, versioning, testing and documentation requirements.
+4. Identify the highest-priority unfinished milestone and verify its current status before continuing work.
+5. Record decisions, changes, test results and outstanding actions so later maintenance can proceed from an accurate project history.
 
 ## 7. Historical maintainer requirements snapshot (12 October 2026)
 
@@ -125,7 +129,7 @@ The two PRs are stacked: documentation first, then this feature. If both are mer
 
 The repository was documented as v5.2.0 on 12 October 2026. No current post-5.2.0 in-game regression test is evidenced by these baseline documents. Start with the **read-only functionality audit and regression test plan** in the roadmap, rather than presuming a defect or changing server rules.
 
-If another session makes changes, record the PR and updated state in the development log; future chats should not rely on this snapshot alone.
+For subsequent changes, record the PR and updated project status in the development log. Treat this dated snapshot as historical; verify the current repository state before proceeding.
 
 
 
