@@ -2493,6 +2493,39 @@ local UpdateDisplay
 local SelectPage
 local GetCurrentStageId
 
+-- Optional, read-only API for other 3.3.5a addons (e.g. What's Training?).
+-- Only the verified, self-named server reply is authoritative. The local
+-- default currentValue=0 is NOT evidence that this character is in Vanilla.
+-- Never expose mutable data or automatically initiate an additional query.
+local progressionListeners = {}
+local function GetVerifiedSelfValue()
+    local name = UnitName("player")
+    if not data.loaded or not name or not data.requestedName
+        or name:lower() ~= data.requestedName:lower() then
+        return nil
+    end
+    return data.currentValue, name
+end
+local function PublishProgressionUpdate()
+    local value, name = GetVerifiedSelfValue()
+    for i = 1, #progressionListeners do
+        -- A faulty consumer must never interfere with IP Companion's display.
+        pcall(progressionListeners[i], value, name)
+    end
+end
+_G.IndividualProgressionCompanionAPI = {
+    version = 1,
+    GetCurrentValue = GetVerifiedSelfValue,
+    RegisterListener = function(callback)
+        if type(callback) ~= "function" then return false end
+        for i = 1, #progressionListeners do
+            if progressionListeners[i] == callback then return true end
+        end
+        table.insert(progressionListeners, callback)
+        return true
+    end,
+}
+
 -- IP Companion's old .ipsvc data service reported 6 for a character for whom
 -- the server's normal .ip get command reported 2. This candidate uses the same
 -- read-only command available to players on this server instead of trusting
@@ -2504,6 +2537,7 @@ local function RequestData(focusCurrentOnReply)
     data.loaded = false
     data.awaitingSelfLookup = false
     data.requestedName = UnitName("player")
+    PublishProgressionUpdate() -- pending: consumers must discard old tier
     if UpdateDisplay then UpdateDisplay() end
 
     if data.requestedName and data.requestedName ~= "" then
@@ -2536,6 +2570,7 @@ local function HandleSelfProgressionReply(msg)
     data.awaitingSelfLookup = false
     data.currentValue = value
     data.loaded = true
+    PublishProgressionUpdate() -- verified self reply; no extra chat query
     if data.focusCurrentOnReply then
         data.focusCurrentOnReply = false
         data.selectedPage = GetCurrentStageId(value) or (value >= 18 and "wrathoverview" or "overview")
