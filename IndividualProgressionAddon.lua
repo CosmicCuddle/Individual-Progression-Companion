@@ -2493,6 +2493,7 @@ local UpdateDisplay
 local SelectPage
 local GetCurrentStageId
 
+-- BEGIN READ-ONLY PROGRESSION API
 -- Optional, read-only API for other 3.3.5a addons (e.g. What's Training?).
 -- Only the verified, self-named server reply is authoritative. The local
 -- default currentValue=0 is NOT evidence that this character is in Vanilla.
@@ -2525,6 +2526,7 @@ _G.IndividualProgressionCompanionAPI = {
         return true
     end,
 }
+-- END READ-ONLY PROGRESSION API
 
 -- IP Companion's old .ipsvc data service reported 6 for a character for whom
 -- the server's normal .ip get command reported 2. This candidate uses the same
