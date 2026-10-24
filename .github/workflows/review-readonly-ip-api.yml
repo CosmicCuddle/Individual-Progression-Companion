@@ -1,0 +1,28 @@
+name: Verify optional read-only progression API (Lua 5.1)
+
+on:
+  push:
+    branches:
+      - feature/read-only-progression-api
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lua 5.1 compiler/interpreter
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq lua5.1
+      - name: Compile existing IP Companion source without modifications to main
+        run: luac5.1 -p IndividualProgressionAddon.lua
+      - name: Execute actual API block with mocked server-authorized state
+        run: lua5.1 tests/lua/test_progression_api.lua
+      - name: Confirm no addon-originated new server query added to API
+        shell: bash
+        run: |
+          set -euo pipefail
+          sed -n '/BEGIN READ-ONLY PROGRESSION API/,/END READ-ONLY PROGRESSION API/p' IndividualProgressionAddon.lua > /tmp/ip_api_block.lua
+          ! grep -nE 'SendChatMessage|IndividualProgressionDB|\.ip set|\.ip get' /tmp/ip_api_block.lua
