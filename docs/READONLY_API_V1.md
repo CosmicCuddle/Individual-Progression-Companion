@@ -28,3 +28,9 @@ The new version-1 API is exported as a global `IndividualProgressionCompanionAPI
 - [ ] Independent owners and collaborator reviews before merging into companion main.
 
 No production addon files or server state modified; this is an unmerged draft.
+
+## One-time world-ready automatic verification (31 October 2026 — draft)
+
+This draft adds a **single automatic named-self `.ip get <own name>`** after the first world entry with a valid `UnitName("player")` in each fresh Lua session (login or `/reload`). `PLAYER_LOGIN` itself sends nothing. The guide stays hidden, a repeat world entry/zone change sends nothing additional, and a missing player name does not consume the one-shot. The existing `GetCurrentValue` v1 listener API returns nil while awaiting a valid self-named system reply, so N-WhatsTraining remains safely at unverified 1–60. Opening the guide while a request is pending reuses it and focuses the guide on the validated reply; manual completed refresh remains available. Hidden `/ip refresh` now invokes only the `OnShow` request rather than sending twice. This is **not** continuous milestone tracking or polling.
+
+**Release boundary:** Client/server commands and permissions are unchanged. The draft remains unmerged and not installed; owner 3.3.5a normal-player acceptance, exact self-named reply, no-response behavior, zoning, `/reload` and companion load order are still pending. Do not mistake CI or a synthetic server response for a verified live client test.

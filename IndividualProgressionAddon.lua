@@ -2489,6 +2489,10 @@ local data = {
     requestedName = nil,
 }
 
+-- Only one implicit named-self lookup per Lua session. A previous manual
+-- request also counts, so a later world entry will not duplicate it.
+local sessionSelfLookupSent = false
+
 local UpdateDisplay
 local SelectPage
 local GetCurrentStageId
@@ -2533,21 +2537,34 @@ _G.IndividualProgressionCompanionAPI = {
 -- read-only command available to players on this server instead of trusting
 -- the discrepant .ipsvc value. Never use .ip set or edit progression quests.
 local function RequestData(focusCurrentOnReply)
+    local ownName = UnitName("player")
     if focusCurrentOnReply then
         data.focusCurrentOnReply = true
     end
+    -- Reuse a still-pending same-self lookup. Two identical chat replies
+    -- cannot be distinguished: the 3.3.5a command carries no request ID.
+    if data.awaitingSelfLookup and type(ownName) == "string"
+        and ownName ~= "" and type(data.requestedName) == "string"
+        and ownName:lower() == data.requestedName:lower() then
+        return false
+    end
     data.loaded = false
     data.awaitingSelfLookup = false
-    data.requestedName = UnitName("player")
+    data.requestedName = ownName
     PublishProgressionUpdate() -- pending: consumers must discard old tier
     if UpdateDisplay then UpdateDisplay() end
 
-    if data.requestedName and data.requestedName ~= "" then
+    if type(ownName) == "string" and ownName ~= "" then
         data.awaitingSelfLookup = true
-        -- Supplying our own name avoids .ip get's target-or-self ambiguity.
-        -- This syntax must be checked against the deployed server before release.
-        SendChatMessage(".ip get " .. data.requestedName, "SAY")
+        sessionSelfLookupSent = true
+        -- Bare .ip get can inspect a selected target; ALWAYS name self.
+        -- Exact normal-player named-self reply needs live acceptance.
+        SendChatMessage(".ip get " .. ownName, "SAY")
+        return true
     end
+    -- Do not consume the one-shot without a valid self name; retry only
+    -- upon a later world-entry event. Never chat-poll or infer a tier.
+    return false
 end
 
 -- The deployed reply is styled with WoW colour codes, e.g.
@@ -4076,9 +4093,14 @@ end)
 
 local eventFrame = CreateFrame("Frame")
 eventFrame:RegisterEvent("CHAT_MSG_SYSTEM")
+eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 eventFrame:SetScript("OnEvent", function(self, event, msg)
     if event == "CHAT_MSG_SYSTEM" then
         HandleSelfProgressionReply(msg)
+    elseif event == "PLAYER_ENTERING_WORLD" and not sessionSelfLookupSent then
+        -- First safe world-ready event sends one own-character query,
+        -- leaving the guide hidden. Zoning never repeats a sent lookup.
+        RequestData(false)
     end
 end)
 
@@ -4227,8 +4249,12 @@ SlashCmdList["INDIVIDUALPROGRESSION"] = function(msg)
         hubCopyPopup:Show()
         return
     elseif msg == "refresh" then
-        if not mainFrame:IsShown() then mainFrame:Show() end
-        RequestData(true)
+        if not mainFrame:IsShown() then
+            -- OnShow already calls RequestData(true).
+            mainFrame:Show()
+        else
+            RequestData(true)
+        end
         return
     end
 

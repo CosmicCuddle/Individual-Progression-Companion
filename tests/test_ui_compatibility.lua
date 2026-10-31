@@ -232,12 +232,15 @@ local function buttonByText(label)
     end
     error("Button missing: " .. label)
 end
-local function systemMessage(message)
+local function fireEvent(event, ...)
     for _, frame in ipairs(eventFrames) do
-        if frame.events and frame.events.CHAT_MSG_SYSTEM and frame.scripts.OnEvent then
-            frame.scripts.OnEvent(frame, "CHAT_MSG_SYSTEM", message)
+        if frame.events and frame.events[event] and frame.scripts.OnEvent then
+            frame.scripts.OnEvent(frame, event, ...)
         end
     end
+end
+local function systemMessage(message)
+    fireEvent("CHAT_MSG_SYSTEM", message)
 end
 local function serverReply(payload)
     -- Preserve existing staged-test inputs while simulating the new .ip get
@@ -262,8 +265,27 @@ check(UISpecialFrames[1] == "IndividualProgressionFrame", "Escape registration m
 check(UISpecialFrames[3] == "IPGuideTierChecklistFrame",
     "Tier checklist popup missing Escape registration")
 
+-- Login is not a query trigger. One automatic self lookup occurs at world
+-- entry only after UnitName exists, without showing the Companion guide.
+check(#outbound == 0, "Addon load must not query server")
+fireEvent("PLAYER_LOGIN")
+check(#outbound == 0 and not main:IsShown(), "PLAYER_LOGIN sent a command")
+mockPlayerName = nil
+fireEvent("PLAYER_ENTERING_WORLD", true, false)
+check(#outbound == 0, "No-name world entry must not consume startup lookup")
+mockPlayerName = "Tester"
+fireEvent("PLAYER_ENTERING_WORLD", true, false)
+check(#outbound == 1 and outbound[1] == ".ip get Tester",
+    "World-ready self should send exactly one named-self query")
+check(not main:IsShown() and IndividualProgressionCompanionAPI.GetCurrentValue() == nil,
+    "Guide must stay hidden and API unverified until actual server reply")
+fireEvent("PLAYER_ENTERING_WORLD", false, false)
+check(#outbound == 1, "Zoning repeated initial self query")
+local beforePendingGuide = #outbound
+
 command("")
-check(main:IsShown(), "Slash command did not open the frame")
+check(main:IsShown() and #outbound == beforePendingGuide,
+    "Opening guide while self lookup pending must NOT send again")
 check(outbound[#outbound] == ".ip get Tester",
     "Open did not request the logged-in player's named read-only progression")
 -- Wrong-character and legacy service replies must never select a tier.
@@ -272,6 +294,11 @@ systemMessage("##IPSVC##PD~6")
 check(widgetText("Server progression value: waiting for reply"),
     "Foreign or obsolete service reply changed current tier")
 serverReply("PD~0")
+local verifiedTier, verifiedName = IndividualProgressionCompanionAPI.GetCurrentValue()
+check(verifiedTier == 0 and verifiedName == "Tester",
+    "Valid stage 0 is authoritative only AFTER matched self reply")
+fireEvent("PLAYER_ENTERING_WORLD", false, false)
+check(#outbound == beforePendingGuide, "Zone after self reply repeated lookup")
 check(isSelected(navLike("Tier 0")), "Server value 0 should select Tier 0")
 check(navLike("Tier 1"):IsShown(), "Tier 1 preview should be visible")
 check(not navLike("Tier 2"):IsShown(), "Tier 2 must be hidden for Tier 0")
@@ -622,7 +649,10 @@ check(hubPopup:IsShown() and hubEdit.focused,
     "/ip hub should show the selectable URL")
 main:Hide()
 check(not hubPopup:IsShown(), "Closing addon must also close Resource Hub popup")
-main:Show()
+local beforeClosedRefresh = #outbound
+command("refresh")
+check(main:IsShown() and #outbound == beforeClosedRefresh + 1,
+    "Hidden /ip refresh must send exactly one named-self request")
 serverReply("PD~18")
 check(not hubPopup:IsShown(), "Resource popup reopened unexpectedly")
 
