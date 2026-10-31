@@ -2487,31 +2487,94 @@ local data = {
     focusCurrentOnReply = false,
     awaitingSelfLookup = false,
     requestedName = nil,
+    pendingSince = nil,
 }
+
+-- Only one implicit named-self lookup per Lua session. A previous manual
+-- request also counts, so a later world entry will not duplicate it.
+local sessionSelfLookupSent = false
 
 local UpdateDisplay
 local SelectPage
 local GetCurrentStageId
+
+-- BEGIN READ-ONLY PROGRESSION API
+-- Optional, read-only API for other 3.3.5a addons (e.g. What's Training?).
+-- Only the verified, self-named server reply is authoritative. The local
+-- default currentValue=0 is NOT evidence that this character is in Vanilla.
+-- Never expose mutable data or automatically initiate an additional query.
+local progressionListeners = {}
+local function GetVerifiedSelfValue()
+    local name = UnitName("player")
+    if not data.loaded or not name or not data.requestedName
+        or name:lower() ~= data.requestedName:lower() then
+        return nil
+    end
+    return data.currentValue, name
+end
+local function PublishProgressionUpdate()
+    local value, name = GetVerifiedSelfValue()
+    for i = 1, #progressionListeners do
+        -- A faulty consumer must never interfere with IP Companion's display.
+        pcall(progressionListeners[i], value, name)
+    end
+end
+_G.IndividualProgressionCompanionAPI = {
+    version = 1,
+    GetCurrentValue = GetVerifiedSelfValue,
+    RegisterListener = function(callback)
+        if type(callback) ~= "function" then return false end
+        for i = 1, #progressionListeners do
+            if progressionListeners[i] == callback then return true end
+        end
+        table.insert(progressionListeners, callback)
+        return true
+    end,
+}
+-- END READ-ONLY PROGRESSION API
 
 -- IP Companion's old .ipsvc data service reported 6 for a character for whom
 -- the server's normal .ip get command reported 2. This candidate uses the same
 -- read-only command available to players on this server instead of trusting
 -- the discrepant .ipsvc value. Never use .ip set or edit progression quests.
 local function RequestData(focusCurrentOnReply)
+    local ownName = UnitName("player")
     if focusCurrentOnReply then
         data.focusCurrentOnReply = true
     end
+    -- Coalesce recent pending self lookups. A deliberate Refresh may retry
+    -- after 15s without a reply; no background retry or chat polling.
+    -- The server has no request ID, so stale same-name replies remain a
+    -- documented limitation when retrying a timed-out request.
+    local now = GetTime()
+    if data.awaitingSelfLookup and type(ownName) == "string"
+        and ownName ~= "" and type(data.requestedName) == "string"
+        and ownName:lower() == data.requestedName:lower() then
+        if not focusCurrentOnReply
+            or not data.pendingSince
+            or now - data.pendingSince < 15 then
+            return false
+        end
+    end
     data.loaded = false
     data.awaitingSelfLookup = false
-    data.requestedName = UnitName("player")
+    data.pendingSince = nil
+    data.requestedName = ownName
+    PublishProgressionUpdate() -- pending: consumers must discard old tier
     if UpdateDisplay then UpdateDisplay() end
 
-    if data.requestedName and data.requestedName ~= "" then
+    if type(ownName) == "string" and ownName ~= "" then
         data.awaitingSelfLookup = true
-        -- Supplying our own name avoids .ip get's target-or-self ambiguity.
-        -- This syntax must be checked against the deployed server before release.
-        SendChatMessage(".ip get " .. data.requestedName, "SAY")
+        data.pendingSince = now
+        sessionSelfLookupSent = true
+        -- Bare .ip get can inspect a selected target; ALWAYS name self.
+        -- Exact normal-player named-self reply needs live acceptance.
+        SendChatMessage(".ip get " .. ownName, "SAY")
+        return true
     end
+    -- Do not consume the one-shot without a valid self name; retry only
+    -- upon a later world-entry event. Never chat-poll or infer a tier.
+    return false
 end
 
 -- The deployed reply is styled with WoW colour codes, e.g.
@@ -2524,7 +2587,10 @@ local function GetSelfProgressionFromMessage(msg)
     if not name or not data.requestedName then return nil end
     if name:lower() ~= data.requestedName:lower() then return nil end
     local value = tonumber(valueText)
-    if not value or value < 0 or value ~= math.floor(value) then return nil end
+    -- The installed IP tier model exposes stages 0..18. A bogus or
+    -- out-of-range reply must not become authoritative even inside Companion.
+    if not value or value < 0 or value > 18
+        or value ~= math.floor(value) then return nil end
     return value
 end
 
@@ -2534,8 +2600,10 @@ local function HandleSelfProgressionReply(msg)
     if value == nil then return end
 
     data.awaitingSelfLookup = false
+    data.pendingSince = nil
     data.currentValue = value
     data.loaded = true
+    PublishProgressionUpdate() -- verified self reply; no extra chat query
     if data.focusCurrentOnReply then
         data.focusCurrentOnReply = false
         data.selectedPage = GetCurrentStageId(value) or (value >= 18 and "wrathoverview" or "overview")
@@ -4039,9 +4107,14 @@ end)
 
 local eventFrame = CreateFrame("Frame")
 eventFrame:RegisterEvent("CHAT_MSG_SYSTEM")
+eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 eventFrame:SetScript("OnEvent", function(self, event, msg)
     if event == "CHAT_MSG_SYSTEM" then
         HandleSelfProgressionReply(msg)
+    elseif event == "PLAYER_ENTERING_WORLD" and not sessionSelfLookupSent then
+        -- First safe world-ready event sends one own-character query,
+        -- leaving the guide hidden. Zoning never repeats a sent lookup.
+        RequestData(false)
     end
 end)
 
@@ -4190,8 +4263,12 @@ SlashCmdList["INDIVIDUALPROGRESSION"] = function(msg)
         hubCopyPopup:Show()
         return
     elseif msg == "refresh" then
-        if not mainFrame:IsShown() then mainFrame:Show() end
-        RequestData(true)
+        if not mainFrame:IsShown() then
+            -- OnShow already calls RequestData(true).
+            mainFrame:Show()
+        else
+            RequestData(true)
+        end
         return
     end
 

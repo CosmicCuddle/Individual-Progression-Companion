@@ -1,0 +1,42 @@
+name: Companion optional API test addon artifact
+
+on:
+  push:
+    branches:
+      - feature/read-only-progression-api
+    paths:
+      - 'tools/package_review_addon.py'
+      - '.github/workflows/package-readonly-api-review.yml'
+      - 'IndividualProgressionAddon.lua'
+      - 'IndividualProgressionAddon.toc'
+      - 'tests/lua/test_progression_api.lua'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  internal-addon-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lua 5.1
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq lua5.1
+      - name: Compile Companion 3.3.5a Lua source
+        run: luac5.1 -p IndividualProgressionAddon.lua
+      - name: Verify real API block under mocked self tier
+        run: lua5.1 tests/lua/test_progression_api.lua
+      - name: Build two reproducible Companion review ZIPs
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/package_review_addon.py --output dist/IP-Companion-API-DRAFT.zip
+          python3 tools/package_review_addon.py --output dist/IP-Companion-API-DRAFT-repeat.zip
+          test "$(sha256sum dist/IP-Companion-API-DRAFT.zip | cut -d ' ' -f 1)" = "$(sha256sum dist/IP-Companion-API-DRAFT-repeat.zip | cut -d ' ' -f 1)"
+      - name: Preserve internal addon artifact (no release)
+        uses: actions/upload-artifact@v4
+        with:
+          name: IP-Companion-API-ONLY-DRAFT-NOT-RELEASED
+          path: dist/IP-Companion-API-DRAFT.zip
+          if-no-files-found: error
+          retention-days: 14
