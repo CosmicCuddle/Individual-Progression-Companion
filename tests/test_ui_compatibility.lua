@@ -158,6 +158,8 @@ function SendChatMessage(message, channel)
 end
 local mockPlayerName = "Tester"
 local mockRealmName = "Mock Realm"
+local mockTime = 100
+function GetTime() return mockTime end
 function UnitName() return mockPlayerName end
 function GetRealmName() return mockRealmName end
 function UnitClass() return "Priest", "PRIEST" end
@@ -289,6 +291,19 @@ check(main:IsShown() and #outbound == beforePendingGuide,
 command("refresh")
 check(#outbound == beforePendingGuide,
     "Explicit /ip refresh while own lookup is still pending must reuse it")
+mockTime = mockTime + 14
+command("refresh")
+check(#outbound == beforePendingGuide,
+    "Premature manual retry must coalesce pending named-self lookup")
+mockTime = mockTime + 1
+command("refresh")
+check(#outbound == beforePendingGuide + 1,
+    "No-reply timeout must allow exactly one deliberate manual retry")
+check(IndividualProgressionCompanionAPI.GetCurrentValue() == nil,
+    "Retry must remain unverified until matching server reply")
+command("refresh")
+check(#outbound == beforePendingGuide + 1,
+    "Immediate repeat Refresh after retry must coalesce")
 check(outbound[#outbound] == ".ip get Tester",
     "Open did not request the logged-in player's named read-only progression")
 -- Wrong-character and legacy service replies must never select a tier.
@@ -304,7 +319,7 @@ local verifiedTier, verifiedName = IndividualProgressionCompanionAPI.GetCurrentV
 check(verifiedTier == 0 and verifiedName == "Tester",
     "Valid stage 0 is authoritative only AFTER matched self reply")
 fireEvent("PLAYER_ENTERING_WORLD", false, false)
-check(#outbound == beforePendingGuide, "Zone after self reply repeated lookup")
+check(#outbound == beforePendingGuide + 1, "Zone after self reply repeated lookup")
 check(isSelected(navLike("Tier 0")), "Server value 0 should select Tier 0")
 check(navLike("Tier 1"):IsShown(), "Tier 1 preview should be visible")
 check(not navLike("Tier 2"):IsShown(), "Tier 2 must be hidden for Tier 0")

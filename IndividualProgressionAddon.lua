@@ -2487,6 +2487,7 @@ local data = {
     focusCurrentOnReply = false,
     awaitingSelfLookup = false,
     requestedName = nil,
+    pendingSince = nil,
 }
 
 -- Only one implicit named-self lookup per Lua session. A previous manual
@@ -2541,21 +2542,30 @@ local function RequestData(focusCurrentOnReply)
     if focusCurrentOnReply then
         data.focusCurrentOnReply = true
     end
-    -- Reuse a still-pending same-self lookup. Two identical chat replies
-    -- cannot be distinguished: the 3.3.5a command carries no request ID.
+    -- Coalesce recent pending self lookups. A deliberate Refresh may retry
+    -- after 15s without a reply; no background retry or chat polling.
+    -- The server has no request ID, so stale same-name replies remain a
+    -- documented limitation when retrying a timed-out request.
+    local now = GetTime()
     if data.awaitingSelfLookup and type(ownName) == "string"
         and ownName ~= "" and type(data.requestedName) == "string"
         and ownName:lower() == data.requestedName:lower() then
-        return false
+        if not focusCurrentOnReply
+            or not data.pendingSince
+            or now - data.pendingSince < 15 then
+            return false
+        end
     end
     data.loaded = false
     data.awaitingSelfLookup = false
+    data.pendingSince = nil
     data.requestedName = ownName
     PublishProgressionUpdate() -- pending: consumers must discard old tier
     if UpdateDisplay then UpdateDisplay() end
 
     if type(ownName) == "string" and ownName ~= "" then
         data.awaitingSelfLookup = true
+        data.pendingSince = now
         sessionSelfLookupSent = true
         -- Bare .ip get can inspect a selected target; ALWAYS name self.
         -- Exact normal-player named-self reply needs live acceptance.
@@ -2590,6 +2600,7 @@ local function HandleSelfProgressionReply(msg)
     if value == nil then return end
 
     data.awaitingSelfLookup = false
+    data.pendingSince = nil
     data.currentValue = value
     data.loaded = true
     PublishProgressionUpdate() -- verified self reply; no extra chat query

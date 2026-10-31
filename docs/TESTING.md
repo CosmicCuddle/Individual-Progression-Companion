@@ -130,3 +130,7 @@ No release should be presented as fully verified with uninvestigated critical fa
 6. Test character switching and save/reload using **non-mutating** gameplay actions. A later milestone change should be reflected only after a new authoritative refresh; the draft does not claim instant passive stage changes.
 
 **Rollback** (only if testing was separately approved): close WoW, restore the previously backed-up Companion/N-WhatsTraining addon folders and original `WTF/` SavedVariables if necessary. No SQL/DBC, GM commands, quest adjustments, server rebuild or main merge is part of this test.
+
+### No-response manual recovery — client QA still not performed
+
+In a separate, owner-approved isolated client test, verify a missing or denied read-only `.ip get <self>` response leaves tier **unverified**, immediate Refresh adds **no** duplicate request, but an explicit Refresh **after 15 seconds** makes **one** more named-self request. This is not permission to disable live server messages or alter current world commands. No passive retries or timers were added. The existing reply format lacks request IDs, so an older delayed matching-name response is a documented limitation.
