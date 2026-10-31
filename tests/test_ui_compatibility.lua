@@ -291,14 +291,14 @@ check(main:IsShown() and #outbound == beforePendingGuide,
 command("refresh")
 check(#outbound == beforePendingGuide,
     "Explicit /ip refresh while own lookup is still pending must reuse it")
-mockTime = mockTime + 14
+mockTime = 114.9  -- 14.9 seconds after the first request at 100.0
 command("refresh")
 check(#outbound == beforePendingGuide,
-    "Premature manual retry must coalesce pending named-self lookup")
-mockTime = mockTime + 1
+    "At 14.9s pending self query must coalesce, not double-send")
+mockTime = 115.0  -- Exactly 15.0s since first request
 command("refresh")
 check(#outbound == beforePendingGuide + 1,
-    "No-reply timeout must allow exactly one deliberate manual retry")
+    "At exactly 15.0s manual Refresh must permit ONE named-self retry")
 check(IndividualProgressionCompanionAPI.GetCurrentValue() == nil,
     "Retry must remain unverified until matching server reply")
 command("refresh")
