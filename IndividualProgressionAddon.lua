@@ -2577,7 +2577,10 @@ local function GetSelfProgressionFromMessage(msg)
     if not name or not data.requestedName then return nil end
     if name:lower() ~= data.requestedName:lower() then return nil end
     local value = tonumber(valueText)
-    if not value or value < 0 or value ~= math.floor(value) then return nil end
+    -- The installed IP tier model exposes stages 0..18. A bogus or
+    -- out-of-range reply must not become authoritative even inside Companion.
+    if not value or value < 0 or value > 18
+        or value ~= math.floor(value) then return nil end
     return value
 end
 

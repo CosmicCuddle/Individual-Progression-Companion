@@ -116,3 +116,17 @@ Also sample intermediate stages 2–6 and 9–16 when possible, especially value
 Log date, tested version/commit, client/server revision, test IDs, **Pass / Fail / Blocked / Not tested**, screenshots or exact errors, and rollback approach in `docs/DEVELOPMENT-LOG.md`.
 
 No release should be presented as fully verified with uninvestigated critical failures, stale/incorrect progression, broken protocol or data loss. Clearly disclose any untested scenarios.
+
+
+## PR #9 one-shot automatic self-IP acceptance — NOT YET RUN IN GAME (31 October 2026)
+
+**Draft-only review checklist; do not install from this page without CosmicCuddle's separate test approval and a backup of the current Companion/N-WhatsTraining addon folders and all relevant `WTF/` SavedVariables.**
+
+1. In a **normal non-GM 3.3.5a client**, with Companion and paired N-WhatsTraining draft loaded, log in without opening either guide. Confirm Companion remains hidden, the normal `.ip get <own character>` form is accepted once (debug/log if available), and N-WhatsTraining initially shows **`IP unverified - showing 1-60`**, then the correct 60/70/80 cap only after the validated self reply. Do not select a different target to determine your own tier.
+2. Repeat `/reload`, then enter an instance or change zone. Expect **one query for the new Lua session**, zero extra from zoning; the Guide stays hidden. The normal-player command table has `ip get` security 0 in the pinned fork source; effective deployed settings and full named response still require confirmation.
+3. Open the Guide **while the initial reply is still pending** (if an ordinary delayed response allows this). Expect no second automatic query, no stale numeric stage, and correct focus after reply. Once completed, manually click Refresh and confirm a fresh own-name reply and no cross-character leakage.
+4. With guide closed, type `/ip refresh` once. Expect **one** read-only own-name query and guide open, not two. Explicit Refresh after a completed query must still fetch again.
+5. Confirm invalid or wrong-name, out-of-range (outside 0–18), denied or absent responses **never** unlock expansion display in N-WhatsTraining. Real server chat may not supply every negative case: offline Lua harness tests exercise those without altering server data.
+6. Test character switching and save/reload using **non-mutating** gameplay actions. A later milestone change should be reflected only after a new authoritative refresh; the draft does not claim instant passive stage changes.
+
+**Rollback** (only if testing was separately approved): close WoW, restore the previously backed-up Companion/N-WhatsTraining addon folders and original `WTF/` SavedVariables if necessary. No SQL/DBC, GM commands, quest adjustments, server rebuild or main merge is part of this test.

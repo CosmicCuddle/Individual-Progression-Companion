@@ -286,13 +286,19 @@ local beforePendingGuide = #outbound
 command("")
 check(main:IsShown() and #outbound == beforePendingGuide,
     "Opening guide while self lookup pending must NOT send again")
+command("refresh")
+check(#outbound == beforePendingGuide,
+    "Explicit /ip refresh while own lookup is still pending must reuse it")
 check(outbound[#outbound] == ".ip get Tester",
     "Open did not request the logged-in player's named read-only progression")
 -- Wrong-character and legacy service replies must never select a tier.
 systemMessage("Progression Level for |cff00ffffOtherPlayer|r = |cff00ffff6|r")
 systemMessage("##IPSVC##PD~6")
+serverReply("PD~19")
+check(IndividualProgressionCompanionAPI.GetCurrentValue() == nil,
+    "Out-of-range reply 19 must not publish a verified stage")
 check(widgetText("Server progression value: waiting for reply"),
-    "Foreign or obsolete service reply changed current tier")
+    "Foreign, legacy or out-of-range reply changed current tier")
 serverReply("PD~0")
 local verifiedTier, verifiedName = IndividualProgressionCompanionAPI.GetCurrentValue()
 check(verifiedTier == 0 and verifiedName == "Tester",

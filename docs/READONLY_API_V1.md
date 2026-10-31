@@ -4,7 +4,7 @@
 A connected N-WhatsTraining addon should automatically hide level 61+ trainer spells during Vanilla and level 71+ until Wrath. **Character level is not a trustworthy indicator of Individual Progression era.**
 
 ## Existing source contract
-IP Companion v5.3.0 queries the current server only on its normal guide refresh, sending `.ip get <own character name>`, then parses a **self-named** `Progression Level for <name> = <value>` reply. Its default `data.currentValue = 0` starts with `data.loaded=false`; zero must **never** be mistaken for a verified vanilla tier.
+The existing Companion v5.3.0 manual guide path sends `.ip get <own character name>` and parses a **self-named** `Progression Level for <name> = <value>` reply. **This draft branch now also sends one automatic named-self lookup after valid first world entry**, without opening the guide. Its default `data.currentValue = 0` starts with `data.loaded=false`; zero must **never** be mistaken for a verified Vanilla tier. Only a complete self-named response with an integer in **0–18** is authoritative; unrelated, malformed and out-of-range replies must fail closed.
 
 The new version-1 API is exported as a global `IndividualProgressionCompanionAPI` **only on this draft branch**:
 - `GetCurrentValue()` returns the **verified numeric** milestone plus the character name, or nil while loading, unavailable, or mismatched.

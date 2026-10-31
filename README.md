@@ -16,7 +16,7 @@ Supported client: **World of Warcraft 3.3.5a**
 
 This release adds progression-aware navigation and optional personal preparation tools while maintaining **World of Warcraft 3.3.5a / Lua 5.1** compatibility.
 
-- **Authoritative personal tier detection:** Uses the normal-player, read-only `.ip get <own character name>` command on the configured CosmicCuddle server. Refresh and reopening the guide focus the player's actual stage.
+- **Authoritative personal tier detection:** Uses the normal-player, read-only `.ip get <own character name>` command on the configured CosmicCuddle server. Refresh and reopening the guide focus the player's actual stage. **In the unmerged draft PR #9 only**, the Companion also sends one automatic own-name query at first world entry (login/`/reload`) with duplicate suppression; no released-version behavior is implied.
 - **Progression-first navigation:** Displays reached tiers and a next-tier preview by default, alongside relevant current-expansion side content and General pages. **Settings → Show All Content** reveals future guides for reference; doing so does **not** unlock progression.
 - **Personal preparation checklists:** Each of the **17 numbered tier guides** offers an optional **Preparation Checklist** with **81** detailed tasks overall. Marks are stored per **realm, character and tier** in the existing `IndividualProgressionDB` SavedVariables, not sent to the server.
 - **Safe controls:** Individual marks can be toggled freely; **Reset this tier** requires two clicks and affects only the selected character/tier. The compact sidebar remains unchanged.
