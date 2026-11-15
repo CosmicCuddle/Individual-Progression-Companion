@@ -2480,6 +2480,7 @@ local OVERVIEW_PAGE = {
 -- DATA MODEL / SERVER COMMUNICATION
 -- ============================================================================
 
+-- BEGIN STAGE TRANSPORT
 local data = {
     currentValue = 0,
     loaded = false,
@@ -2488,26 +2489,28 @@ local data = {
     awaitingSelfLookup = false,
     requestedName = nil,
     pendingSince = nil,
+    verifiedName = nil,
+    pushVerified = false,
 }
 
--- Only one implicit named-self lookup per Lua session. A previous manual
--- request also counts, so a later world entry will not duplicate it.
 local sessionSelfLookupSent = false
-
 local UpdateDisplay
 local SelectPage
 local GetCurrentStageId
+local REPLY_GRACE = 15
+
+local function SameName(a, b)
+    return type(a) == "string" and a ~= "" and type(b) == "string"
+        and b ~= "" and a:lower() == b:lower()
+end
 
 -- BEGIN READ-ONLY PROGRESSION API
--- Optional, read-only API for other 3.3.5a addons (e.g. What's Training?).
--- Only the verified, self-named server reply is authoritative. The local
--- default currentValue=0 is NOT evidence that this character is in Vanilla.
--- Never expose mutable data or automatically initiate an additional query.
+-- Only verified same-character data is authoritative. No API call sends chat.
 local progressionListeners = {}
 local function GetVerifiedSelfValue()
     local name = UnitName("player")
-    if not data.loaded or not name or not data.requestedName
-        or name:lower() ~= data.requestedName:lower() then
+    if not data.loaded or not name or not data.verifiedName
+        or name:lower() ~= data.verifiedName:lower() then
         return nil
     end
     return data.currentValue, name
@@ -2515,7 +2518,6 @@ end
 local function PublishProgressionUpdate()
     local value, name = GetVerifiedSelfValue()
     for i = 1, #progressionListeners do
-        -- A faulty consumer must never interfere with IP Companion's display.
         pcall(progressionListeners[i], value, name)
     end
 end
@@ -2533,95 +2535,172 @@ _G.IndividualProgressionCompanionAPI = {
 }
 -- END READ-ONLY PROGRESSION API
 
--- IP Companion's old .ipsvc data service reported 6 for a character for whom
--- the server's normal .ip get command reported 2. This candidate uses the same
--- read-only command available to players on this server instead of trusting
--- the discrepant .ipsvc value. Never use .ip set or edit progression quests.
-local function RequestData(focusCurrentOnReply)
-    local ownName = UnitName("player")
-    if focusCurrentOnReply then
-        data.focusCurrentOnReply = true
+local function FocusCurrent()
+    if data.focusCurrentOnReply and data.loaded then
+        data.focusCurrentOnReply = false
+        local value = data.currentValue
+        data.selectedPage = GetCurrentStageId(value) or (value >= 18 and "wrathoverview" or "overview")
     end
-    -- Coalesce recent pending self lookups. A deliberate Refresh may retry
-    -- after 15s without a reply; no background retry or chat polling.
-    -- The server has no request ID, so stale same-name replies remain a
-    -- documented limitation when retrying a timed-out request.
+end
+
+local function PruneSuperseded(now)
+    if data.supersededName and now >= data.supersededUntil then
+        -- A timed-out unacknowledged text reply has no request ID. Do not let
+        -- a subsequent legacy query promote it over a verified push.
+        data.legacyUnsafeName = data.supersededName
+        data.supersededName = nil
+        data.supersededUntil = nil
+    end
+end
+
+local function RequestData(focusCurrentOnReply, explicitRefresh)
+    local ownName = UnitName("player")
+    if focusCurrentOnReply then data.focusCurrentOnReply = true end
     local now = GetTime()
-    if data.awaitingSelfLookup and type(ownName) == "string"
-        and ownName ~= "" and type(data.requestedName) == "string"
-        and ownName:lower() == data.requestedName:lower() then
-        if not focusCurrentOnReply
-            or not data.pendingSince
-            or now - data.pendingSince < 15 then
+    PruneSuperseded(now)
+    if SameName(data.supersededName, ownName) or SameName(data.legacyUnsafeName, ownName) then
+        -- Drain the old query first. If it never arrives, preserve the push
+        -- until /reload rather than create an ambiguous authoritative query.
+        FocusCurrent()
+        if UpdateDisplay then UpdateDisplay() end
+        if explicitRefresh then
+            print("IP Companion: keeping the verified stage; an older reply is unresolved. /reload if needed.")
+        end
+        return false
+    end
+    if data.pushVerified and GetVerifiedSelfValue() ~= nil and not explicitRefresh then
+        FocusCurrent()
+        if UpdateDisplay then UpdateDisplay() end
+        return false
+    end
+    if data.awaitingSelfLookup and SameName(ownName, data.requestedName) then
+        if not focusCurrentOnReply or not data.pendingSince or now - data.pendingSince < REPLY_GRACE then
             return false
         end
+        -- Preserve old-server retry behaviour; remember the ambiguity if a
+        -- later server push supersedes this session's legacy replies.
+        data.legacyRetryAmbiguity = true
     end
     data.loaded = false
+    data.verifiedName = nil
+    data.pushVerified = false
     data.awaitingSelfLookup = false
     data.pendingSince = nil
     data.requestedName = ownName
-    PublishProgressionUpdate() -- pending: consumers must discard old tier
+    PublishProgressionUpdate()
     if UpdateDisplay then UpdateDisplay() end
-
     if type(ownName) == "string" and ownName ~= "" then
         data.awaitingSelfLookup = true
         data.pendingSince = now
         sessionSelfLookupSent = true
-        -- Bare .ip get can inspect a selected target; ALWAYS name self.
-        -- Exact normal-player named-self reply needs live acceptance.
         SendChatMessage(".ip get " .. ownName, "SAY")
         return true
     end
-    -- Do not consume the one-shot without a valid self name; retry only
-    -- upon a later world-entry event. Never chat-poll or infer a tier.
     return false
 end
 
--- The deployed reply is styled with WoW colour codes, e.g.
--- "Progression Level for |cff00ffffAdmina|r = |cff00ffff2|r".
--- Parse a *complete*, self-named reply, not an unrelated system message.
-local function GetSelfProgressionFromMessage(msg)
-    if type(msg) ~= "string" then return nil end
+local function GetSelfProgressionFromMessage(msg, expectedName)
+    if type(msg) ~= "string" or not SameName(UnitName("player"), expectedName) then return nil end
     local plain = msg:gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", "")
     local name, valueText = plain:match("^Progression Level for (.-) = (%d+)$")
-    if not name or not data.requestedName then return nil end
-    if name:lower() ~= data.requestedName:lower() then return nil end
+    if not SameName(name, expectedName) then return nil end
     local value = tonumber(valueText)
-    -- The installed IP tier model exposes stages 0..18. A bogus or
-    -- out-of-range reply must not become authoritative even inside Companion.
-    if not value or value < 0 or value > 18
-        or value ~= math.floor(value) then return nil end
+    if not value or value < 0 or value > 18 or value ~= math.floor(value) then return nil end
     return value
 end
 
-local function HandleSelfProgressionReply(msg)
-    if not data.awaitingSelfLookup then return end
-    local value = GetSelfProgressionFromMessage(msg)
-    if value == nil then return end
+local function RememberSuppressed(msg, now)
+    data.recentSuppressed = msg
+    data.recentSuppressedUntil = now + 0.1
+    data.recentSuppressedName = UnitName("player")
+end
 
+local function HandleSelfProgressionReply(msg)
+    local now = GetTime()
+    PruneSuperseded(now)
+    if data.supersededName and GetSelfProgressionFromMessage(msg, data.supersededName) ~= nil then
+        RememberSuppressed(msg, now)
+        if not data.legacyRetryAmbiguity then
+            data.supersededName = nil
+            data.supersededUntil = nil
+        end
+        return
+    end
+    if not data.awaitingSelfLookup then return end
+    local value = GetSelfProgressionFromMessage(msg, data.requestedName)
+    if value == nil then return end
+    RememberSuppressed(msg, now)
     data.awaitingSelfLookup = false
     data.pendingSince = nil
     data.currentValue = value
     data.loaded = true
-    PublishProgressionUpdate() -- verified self reply; no extra chat query
-    if data.focusCurrentOnReply then
-        data.focusCurrentOnReply = false
-        data.selectedPage = GetCurrentStageId(value) or (value >= 18 and "wrathoverview" or "overview")
+    data.verifiedName = data.requestedName
+    data.pushVerified = false
+    PublishProgressionUpdate()
+    FocusCurrent()
+    if UpdateDisplay then UpdateDisplay() end
+end
+
+local function HandleAddonStagePush(prefix, message, channel, sender)
+    local ownName = UnitName("player")
+    if prefix ~= "IPPSTATE" or channel ~= "WHISPER" or not SameName(sender, ownName)
+        or not SameName(data.worldName, ownName) or type(message) ~= "string" then return end
+    local valueText = message:match("^1\t(%d+)$")
+    local value = valueText and tonumber(valueText)
+    if not value or value < 0 or value > 18 or tostring(value) ~= valueText then return end
+    local now = GetTime()
+    PruneSuperseded(now)
+    if data.awaitingSelfLookup and SameName(data.requestedName, ownName) then
+        data.supersededName = ownName
+        data.supersededUntil = now + REPLY_GRACE
     end
-    UpdateDisplay()
+    if data.legacyRetryAmbiguity then data.legacyUnsafeName = ownName end
+    local changed = not data.loaded or not SameName(data.verifiedName, ownName) or data.currentValue ~= value
+    data.awaitingSelfLookup = false
+    data.pendingSince = nil
+    data.currentValue = value
+    data.loaded = true
+    data.verifiedName = ownName
+    data.pushVerified = true
+    if changed then PublishProgressionUpdate() end
+    FocusCurrent()
+    if UpdateDisplay then UpdateDisplay() end
+end
+
+local function HandleWorldEntry()
+    local ownName = UnitName("player")
+    if type(ownName) ~= "string" or ownName == "" then return end
+    if data.worldName and not SameName(data.worldName, ownName) then
+        data.loaded = false
+        data.verifiedName = nil
+        data.pushVerified = false
+        data.awaitingSelfLookup = false
+        data.pendingSince = nil
+        data.requestedName = nil
+        data.supersededName = nil
+        data.supersededUntil = nil
+        data.legacyUnsafeName = nil
+        data.legacyRetryAmbiguity = nil
+        data.recentSuppressed = nil
+        sessionSelfLookupSent = false
+        PublishProgressionUpdate()
+    end
+    data.worldName = ownName
+    if not sessionSelfLookupSent then RequestData(false) end
 end
 
 ChatFrame_AddMessageEventFilter("CHAT_MSG_SYSTEM", function(self, event, msg, ...)
-    -- Hide only the reply for our own pending lookup, never other .ip get
-    -- results or ordinary system messages.
-    if data.awaitingSelfLookup and GetSelfProgressionFromMessage(msg) ~= nil then
-        return true
-    end
-    -- Keep the legacy addon service messages hidden if another module emits one.
-    if type(msg) == "string" and msg:find("^##IPSVC##") then
-        return true
-    end
+    local now = GetTime()
+    if data.awaitingSelfLookup and GetSelfProgressionFromMessage(msg, data.requestedName) ~= nil then return true end
+    if data.supersededName and now < data.supersededUntil
+        and GetSelfProgressionFromMessage(msg, data.supersededName) ~= nil then return true end
+    -- Event/filter ordering can differ. A short exact-message grace keeps
+    -- the already-consumed addon reply hidden for additional chat frames.
+    if data.recentSuppressed == msg and data.recentSuppressedUntil and now <= data.recentSuppressedUntil
+        and SameName(UnitName("player"), data.recentSuppressedName) then return true end
+    if type(msg) == "string" and msg:find("^##IPSVC##") then return true end
 end)
+-- END STAGE TRANSPORT
 
 -- Personal, optional tier-preparation notes, based on the guide's own steps.
 -- Stable IDs allow text updates without invalidating existing checkmarks.
@@ -2978,7 +3057,7 @@ refreshBtn:SetSize(74, 22)
 refreshBtn:SetPoint("TOPRIGHT", -42, -12)
 refreshBtn:SetText("Refresh")
 refreshBtn:SetScript("OnClick", function()
-    RequestData(true)
+    RequestData(true, true)
 end)
 
 -- Header status box
@@ -4107,23 +4186,24 @@ end)
 
 local eventFrame = CreateFrame("Frame")
 eventFrame:RegisterEvent("CHAT_MSG_SYSTEM")
+eventFrame:RegisterEvent("CHAT_MSG_ADDON")
 eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-eventFrame:SetScript("OnEvent", function(self, event, msg)
+eventFrame:SetScript("OnEvent", function(self, event, msg, ...)
     if event == "CHAT_MSG_SYSTEM" then
         HandleSelfProgressionReply(msg)
-    elseif event == "PLAYER_ENTERING_WORLD" and not sessionSelfLookupSent then
-        -- First safe world-ready event sends one own-character query,
-        -- leaving the guide hidden. Zoning never repeats a sent lookup.
-        RequestData(false)
+    elseif event == "CHAT_MSG_ADDON" then
+        HandleAddonStagePush(msg, ...)
+    elseif event == "PLAYER_ENTERING_WORLD" then
+        HandleWorldEntry()
     end
 end)
 
 mainFrame:SetScript("OnShow", function()
     IndividualProgressionDB = IndividualProgressionDB or {}
-    data.loaded = false
-    -- A fresh open starts with an unambiguous overview while the reply is pending.
+    local explicitRefresh = data.refreshOnShow
+    data.refreshOnShow = nil
     SelectPage("overview")
-    RequestData(true)
+    RequestData(true, explicitRefresh)
 end)
 
 -- ============================================================================
@@ -4264,10 +4344,11 @@ SlashCmdList["INDIVIDUALPROGRESSION"] = function(msg)
         return
     elseif msg == "refresh" then
         if not mainFrame:IsShown() then
-            -- OnShow already calls RequestData(true).
+            -- OnShow owns the single explicit Refresh request.
+            data.refreshOnShow = true
             mainFrame:Show()
         else
-            RequestData(true)
+            RequestData(true, true)
         end
         return
     end

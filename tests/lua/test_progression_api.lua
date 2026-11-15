@@ -1,7 +1,7 @@
 -- Real Lua 5.1 execution of the production companion's isolated API block.
 -- Doesn't load its full UI and NEVER sends an in-game server chat query.
 UnitName = function(unit) assert(unit == "player"); return "Tester" end
-local data = { loaded=false, currentValue=0, requestedName="Tester" }
+local data = { loaded=false, currentValue=0, verifiedName="Tester" }
 local handle = assert(io.open("IndividualProgressionAddon.lua", "rb"))
 local source = handle:read("*a")
 handle:close()
@@ -38,11 +38,11 @@ assert(api.GetCurrentValue() == nil)
 
 -- Changed character: never expose a stale other-character tier.
 data.loaded = true
-data.requestedName = "Another"
+data.verifiedName = "Another"
 assert(api.GetCurrentValue() == nil)
 publish()
 assert(#seen == 5 and seen[5].value == nil)
-data.requestedName = "Tester"
+data.verifiedName = "Tester"
 
 local second = 0
 assert(api.RegisterListener(function() second=second+1; error("consumer error") end))
